@@ -13,7 +13,7 @@
       "expected_task_ids": ["DEC-001", "DEC-002", "DEC-003", "CONTRACT-001", "CONTRACT-002", "CONTRACT-003", "CONTRACT-004"],
       "depends_on_batches": [],
       "output_path": "assembly/generated/task_batches/contract-foundations.json",
-      "status": "planned",
+      "status": "generated",
       "notes": "Resolves the three explicit planning gates and defines shared domain, model-bundle, archive, and fixture contracts before parallel consumers implement them."
     },
     {
