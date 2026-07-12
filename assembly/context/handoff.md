@@ -2,7 +2,7 @@
 
 ## Current lifecycle phase
 
-Requirements are merged. Planning run `planning-20260712` is drafted on `ai/planning-20260712` and pending planning pull-request review.
+Requirements and planning are merged. Task decomposition is drafted on `ai/task-split-planning-20260712` and pending task-backlog pull-request review.
 
 ## Source of truth
 
@@ -12,7 +12,7 @@ Requirements are merged. Planning run `planning-20260712` is drafted on `ai/plan
 
 ## Next action
 
-Validate and review the planning package, then commit, push, open, and merge the planning pull request. After merge, start a fresh Task Splitter context from the merged repository files.
+Validate and review the task batches, canonical backlog, collaboration state, and slot readiness; then commit, push, open, and merge the task-decomposition pull request. After merge, open Dispatch from the merged repository files.
 
 ## Accepted direction
 
@@ -35,4 +35,14 @@ Validate and review the planning package, then commit, push, open, and merge the
 - `assembly/generated/slots_db.json`
 - `assembly/planning_runs/planning-20260712/`
 
-Final task decomposition remains deliberately deferred until this package is reviewed and merged.
+The merged planning package remains the architectural source for this draft decomposition.
+
+## Draft task decomposition
+
+- `assembly/generated/task_batch_index.json`
+- `assembly/generated/task_batches/`
+- `assembly/generated/task_backlog.json`
+- `assembly/generated/collaboration_state.json`
+- `assembly/generated/slots_db.json`
+
+The draft contains 5 batches and 31 tasks. No task is assigned, claimed, in progress, or complete. Contract Steward and ML Engine Builder have dependency-free entry tasks; later lanes remain gated by task dependencies.

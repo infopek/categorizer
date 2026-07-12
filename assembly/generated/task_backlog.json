@@ -1,0 +1,2291 @@
+[
+  {
+    "id": "CONTRACT-001",
+    "title": "Define shared car recognition and album domain contracts",
+    "summary": "Create versioned Kotlin domain types and interfaces for car identities, ranked recognition results, uncertainty, album entries, and repository use cases.",
+    "objective": "Give application and ML lanes a stable shared boundary before implementation starts.",
+    "context": "The accepted plan defines CarIdentity, RecognitionCandidate, RecognitionResult, AlbumEntry, RecognitionEngine, and AlbumRepository responsibilities.",
+    "owner_role": "Contract Steward",
+    "lane": "shared-contracts",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "shared/domain/**",
+      "docs/architecture/**",
+      "verification/contracts/**"
+    ],
+    "depends_on": [],
+    "inputs": [
+      "assembly/generated/project_spec.json",
+      "assembly/generated/repo_plan.json",
+      "assembly/generated/agent_prompts.json"
+    ],
+    "outputs": [
+      "Versioned Kotlin domain types",
+      "RecognitionEngine and AlbumRepository interfaces",
+      "Documented invariants, error states, and ownership boundaries",
+      "Contract unit tests"
+    ],
+    "implementation_notes": [
+      "Represent uncertain and unsupported results explicitly.",
+      "Keep platform types, database entities, ONNX tensors, and UI state out of shared domain contracts.",
+      "Use stable class IDs rather than display names as identity keys."
+    ],
+    "acceptance_criteria": [
+      "Every planned domain entity and required field has a typed representation or documented intentional derivation.",
+      "Recognition results preserve ordered candidates, model version, and inference duration.",
+      "Album mutations and queries cover create, update, delete, search, favorite filter, and restart-safe observation.",
+      "Contracts compile independently of Android platform and ONNX Runtime APIs."
+    ],
+    "verification": [
+      "Run shared contract unit tests.",
+      "Compile the shared domain module for configured targets.",
+      "Review public interfaces for accidental platform or persistence coupling."
+    ],
+    "proof_required": [
+      "Test output",
+      "API documentation or architecture decision"
+    ],
+    "edge_cases": [
+      "Empty candidate list",
+      "Duplicate class IDs",
+      "Manual identity outside the model catalog",
+      "Clock and date normalization"
+    ],
+    "non_goals": [
+      "Database implementation",
+      "UI state implementation",
+      "ONNX inference implementation"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "shared-contract",
+      "parallelization"
+    ]
+  },
+  {
+    "id": "DEC-001",
+    "title": "Select the licensed MVP car catalog and source assets",
+    "summary": "Research and document a distribution-compatible dataset, pretrained-weight baseline, and exact 100\u2013200-class MVP catalog without downloading or committing unapproved assets.",
+    "objective": "Resolve the accepted catalog and licensing gate before dataset preparation or model distribution begins.",
+    "context": "The merged requirements require approximately 100\u2013200 common car models and compatible licenses, but intentionally leave the exact classes and source assets open.",
+    "owner_role": "Contract Steward",
+    "lane": "decisions",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "docs/ml/**",
+      "ml/catalog/**",
+      "models/*.json"
+    ],
+    "depends_on": [],
+    "blocks": [
+      "CONTRACT-002"
+    ],
+    "inputs": [
+      "assembly/intake/project_intake.json",
+      "assembly/requirements/REQUIREMENTS.md",
+      "assembly/generated/project_spec.json"
+    ],
+    "outputs": [
+      "A reviewed catalog manifest with stable class IDs and display labels",
+      "A dataset and pretrained-weight license matrix with source links and redistribution conclusions",
+      "A decision record identifying accepted sources, exclusions, and unresolved acquisition risks"
+    ],
+    "implementation_notes": [
+      "Treat dataset images, annotations, pretrained weights, and generated model weights as separately licensed artifacts.",
+      "Do not equate public download access with permission to redistribute.",
+      "Include generation or approximate-year distinctions only where the accepted product scope requires them."
+    ],
+    "acceptance_criteria": [
+      "The proposed catalog contains between 100 and 200 unique stable class IDs.",
+      "Every proposed dataset and pretrained weight has a recorded license, source, attribution requirement, and application-distribution conclusion.",
+      "Any incompatible or unclear source is excluded or explicitly marked blocking rather than treated as accepted.",
+      "The human owner records acceptance of the catalog and asset-source decision."
+    ],
+    "verification": [
+      "Validate catalog uniqueness and required fields with a deterministic script or schema.",
+      "Manually review source license pages and preserve direct references and access dates.",
+      "Confirm no raw dataset, credentials, or unapproved model binary is added to Git."
+    ],
+    "proof_required": [
+      "Catalog validation output",
+      "License matrix",
+      "Human acceptance recorded in the decision document"
+    ],
+    "edge_cases": [
+      "Multiple names for the same generation",
+      "Classes with insufficient licensed examples",
+      "Dataset labels that collapse generations required by the MVP"
+    ],
+    "non_goals": [
+      "Downloading the full training dataset",
+      "Training or exporting a model",
+      "Expanding beyond the accepted 100\u2013200 car scope"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "licensing",
+      "dataset",
+      "product-scope"
+    ],
+    "handoff_notes": "ML work must consume the accepted stable class IDs and license conclusions without renaming classes silently."
+  },
+  {
+    "id": "DEC-002",
+    "title": "Select the Android benchmark device and measurement protocol",
+    "summary": "Choose the representative Android 10+ mid-range device and define a reproducible cold/warm inference measurement protocol.",
+    "objective": "Give the accepted two-second median inference threshold a concrete hardware and measurement reference.",
+    "context": "The planning package requires a selected device but intentionally leaves the exact device open.",
+    "owner_role": "Contract Steward",
+    "lane": "decisions",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "docs/verification/**",
+      "verification/device/**"
+    ],
+    "depends_on": [],
+    "inputs": [
+      "Accepted Android 10+, recent mid-range, approximately 4 GB RAM device boundary",
+      "Accepted median inference below two seconds signal"
+    ],
+    "outputs": [
+      "Benchmark-device decision record",
+      "Measurement protocol covering setup, warmup, sample count, timings, and result format"
+    ],
+    "implementation_notes": [
+      "Record model name, chipset, RAM, Android version, ABI, and relevant power/performance settings.",
+      "Separate image decoding/preprocessing, session initialization, and inference timing so results are interpretable."
+    ],
+    "acceptance_criteria": [
+      "A physically available or otherwise guaranteed-access benchmark device is named with reproducible specifications.",
+      "The protocol defines cold and warm paths, warmup, minimum sample count, percentile/median reporting, and failure handling.",
+      "The human owner confirms access to the selected device."
+    ],
+    "verification": [
+      "Review the protocol against the project acceptance signal.",
+      "Run a no-model dry run or fixture timing harness if device access is already available."
+    ],
+    "proof_required": [
+      "Accepted device record",
+      "Versioned benchmark protocol"
+    ],
+    "edge_cases": [
+      "Thermal throttling",
+      "Battery saver",
+      "First-run model extraction",
+      "Background applications affecting measurements"
+    ],
+    "non_goals": [
+      "Selecting every supported test device",
+      "Meeting the latency gate before a candidate model exists"
+    ],
+    "estimated_size": "S",
+    "risk_tags": [
+      "hardware",
+      "performance",
+      "acceptance-gate"
+    ]
+  },
+  {
+    "id": "DEC-003",
+    "title": "Set the bundled application and model size budget",
+    "summary": "Define accepted download, installed, model-file, and runtime-memory budgets for the closed-testing build.",
+    "objective": "Bound model selection and quantization decisions with explicit release constraints.",
+    "context": "The merged planning package leaves the bundled-size budget unresolved while requiring a bundled offline model.",
+    "owner_role": "Contract Steward",
+    "lane": "decisions",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "docs/architecture/**",
+      "docs/verification/**",
+      "verification/release/**"
+    ],
+    "depends_on": [],
+    "inputs": [
+      "Google Play closed-testing target",
+      "Bundled offline model requirement",
+      "Supported approximately 4 GB RAM device boundary"
+    ],
+    "outputs": [
+      "Accepted size and memory budget decision record",
+      "A measurement checklist for release artifacts and runtime memory"
+    ],
+    "implementation_notes": [
+      "Keep compressed download size, installed size, ONNX file size, peak resident memory, and inference working memory distinct.",
+      "Document which metric is a hard gate and which is an optimization target."
+    ],
+    "acceptance_criteria": [
+      "Numeric budgets are recorded for model file, download package, installed footprint, and peak runtime memory.",
+      "The measurement method and responsible evidence location are defined.",
+      "The human owner accepts the budgets or explicitly records a blocking exception."
+    ],
+    "verification": [
+      "Check the decision record contains every required metric and unit.",
+      "Validate the proposed measurement commands or Android tooling on a placeholder build when available."
+    ],
+    "proof_required": [
+      "Accepted budget decision",
+      "Release-size measurement checklist"
+    ],
+    "edge_cases": [
+      "ABI-specific native libraries",
+      "Store-delivered compression",
+      "First-run extraction duplicating model storage"
+    ],
+    "non_goals": [
+      "Optimizing a model before a baseline exists",
+      "Changing the accepted offline bundled-model requirement"
+    ],
+    "estimated_size": "S",
+    "risk_tags": [
+      "package-size",
+      "memory",
+      "release-gate"
+    ]
+  },
+  {
+    "id": "ML-001",
+    "title": "Create the reproducible Python ML environment",
+    "summary": "Set up pinned Python tooling for dataset manifests, PyTorch/TorchVision training, evaluation, ONNX export, and ONNX Runtime verification.",
+    "objective": "Make ML experiments and export checks reproducible without committing environments, caches, datasets, or checkpoints.",
+    "context": "The accepted stack is Python with PyTorch/TorchVision and ONNX export; exact dependencies must be pinned after planning.",
+    "owner_role": "ML Engine Builder",
+    "lane": "training",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "ml/**",
+      "docs/ml/**",
+      ".gitignore"
+    ],
+    "depends_on": [],
+    "inputs": [
+      "Merged stack decision",
+      "Supported developer environment constraints"
+    ],
+    "outputs": [
+      "Pinned Python dependency definition and lock data",
+      "Documented setup and verification commands",
+      "Minimal environment smoke test",
+      "Ignore rules for datasets, caches, runs, and model checkpoints"
+    ],
+    "implementation_notes": [
+      "Pin Python and key framework/runtime versions explicitly.",
+      "Separate runtime, development, and optional accelerator dependencies where practical.",
+      "Do not assume CUDA is available; the baseline pipeline must run on CPU for smoke tests."
+    ],
+    "acceptance_criteria": [
+      "A clean supported environment can install dependencies using one documented command.",
+      "Imports and a minimal tensor-to-ONNX Runtime smoke path succeed.",
+      "Generated datasets, caches, checkpoints, and local environments are ignored by Git.",
+      "Dependency versions and supported Python version are recorded."
+    ],
+    "verification": [
+      "Create a clean environment and run the smoke test.",
+      "Run dependency consistency/check tooling.",
+      "Use Git status to prove generated local artifacts are not tracked."
+    ],
+    "proof_required": [
+      "Environment creation log",
+      "Smoke-test output",
+      "Pinned dependency diff"
+    ],
+    "edge_cases": [
+      "CPU-only host",
+      "Unsupported Python version",
+      "Platform-specific wheels",
+      "Dependency resolver drift"
+    ],
+    "non_goals": [
+      "Training the production model",
+      "Provisioning cloud GPU infrastructure",
+      "Committing a virtual environment"
+    ],
+    "estimated_size": "S",
+    "risk_tags": [
+      "reproducibility",
+      "dependencies",
+      "toolchain"
+    ]
+  },
+  {
+    "id": "APP-001",
+    "title": "Create the Kotlin Multiplatform Android project foundation",
+    "summary": "Create a buildable Kotlin Multiplatform and Compose Multiplatform project with Android as the only shipped MVP target and clear shared/platform module boundaries.",
+    "objective": "Establish the smallest reproducible application skeleton that later tasks can extend without changing the accepted architecture.",
+    "context": "The repository currently contains lifecycle artifacts but no application implementation. The accepted plan assigns shared domain/UI code and Android platform adapters to separate areas.",
+    "owner_role": "Application Builder",
+    "lane": "application",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "settings.gradle.kts",
+      "build.gradle.kts",
+      "gradle/**",
+      "gradlew",
+      "gradlew.bat",
+      "apps/androidApp/**",
+      "shared/**",
+      "docs/app/**",
+      ".gitignore"
+    ],
+    "depends_on": [
+      "CONTRACT-001"
+    ],
+    "inputs": [
+      "Merged planning package",
+      "Shared domain contracts",
+      "Accepted Android 10+ platform boundary"
+    ],
+    "outputs": [
+      "Pinned Gradle/Kotlin/Compose project configuration",
+      "Buildable shared and Android application modules",
+      "Minimal Android launcher and Compose root",
+      "Developer setup documentation and baseline CI-ready commands"
+    ],
+    "implementation_notes": [
+      "Configure Android minimum SDK to match Android 10/API 29 unless a documented toolchain constraint requires a compatible equivalent.",
+      "Do not add iOS or desktop deliverables; shared code should avoid unnecessary Android coupling.",
+      "Keep dependency versions centralized and do not add network, auth, analytics, or cloud SDKs."
+    ],
+    "acceptance_criteria": [
+      "A clean checkout can invoke the documented Gradle wrapper commands without manual file edits.",
+      "The Android debug application assembles and launches to a minimal Compose root.",
+      "Shared domain code compiles without importing Android UI, filesystem, database, or ONNX APIs.",
+      "Static checks and unit-test source sets are wired for later tasks."
+    ],
+    "verification": [
+      "Run the Gradle wrapper version command.",
+      "Run the Android debug assemble task.",
+      "Run configured shared unit tests and static checks.",
+      "Inspect the dependency graph for unapproved network or telemetry libraries."
+    ],
+    "proof_required": [
+      "Build and check logs",
+      "Documented toolchain versions",
+      "Module-boundary summary"
+    ],
+    "edge_cases": [
+      "JDK/Android Gradle Plugin incompatibility",
+      "Paths containing spaces",
+      "Offline Gradle execution after dependencies are cached"
+    ],
+    "non_goals": [
+      "Feature-complete screens",
+      "ONNX Runtime integration",
+      "iOS or desktop packaging",
+      "Google Play signing"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "build-system",
+      "toolchain",
+      "module-boundary"
+    ],
+    "handoff_notes": "All application tasks use the documented wrapper commands and extend these module boundaries."
+  },
+  {
+    "id": "CONTRACT-003",
+    "title": "Define the versioned album archive contract",
+    "summary": "Specify a checksummed, privacy-preserving export/import archive with validation, conflict rules, and atomic failure semantics.",
+    "objective": "Allow local backup and transfer without coupling the durable format to internal database details.",
+    "context": "Manual export/import is an accepted MVP requirement and must be suitable for later migration or synchronization.",
+    "owner_role": "Contract Steward",
+    "lane": "shared-contracts",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "shared/domain/**",
+      "docs/architecture/**",
+      "verification/contracts/**"
+    ],
+    "depends_on": [
+      "CONTRACT-001"
+    ],
+    "inputs": [
+      "AlbumEntry domain contract",
+      "Privacy and local-only requirements"
+    ],
+    "outputs": [
+      "Archive manifest/schema",
+      "Versioning and compatibility policy",
+      "Duplicate/conflict and atomic-import rules",
+      "Valid and invalid archive fixtures"
+    ],
+    "implementation_notes": [
+      "Use logical entry IDs and relative archive paths; never persist device-absolute file paths.",
+      "Validate all metadata, paths, sizes, and checksums before mutating local state.",
+      "Exclude unnecessary original image metadata from exported managed copies."
+    ],
+    "acceptance_criteria": [
+      "The contract contains archive version, timestamps, entries, relative image references, and checksums.",
+      "Path traversal, missing files, checksum mismatch, incompatible versions, duplicates, and partial archives have defined outcomes.",
+      "Import validation is separable from commit so invalid archives cause no partial mutation.",
+      "The format does not expose internal database implementation details."
+    ],
+    "verification": [
+      "Validate good, corrupted, missing-file, duplicate-ID, incompatible-version, and path-traversal fixtures.",
+      "Review fixtures for absence of location and unnecessary device metadata."
+    ],
+    "proof_required": [
+      "Archive fixtures",
+      "Validation test results",
+      "Compatibility policy"
+    ],
+    "edge_cases": [
+      "Duplicate entry IDs",
+      "Duplicate image hashes",
+      "Interrupted import",
+      "Unsupported future archive version",
+      "Malicious relative paths"
+    ],
+    "non_goals": [
+      "Cloud synchronization protocol",
+      "Incremental backup",
+      "Social sharing format"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "data-integrity",
+      "privacy",
+      "migration"
+    ]
+  },
+  {
+    "id": "CONTRACT-002",
+    "title": "Define the versioned model bundle manifest",
+    "summary": "Specify and validate the model manifest, class map, preprocessing, output interpretation, hashes, ONNX compatibility, and license references.",
+    "objective": "Make the training export and Android runtime consume one deterministic model contract.",
+    "context": "Cross-runtime accuracy depends on exact agreement about input transforms, class order, and output ranking.",
+    "owner_role": "Contract Steward",
+    "lane": "shared-contracts",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "models/*.json",
+      "docs/architecture/**",
+      "verification/contracts/**"
+    ],
+    "depends_on": [
+      "DEC-001"
+    ],
+    "inputs": [
+      "Accepted catalog and source decision",
+      "ModelManifest fields from assembly/generated/project_spec.json"
+    ],
+    "outputs": [
+      "Machine-readable model manifest schema",
+      "Versioned class-map format",
+      "Example manifest and validation fixtures",
+      "Compatibility and migration policy"
+    ],
+    "implementation_notes": [
+      "Include model and class-map hashes, input tensor name/shape/type, color order, resize/crop, normalization, output tensor semantics, opset, runtime minimums, and notices.",
+      "Do not commit a real model binary as part of this contract task."
+    ],
+    "acceptance_criteria": [
+      "A validator rejects missing, duplicate, reordered, or hash-inconsistent class metadata.",
+      "Preprocessing and postprocessing are unambiguous enough for independent Python and Kotlin implementations.",
+      "License and attribution references are mandatory fields for release-ready manifests.",
+      "Manifest version compatibility behavior is documented."
+    ],
+    "verification": [
+      "Validate positive and negative manifest fixtures.",
+      "Round-trip the example manifest through Kotlin and Python JSON tooling when those harnesses exist.",
+      "Review the contract against ONNX Runtime input/output metadata needs."
+    ],
+    "proof_required": [
+      "Schema validation logs",
+      "Positive and negative fixtures",
+      "Compatibility decision record"
+    ],
+    "edge_cases": [
+      "Class-map reordering",
+      "Model and manifest version mismatch",
+      "Multiple output tensors",
+      "Quantized input/output types"
+    ],
+    "non_goals": [
+      "Choosing the final neural architecture",
+      "Training, quantizing, or benchmarking the model"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "model-contract",
+      "cross-runtime",
+      "licensing"
+    ]
+  },
+  {
+    "id": "APP-002",
+    "title": "Implement local album persistence behind the shared repository",
+    "summary": "Implement transactional Android persistence for album metadata and private app-managed image references behind AlbumRepository.",
+    "objective": "Provide restart-safe local album storage without leaking database or Android types into shared domain code.",
+    "context": "The MVP is local-only and album entries must survive restarts while supporting edits, deletes, search, and favorite filtering.",
+    "owner_role": "Application Builder",
+    "lane": "local-data",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "apps/androidApp/**",
+      "shared/data/**",
+      "shared/application/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-001",
+      "CONTRACT-001"
+    ],
+    "inputs": [
+      "AlbumEntry and AlbumRepository contracts",
+      "Accepted local-only privacy boundary"
+    ],
+    "outputs": [
+      "Database schema and entities",
+      "AlbumRepository adapter and domain mappers",
+      "Schema versioning/migration baseline",
+      "Persistence unit and Android integration tests"
+    ],
+    "implementation_notes": [
+      "Store only managed relative image identifiers or validated private paths, never transient gallery URIs as durable references.",
+      "Define deterministic search behavior and sort order.",
+      "Keep database transactions explicit for multi-record operations."
+    ],
+    "acceptance_criteria": [
+      "Create, observe, update, favorite, annotate, search/filter, and delete operations satisfy the shared contract.",
+      "Entries survive process recreation and application restart.",
+      "Database details do not escape the adapter boundary.",
+      "Deleting an entry has a documented and tested managed-image cleanup policy."
+    ],
+    "verification": [
+      "Run repository contract tests against the real adapter.",
+      "Run migration/schema tests.",
+      "Run Android restart persistence tests.",
+      "Inspect stored records for absence of original external URIs and unnecessary metadata."
+    ],
+    "proof_required": [
+      "Unit and integration test output",
+      "Schema/migration documentation"
+    ],
+    "edge_cases": [
+      "Missing managed image",
+      "Duplicate entry ID",
+      "Blank notes",
+      "Unicode search",
+      "Delete failure after metadata mutation"
+    ],
+    "non_goals": [
+      "Cloud database",
+      "Synchronization",
+      "Archive import/export implementation"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "persistence",
+      "data-integrity",
+      "privacy"
+    ]
+  },
+  {
+    "id": "APP-003",
+    "title": "Implement Android image acquisition and sanitization adapters",
+    "summary": "Implement camera and system gallery acquisition, deterministic orientation handling, preprocessing-source preparation, metadata removal, and private managed-image storage.",
+    "objective": "Turn user-selected images into stable private inputs without retaining unnecessary location or device metadata.",
+    "context": "Both camera and gallery inputs are required, but only app-managed sanitized copies may back durable album entries.",
+    "owner_role": "Application Builder",
+    "lane": "android-platform",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "apps/androidApp/**",
+      "shared/application/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-001",
+      "CONTRACT-001"
+    ],
+    "inputs": [
+      "Android camera and photo-picker capabilities",
+      "Managed image privacy requirements",
+      "Recognition input contract"
+    ],
+    "outputs": [
+      "Camera capture adapter",
+      "System gallery picker adapter",
+      "Orientation-normalization and metadata-stripping pipeline",
+      "Private managed-image store and cleanup behavior",
+      "Instrumentation fixtures/tests"
+    ],
+    "implementation_notes": [
+      "Prefer system picker/camera contracts that minimize broad storage permissions.",
+      "Decode with bounded memory and preserve correct visual orientation before stripping metadata.",
+      "Use atomic file creation/rename where possible and clean temporary files on cancel or error."
+    ],
+    "acceptance_criteria": [
+      "Camera and gallery flows each produce a readable private app-managed image.",
+      "The managed copy renders with correct orientation and contains no unnecessary EXIF location/device metadata.",
+      "Canceled, malformed, oversized, and unreadable inputs return recoverable errors without orphaned durable entries.",
+      "The app does not rely on permanent access to the original gallery item."
+    ],
+    "verification": [
+      "Run instrumentation tests with rotated, metadata-rich, large, malformed, and canceled fixtures.",
+      "Inspect managed outputs with an independent metadata reader.",
+      "Measure peak decode memory on representative large images."
+    ],
+    "proof_required": [
+      "Instrumentation results",
+      "Before/after metadata inspection",
+      "Memory observation for large-image fixture"
+    ],
+    "edge_cases": [
+      "EXIF rotation",
+      "HEIC or unsupported formats",
+      "Very large images",
+      "Revoked picker access",
+      "Low storage",
+      "Process death during capture"
+    ],
+    "non_goals": [
+      "Live video recognition",
+      "Editing or uploading originals",
+      "Location collection"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "android-media",
+      "privacy",
+      "memory"
+    ]
+  },
+  {
+    "id": "CONTRACT-004",
+    "title": "Publish cross-lane contract fixtures and fake adapters",
+    "summary": "Provide deterministic recognition, album, model-manifest, and archive fixtures plus fake interfaces that unblock application, ML, and verification lanes.",
+    "objective": "Let parallel consumers implement and test against the same examples before real adapters are complete.",
+    "context": "The planning package explicitly allows the application lane to use a deterministic fake recognition engine.",
+    "owner_role": "Contract Steward",
+    "lane": "shared-contracts",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "verification/contracts/**",
+      "shared/domain/**",
+      "models/*.json",
+      "docs/architecture/**"
+    ],
+    "depends_on": [
+      "CONTRACT-001",
+      "CONTRACT-002",
+      "CONTRACT-003"
+    ],
+    "inputs": [
+      "Accepted domain contract",
+      "Accepted model manifest contract",
+      "Accepted archive contract"
+    ],
+    "outputs": [
+      "Deterministic fake RecognitionEngine",
+      "In-memory fake AlbumRepository",
+      "Shared positive and negative fixtures",
+      "Consumer handoff documentation"
+    ],
+    "implementation_notes": [
+      "Fixtures must cover successful, uncertain, unsupported, corrupt, and incompatible cases.",
+      "Keep fixtures small and free of third-party images or unclear licenses."
+    ],
+    "acceptance_criteria": [
+      "Application tests can drive all recognition result states without ONNX Runtime.",
+      "Archive and manifest consumers share identical checked-in fixtures.",
+      "Fake adapters implement the accepted interfaces without production-only behavior.",
+      "Fixture ownership and change-review rules are documented."
+    ],
+    "verification": [
+      "Run contract and fake-adapter tests.",
+      "Validate every JSON fixture against its schema.",
+      "Compile fake implementations with the shared domain module."
+    ],
+    "proof_required": [
+      "Test and schema-validation output",
+      "Consumer handoff note"
+    ],
+    "edge_cases": [
+      "No candidates",
+      "Equal candidate scores",
+      "Unsupported manual label",
+      "Corrupt archive fixture"
+    ],
+    "non_goals": [
+      "Production database",
+      "Production ONNX inference",
+      "Full UI screenshots"
+    ],
+    "estimated_size": "S",
+    "risk_tags": [
+      "fixtures",
+      "parallelization",
+      "contract-testing"
+    ]
+  },
+  {
+    "id": "ML-002",
+    "title": "Implement licensed dataset and split manifests",
+    "summary": "Build deterministic tooling that materializes the accepted catalog from approved sources and records provenance, licenses, labels, and leakage-resistant train/validation/test splits.",
+    "objective": "Provide a reproducible, auditable dataset boundary for 100\u2013200 accepted car classes.",
+    "context": "Dataset and pretrained-weight selection is gated by DEC-001 and the model manifest requires stable class IDs.",
+    "owner_role": "ML Engine Builder",
+    "lane": "data-governance",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "ml/**",
+      "models/*.json",
+      "docs/ml/**",
+      "verification/ml/**"
+    ],
+    "depends_on": [
+      "ML-001",
+      "DEC-001",
+      "CONTRACT-002"
+    ],
+    "inputs": [
+      "Accepted catalog manifest",
+      "Approved data/weight license matrix",
+      "Model manifest and class-map contract"
+    ],
+    "outputs": [
+      "Dataset manifest schema and validator",
+      "Source acquisition/preparation adapters that require explicit local source configuration",
+      "Deterministic class-balanced split generator",
+      "Provenance and data-quality report"
+    ],
+    "implementation_notes": [
+      "Do not commit raw images, private URLs, access tokens, or credentials.",
+      "Split by original source/vehicle identity or near-duplicate group where possible to avoid leakage.",
+      "Record missing, corrupt, ambiguous, and duplicate samples rather than silently dropping them."
+    ],
+    "acceptance_criteria": [
+      "Every usable sample maps to one accepted stable class ID and an approved source/license record.",
+      "The same seed and manifest inputs reproduce identical split membership.",
+      "Near-duplicate and source leakage checks run before a split is accepted.",
+      "Per-class counts and excluded-sample reasons are reported."
+    ],
+    "verification": [
+      "Run manifest schema and catalog consistency checks.",
+      "Run split reproducibility twice and compare hashes.",
+      "Run duplicate/leakage detection on a representative fixture dataset.",
+      "Confirm raw data remains outside Git."
+    ],
+    "proof_required": [
+      "Manifest and split hashes",
+      "Per-class/data-quality report",
+      "License-provenance validation output"
+    ],
+    "edge_cases": [
+      "Class imbalance",
+      "Duplicate web images",
+      "Ambiguous generation labels",
+      "Corrupt files",
+      "Classes below minimum sample count"
+    ],
+    "non_goals": [
+      "Scraping unapproved sources",
+      "Using user album photos",
+      "Expanding the accepted catalog"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "licensing",
+      "data-leakage",
+      "class-imbalance"
+    ]
+  },
+  {
+    "id": "UI-006",
+    "title": "Build model information and privacy disclosures",
+    "summary": "Implement an in-app information screen showing offline behavior, supported catalog/version, limitations, license notices, and local-data privacy behavior.",
+    "objective": "Give casual users transparent expectations and satisfy model/asset notice requirements without adding telemetry or accounts.",
+    "context": "The plan includes an About Model screen backed by ModelManifest and required license references.",
+    "owner_role": "Application Builder",
+    "lane": "shared-ui",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P1",
+    "milestone": "MVP experience",
+    "allowed_areas": [
+      "shared/ui/**",
+      "shared/application/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "DEC-001",
+      "CONTRACT-002",
+      "APP-001"
+    ],
+    "inputs": [
+      "Model manifest and class map",
+      "Accepted license/attribution matrix",
+      "Merged privacy boundaries"
+    ],
+    "outputs": [
+      "About Model screen",
+      "Supported-catalog summary",
+      "Offline/privacy and limitation copy",
+      "License and attribution rendering"
+    ],
+    "implementation_notes": [
+      "Read version and catalog data from the bundled manifest instead of duplicating constants.",
+      "Avoid promises of exact identification and explain ranked confirmation.",
+      "Keep required notices accessible offline."
+    ],
+    "acceptance_criteria": [
+      "The displayed model/catalog version matches the bundled manifest.",
+      "Required notices and source acknowledgements are available offline.",
+      "The screen states that inference and album data remain local and that unsupported/uncertain results may occur.",
+      "No telemetry, account, subscription, or remote-service wording is implied."
+    ],
+    "verification": [
+      "Run UI tests with valid and missing/invalid manifest fixtures.",
+      "Compare rendered version/classes/notices with fixture data.",
+      "Review disclosure copy against merged requirements and license obligations."
+    ],
+    "proof_required": [
+      "UI test output",
+      "Disclosure screenshots",
+      "Notice-to-license-matrix review"
+    ],
+    "edge_cases": [
+      "Long notice text",
+      "Large class list",
+      "Missing optional generation labels",
+      "Invalid manifest detected at startup"
+    ],
+    "non_goals": [
+      "Downloadable model management",
+      "Remote privacy policy fetching",
+      "Public release store listing"
+    ],
+    "estimated_size": "S",
+    "risk_tags": [
+      "transparency",
+      "licensing",
+      "manifest-consistency"
+    ]
+  },
+  {
+    "id": "APP-004",
+    "title": "Implement recognition orchestration with the fake engine",
+    "summary": "Implement shared recognition use cases and presentation state against RecognitionEngine using the deterministic fake adapter until ONNX integration is ready.",
+    "objective": "Unblock end-to-end application flow while preserving one replaceable inference boundary.",
+    "context": "The accepted planning package explicitly permits a fake RecognitionEngine, and real inference belongs to the ML lane.",
+    "owner_role": "Application Builder",
+    "lane": "application",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "shared/application/**",
+      "shared/ui/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-001",
+      "APP-003",
+      "CONTRACT-004"
+    ],
+    "inputs": [
+      "RecognitionEngine contract",
+      "Deterministic fake engine and fixtures",
+      "Managed image source"
+    ],
+    "outputs": [
+      "Recognition orchestration use case",
+      "Presentation state for idle/running/candidates/uncertain/unsupported/error",
+      "Cancellation and retry behavior",
+      "Unit tests driven by fake responses"
+    ],
+    "implementation_notes": [
+      "Run recognition away from the UI thread and make concurrent submissions deterministic.",
+      "Preserve candidate order, scores, model version, and timing without inventing confidence claims.",
+      "Manual correction is album metadata only and never a training submission."
+    ],
+    "acceptance_criteria": [
+      "Every contract result state maps to an explicit presentation state.",
+      "Duplicate taps, cancellation, retry, and stale completion cannot save the wrong result.",
+      "A candidate confirmation or manual correction produces a valid save command but does not persist until explicitly confirmed.",
+      "Replacing the fake engine with the production adapter requires no screen or domain contract change."
+    ],
+    "verification": [
+      "Run deterministic unit tests for success, uncertain, unsupported, error, cancellation, retry, and out-of-order completion.",
+      "Run concurrency tests with controlled fake delays."
+    ],
+    "proof_required": [
+      "Unit-test output",
+      "State-transition documentation"
+    ],
+    "edge_cases": [
+      "Empty candidate list",
+      "Equal scores",
+      "Rapid repeated submissions",
+      "Engine failure after preprocessing",
+      "Screen disposal during inference"
+    ],
+    "non_goals": [
+      "ONNX Runtime adapter",
+      "Training feedback upload",
+      "Final screen styling"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "concurrency",
+      "state-management",
+      "inference-boundary"
+    ]
+  },
+  {
+    "id": "APP-005",
+    "title": "Implement validated album export and atomic import",
+    "summary": "Implement versioned, checksummed archive export and two-phase validate-then-commit import behind shared use cases.",
+    "objective": "Provide reliable manual backup and transfer without partial mutation or internal database coupling.",
+    "context": "The accepted MVP requires manual export/import, and the archive contract defines compatibility, conflict, privacy, and path-safety rules.",
+    "owner_role": "Application Builder",
+    "lane": "local-data",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP foundation",
+    "allowed_areas": [
+      "shared/application/**",
+      "shared/data/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-002",
+      "APP-003",
+      "CONTRACT-003",
+      "CONTRACT-004"
+    ],
+    "inputs": [
+      "Accepted archive contract and fixtures",
+      "AlbumRepository adapter",
+      "Private managed-image store"
+    ],
+    "outputs": [
+      "Archive exporter",
+      "Non-mutating archive validator and preview",
+      "Atomic importer with conflict handling",
+      "Round-trip and adversarial tests"
+    ],
+    "implementation_notes": [
+      "Validate archive version, paths, declared sizes, checksums, entry references, and resource limits before database/file mutation.",
+      "Stage imported files privately and commit metadata/files as one recoverable operation.",
+      "Return a human-readable preview and structured errors for UI consumption."
+    ],
+    "acceptance_criteria": [
+      "A valid export imports into an empty profile with equivalent album data and image bytes.",
+      "Corrupt, incompatible, traversal, missing-file, duplicate, oversized, or partial archives cause no partial durable mutation.",
+      "Conflict behavior is deterministic and matches the accepted contract.",
+      "Exports contain sanitized managed copies and no internal absolute paths."
+    ],
+    "verification": [
+      "Run archive round-trip tests.",
+      "Run every positive and negative contract fixture.",
+      "Inject failures during staging and commit and verify rollback/cleanup.",
+      "Inspect archive contents for path and metadata privacy."
+    ],
+    "proof_required": [
+      "Round-trip and adversarial test output",
+      "Atomicity failure-injection evidence",
+      "Example archive manifest"
+    ],
+    "edge_cases": [
+      "Low storage",
+      "Interrupted export/import",
+      "Duplicate entry IDs",
+      "Duplicate image hashes",
+      "Zip bomb or excessive file count",
+      "Newer archive version"
+    ],
+    "non_goals": [
+      "Cloud backup",
+      "Incremental synchronization",
+      "Sharing archives publicly"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "archive",
+      "atomicity",
+      "security",
+      "privacy"
+    ],
+    "handoff_notes": "The application-experience batch can bind Data Transfer UI directly to the structured preview and result types."
+  },
+  {
+    "id": "UI-001",
+    "title": "Build the album browsing experience",
+    "summary": "Implement the default album screen with empty, loading, populated, filtered, and recoverable-error states.",
+    "objective": "Give casual users a clear home for browsing and finding saved car sightings.",
+    "context": "The accepted MVP requires local entries, favorites, notes, search, and filtering; the album is the default destination.",
+    "owner_role": "Application Builder",
+    "lane": "shared-ui",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP experience",
+    "allowed_areas": [
+      "shared/ui/**",
+      "shared/application/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-002",
+      "CONTRACT-004"
+    ],
+    "inputs": [
+      "Observable AlbumRepository use cases",
+      "AlbumEntry domain type",
+      "Deterministic album fixtures"
+    ],
+    "outputs": [
+      "Album list/grid presentation",
+      "Search and favorite/identity filters",
+      "Empty/loading/error states",
+      "Navigation entry points for capture/import and detail"
+    ],
+    "implementation_notes": [
+      "Keep search/filter state explicit and testable.",
+      "Use stable entry IDs for list identity and avoid loading full-resolution images into list cells.",
+      "Make empty states distinguish no collection from no filter matches."
+    ],
+    "acceptance_criteria": [
+      "The screen renders empty, populated, filtered, and recoverable-error states from deterministic fixtures.",
+      "Search and filters update results predictably without mutating stored entries.",
+      "Favorite state and edited labels/notes reflect repository updates.",
+      "Large collections use bounded image loading and stable list identity."
+    ],
+    "verification": [
+      "Run presentation-state unit tests.",
+      "Run Compose UI tests for empty, search, filter, and navigation states.",
+      "Exercise a synthetic large album and inspect scrolling memory behavior."
+    ],
+    "proof_required": [
+      "Unit/UI test output",
+      "Screenshots for empty, populated, and filtered states"
+    ],
+    "edge_cases": [
+      "No matches",
+      "Unicode notes and labels",
+      "Missing thumbnail",
+      "Entry deleted while visible",
+      "Rapid query changes"
+    ],
+    "non_goals": [
+      "Cloud gallery",
+      "Social feed",
+      "Statistics or badges"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "ui-state",
+      "image-memory",
+      "search"
+    ]
+  },
+  {
+    "id": "VER-001",
+    "title": "Create independent shared-contract regression suites",
+    "summary": "Verify domain, model-manifest, archive, and fake-adapter contracts independently from their implementing lane.",
+    "objective": "Prevent parallel application and ML work from drifting away from accepted shared interfaces.",
+    "context": "Contract fixtures are the first cross-lane dependency and require independent schema, compatibility, and behavior checks.",
+    "owner_role": "Verification and Release",
+    "lane": "independent-verification",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP acceptance",
+    "allowed_areas": [
+      "verification/**",
+      "shared/**/test/**",
+      "ml/tests/**",
+      "docs/verification/**"
+    ],
+    "depends_on": [
+      "CONTRACT-001",
+      "CONTRACT-002",
+      "CONTRACT-003",
+      "CONTRACT-004"
+    ],
+    "inputs": [
+      "Accepted shared contracts",
+      "Positive and negative fixtures",
+      "Compatibility/version policies"
+    ],
+    "outputs": [
+      "Independent contract test harness",
+      "Manifest/class-map negative tests",
+      "Archive compatibility/security fixture tests",
+      "Contract conformance report"
+    ],
+    "implementation_notes": [
+      "Consume public interfaces and checked-in fixtures rather than implementation internals.",
+      "Include failures for duplicate class IDs, hash mismatch, incompatible versions, traversal paths, corrupt archives, and unsupported recognition states."
+    ],
+    "acceptance_criteria": [
+      "Every shared contract has at least one positive and one negative independent test.",
+      "Manifest, archive, and domain fixtures are validated without relying on producer self-tests.",
+      "Compatibility and error outcomes match the accepted policy.",
+      "The suite runs through documented repository commands."
+    ],
+    "verification": [
+      "Run the independent suite against current contracts.",
+      "Intentionally corrupt representative fixtures and confirm failures are detected.",
+      "Record covered invariants and any gaps."
+    ],
+    "proof_required": [
+      "Test output",
+      "Contract coverage matrix",
+      "Conformance report"
+    ],
+    "edge_cases": [
+      "Unknown future fields",
+      "Class-map reorder",
+      "Manual identity outside catalog",
+      "Archive path traversal",
+      "Hash mismatch"
+    ],
+    "non_goals": [
+      "Implementing production adapters",
+      "Changing accepted contract semantics"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "contract-drift",
+      "compatibility",
+      "security"
+    ]
+  },
+  {
+    "id": "ML-003",
+    "title": "Implement transfer-learning baseline training",
+    "summary": "Create a seeded PyTorch/TorchVision training pipeline for mobile-suitable image classifiers using the accepted catalog and dataset splits.",
+    "objective": "Produce comparable baseline checkpoints and metrics without prematurely selecting a release model.",
+    "context": "The data strategy starts from licensed pretrained/open assets and adds curated examples for missing distinctions.",
+    "owner_role": "ML Engine Builder",
+    "lane": "training",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "ml/**",
+      "docs/ml/**",
+      "verification/ml/**"
+    ],
+    "depends_on": [
+      "ML-001",
+      "ML-002"
+    ],
+    "inputs": [
+      "Validated dataset/split manifests",
+      "Accepted pretrained-weight sources",
+      "Model input contract"
+    ],
+    "outputs": [
+      "Config-driven seeded training command",
+      "Mobile-suitable baseline configurations",
+      "Checkpoint/run metadata outside normal Git history",
+      "Training and validation metric reports"
+    ],
+    "implementation_notes": [
+      "Record code revision, environment lock hash, dataset/split hashes, seed, transforms, hyperparameters, and weight source for each run.",
+      "Use preprocessing that can be expressed exactly in the model bundle contract.",
+      "Keep selection metrics separate from the held-out test set."
+    ],
+    "acceptance_criteria": [
+      "A documented command trains and resumes a baseline deterministically within documented platform limitations.",
+      "Each run records all provenance needed to reproduce it.",
+      "Training never reads the held-out test split for tuning or selection.",
+      "At least one mobile-suitable baseline completes on a reduced fixture and on the accepted dataset when resources permit."
+    ],
+    "verification": [
+      "Run a small deterministic fixture training twice and compare metrics/checkpoint hashes within documented tolerance.",
+      "Validate run metadata completeness.",
+      "Confirm held-out test access is absent from training code paths."
+    ],
+    "proof_required": [
+      "Fixture training logs",
+      "Run metadata example",
+      "Baseline training/validation report"
+    ],
+    "edge_cases": [
+      "Class imbalance",
+      "Interrupted training",
+      "CPU-only execution",
+      "Out-of-memory batch size",
+      "Nondeterministic accelerator operations"
+    ],
+    "non_goals": [
+      "Claiming the 80% test gate",
+      "Committing checkpoints",
+      "Automated architecture search"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "training",
+      "reproducibility",
+      "resource-usage"
+    ]
+  },
+  {
+    "id": "UI-002",
+    "title": "Build camera and gallery acquisition flows",
+    "summary": "Connect the Android camera and system gallery adapters to a shared source-selection and acquisition experience.",
+    "objective": "Let users reliably start recognition from a new photo or an existing image with clear permission and failure handling.",
+    "context": "Both image sources are required and must feed the same managed-image and recognition pipeline.",
+    "owner_role": "Application Builder",
+    "lane": "android-user-flows",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP experience",
+    "allowed_areas": [
+      "shared/ui/**",
+      "shared/application/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-003",
+      "APP-004"
+    ],
+    "inputs": [
+      "Camera adapter",
+      "System gallery picker adapter",
+      "Recognition orchestration entry point"
+    ],
+    "outputs": [
+      "Image-source chooser",
+      "Camera and gallery launch/result handling",
+      "Progress, cancel, permission, and recoverable-error states",
+      "Navigation to recognition review"
+    ],
+    "implementation_notes": [
+      "Request only the permissions actually required by the selected system contracts.",
+      "Prevent duplicate launches and stale results after process or navigation changes.",
+      "Never create an album entry before recognition is explicitly confirmed."
+    ],
+    "acceptance_criteria": [
+      "Camera and gallery each reach recognition review with the correct managed image.",
+      "Cancel, denied permission, unreadable input, low storage, and process recreation are recoverable.",
+      "Repeated taps do not create duplicate acquisitions or recognition jobs.",
+      "No broad media permission is requested when the system picker makes it unnecessary."
+    ],
+    "verification": [
+      "Run Compose and Android instrumentation tests for both sources.",
+      "Test permission denial, cancel, malformed input, and saved-state restoration.",
+      "Inspect the manifest and runtime permission requests."
+    ],
+    "proof_required": [
+      "Instrumentation logs",
+      "Screenshots of chooser and recoverable errors",
+      "Permission inspection"
+    ],
+    "edge_cases": [
+      "Process death after camera launch",
+      "Picker URI revoked",
+      "No camera application",
+      "Low storage",
+      "Double tap"
+    ],
+    "non_goals": [
+      "Live camera classification",
+      "Batch gallery import",
+      "Photo editing"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "android-lifecycle",
+      "permissions",
+      "navigation"
+    ]
+  },
+  {
+    "id": "UI-003",
+    "title": "Build ranked recognition review and manual correction",
+    "summary": "Implement candidate ranking, uncertainty/unsupported messaging, confirmation, retry, cancellation, and manual identity correction before saving.",
+    "objective": "Make model output transparent and useful without presenting uncertain predictions as facts.",
+    "context": "The accepted UX shows ranked candidates and permits manual correction when none is right.",
+    "owner_role": "Application Builder",
+    "lane": "shared-ui",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP experience",
+    "allowed_areas": [
+      "shared/ui/**",
+      "shared/application/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-004",
+      "APP-002"
+    ],
+    "inputs": [
+      "Recognition presentation states",
+      "Ranked candidates",
+      "Album save use case",
+      "CarIdentity contract"
+    ],
+    "outputs": [
+      "Recognition progress and review UI",
+      "Ranked candidate selection",
+      "Manual make/model and optional generation/year correction",
+      "Explicit confirm/save, retry, and cancel actions"
+    ],
+    "implementation_notes": [
+      "Do not translate raw scores into misleading percentages unless the model contract defines calibrated confidence.",
+      "Preserve manual identities as user-confirmed metadata and label them distinctly where useful.",
+      "Guard saving against stale or duplicate confirmation events."
+    ],
+    "acceptance_criteria": [
+      "Ordered candidates display the correct identity information and remain selectable.",
+      "Uncertain, unsupported, empty, and engine-error states use honest language and offer valid next actions.",
+      "Manual correction validates required make/model fields and optional generation/year fields.",
+      "Exactly one album entry is created only after explicit confirmation."
+    ],
+    "verification": [
+      "Run UI tests for every fake recognition fixture.",
+      "Run duplicate-confirmation and stale-result tests.",
+      "Manually review wording for unsupported and uncertain states."
+    ],
+    "proof_required": [
+      "UI test output",
+      "Screenshots of ranked, uncertain, unsupported, and manual-correction states"
+    ],
+    "edge_cases": [
+      "Empty candidates",
+      "Tied scores",
+      "Very long display labels",
+      "Blank manual fields",
+      "Inference completes after cancel"
+    ],
+    "non_goals": [
+      "Automatic web search for corrections",
+      "Uploading corrections",
+      "Trim-level editing requirement"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "trust",
+      "duplicate-data",
+      "validation"
+    ]
+  },
+  {
+    "id": "UI-005",
+    "title": "Build album data transfer experience",
+    "summary": "Implement export destination selection and import preview/confirmation around the validated archive engine.",
+    "objective": "Make local backup and transfer understandable while preventing accidental or partial imports.",
+    "context": "Manual export/import is the only MVP backup and transfer mechanism.",
+    "owner_role": "Application Builder",
+    "lane": "android-user-flows",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P1",
+    "milestone": "MVP experience",
+    "allowed_areas": [
+      "shared/ui/**",
+      "shared/application/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-005",
+      "CONTRACT-003"
+    ],
+    "inputs": [
+      "Archive export use case",
+      "Non-mutating import preview",
+      "Atomic import result types"
+    ],
+    "outputs": [
+      "Export flow with success/failure status",
+      "Import file selection and validation progress",
+      "Archive summary/conflict preview",
+      "Explicit import confirmation and result reporting"
+    ],
+    "implementation_notes": [
+      "Use system document APIs without requesting broad filesystem permissions.",
+      "Display archive version, entry/image counts, conflicts, and validation errors before confirmation.",
+      "Never offer confirmation for an invalid archive."
+    ],
+    "acceptance_criteria": [
+      "A valid export can be saved through the system document flow.",
+      "A valid import is previewed without mutation and requires explicit confirmation.",
+      "Invalid, incompatible, corrupt, canceled, and low-storage cases are clear and recoverable.",
+      "The screen reports completion only after the atomic import succeeds."
+    ],
+    "verification": [
+      "Run UI/instrumentation tests using all archive contract fixtures.",
+      "Test canceled document flows and permission revocation.",
+      "Verify no mutation occurs during preview or failed import."
+    ],
+    "proof_required": [
+      "Instrumentation output",
+      "Screenshots of valid preview and invalid archive states",
+      "No-mutation verification"
+    ],
+    "edge_cases": [
+      "Large archive",
+      "Low storage",
+      "Canceled destination",
+      "Duplicate conflicts",
+      "Newer archive version"
+    ],
+    "non_goals": [
+      "Automatic backups",
+      "Cloud drives beyond system document-provider behavior",
+      "Archive sharing UX"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "data-transfer",
+      "atomicity",
+      "android-documents"
+    ]
+  },
+  {
+    "id": "UI-004",
+    "title": "Build album entry detail and editing",
+    "summary": "Implement entry viewing, favorite toggling, notes editing, identity correction, and confirmed deletion.",
+    "objective": "Let users maintain their local collection after an entry has been saved.",
+    "context": "Favorites, personal notes, confirmed identity, date, and deletion are part of the accepted album behavior.",
+    "owner_role": "Application Builder",
+    "lane": "shared-ui",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P1",
+    "milestone": "MVP experience",
+    "allowed_areas": [
+      "shared/ui/**",
+      "shared/application/**",
+      "apps/androidApp/**",
+      "docs/app/**"
+    ],
+    "depends_on": [
+      "APP-002",
+      "UI-001"
+    ],
+    "inputs": [
+      "Album entry read/update/delete use cases",
+      "Managed image renderer"
+    ],
+    "outputs": [
+      "Entry detail screen",
+      "Favorite and notes editing",
+      "Manual identity editing",
+      "Deletion confirmation and result handling"
+    ],
+    "implementation_notes": [
+      "Make unsaved edits and save failures visible.",
+      "Deletion confirmation must explain that the managed photo copy is removed according to repository policy.",
+      "Do not expose internal paths or database identifiers."
+    ],
+    "acceptance_criteria": [
+      "Saved edits persist across restart and update album search/filter results.",
+      "Canceling edits leaves stored data unchanged.",
+      "Deletion requires confirmation and returns safely to the album.",
+      "Missing images and concurrent deletion produce recoverable states."
+    ],
+    "verification": [
+      "Run presentation and UI tests for edit/save/cancel/delete flows.",
+      "Run restart persistence verification after editing.",
+      "Inject repository failures and verify user-visible recovery."
+    ],
+    "proof_required": [
+      "Unit/UI test output",
+      "Screenshots of detail, editing, and delete confirmation"
+    ],
+    "edge_cases": [
+      "Entry deleted concurrently",
+      "Missing managed photo",
+      "Very long notes",
+      "Save failure",
+      "Back navigation with unsaved changes"
+    ],
+    "non_goals": [
+      "Location editing",
+      "Public sharing",
+      "Advanced collection statistics"
+    ],
+    "estimated_size": "S",
+    "risk_tags": [
+      "data-loss",
+      "editing",
+      "navigation"
+    ]
+  },
+  {
+    "id": "ML-004",
+    "title": "Implement held-out and per-class model evaluation",
+    "summary": "Evaluate candidate checkpoints with top-one/top-five, per-class, confusion, calibration-oriented, and unsupported-input evidence using frozen splits.",
+    "objective": "Measure the accepted top-five gate without allowing frequent classes to conceal weak supported classes.",
+    "context": "The MVP acceptance signal requires at least 80% held-out top-five accuracy plus per-class reporting.",
+    "owner_role": "ML Engine Builder",
+    "lane": "training",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "ml/**",
+      "verification/ml/**",
+      "docs/ml/**"
+    ],
+    "depends_on": [
+      "ML-002",
+      "ML-003"
+    ],
+    "inputs": [
+      "Frozen held-out split",
+      "Candidate checkpoint",
+      "Accepted class map"
+    ],
+    "outputs": [
+      "Deterministic evaluation command",
+      "Aggregate top-one/top-five report",
+      "Per-class support/accuracy and confusion report",
+      "Failure gallery referencing licensed/local fixture IDs rather than copied images",
+      "Machine-readable metrics artifact"
+    ],
+    "implementation_notes": [
+      "Report macro and weighted metrics with sample counts.",
+      "Keep unsupported/out-of-distribution experiments separate from the supported-class top-five gate.",
+      "Never tune on the held-out results without versioning a new selection/test protocol."
+    ],
+    "acceptance_criteria": [
+      "Evaluation verifies dataset, split, class-map, code, environment, and checkpoint identities before running.",
+      "Top-five accuracy and per-class results are generated for every supported class.",
+      "Classes with no or insufficient test support fail validation rather than disappearing from reports.",
+      "Reports preserve enough metadata for independent reproduction."
+    ],
+    "verification": [
+      "Run evaluation on a known fixture with expected rankings.",
+      "Cross-check metric calculations with an independent implementation or library.",
+      "Validate the machine-readable report schema and class coverage."
+    ],
+    "proof_required": [
+      "Held-out report",
+      "Per-class/confusion report",
+      "Metric-validation test output"
+    ],
+    "edge_cases": [
+      "Fewer than five total classes in fixtures",
+      "Tied logits",
+      "Missing class in test split",
+      "NaN/Inf model output",
+      "Class-map mismatch"
+    ],
+    "non_goals": [
+      "Device latency measurement",
+      "Public benchmark marketing claims",
+      "Changing the accepted 80% threshold"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "metrics",
+      "test-leakage",
+      "class-coverage"
+    ]
+  },
+  {
+    "id": "VER-004",
+    "title": "Red-team photo privacy and archive integrity",
+    "summary": "Challenge metadata removal, private storage, archive path handling, checksums, resource limits, conflicts, and atomic import behavior.",
+    "objective": "Prove that local-only storage and manual transfer do not leak unnecessary metadata or corrupt the album under hostile inputs.",
+    "context": "Privacy and archive safety are explicit merged boundaries, and invalid imports must cause no partial mutation.",
+    "owner_role": "Verification and Release",
+    "lane": "independent-verification",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP acceptance",
+    "allowed_areas": [
+      "verification/**",
+      "apps/androidApp/src/androidTest/**",
+      "apps/androidApp/src/test/**",
+      "shared/**/test/**",
+      "docs/verification/**"
+    ],
+    "depends_on": [
+      "APP-003",
+      "APP-005",
+      "UI-005",
+      "CONTRACT-003"
+    ],
+    "inputs": [
+      "Managed-image pipeline",
+      "Archive exporter/importer",
+      "Positive and adversarial fixtures"
+    ],
+    "outputs": [
+      "Independent metadata/privacy inspection",
+      "Archive fuzz/adversarial suite",
+      "Atomicity failure-injection results",
+      "Privacy and archive risk report"
+    ],
+    "implementation_notes": [
+      "Inspect actual saved and exported image bytes with an independent metadata reader.",
+      "Test traversal, absolute paths, symlinks if applicable, duplicate names/IDs, checksum mismatch, excessive counts/sizes, truncation, and interruption.",
+      "Snapshot album/file state before each failed import and compare afterward."
+    ],
+    "acceptance_criteria": [
+      "Managed and exported copies contain no unnecessary location/device metadata.",
+      "Private files are not exposed through unintended public paths or logs.",
+      "All malicious, corrupt, incompatible, and resource-exhaustion fixtures fail before durable mutation.",
+      "Injected failures leave album metadata and managed files in a consistent state with temporary data cleaned."
+    ],
+    "verification": [
+      "Run independent EXIF/metadata inspection.",
+      "Run adversarial archive corpus and resource-limit cases.",
+      "Run failure injection at staging and commit boundaries and compare state snapshots."
+    ],
+    "proof_required": [
+      "Metadata inspection output",
+      "Adversarial corpus results",
+      "Before/after atomicity snapshots",
+      "Risk report"
+    ],
+    "edge_cases": [
+      "Zip bomb",
+      "Path traversal",
+      "Duplicate entry IDs",
+      "Checksum collision assumptions",
+      "Interrupted write",
+      "Low storage",
+      "Unsupported image metadata blocks"
+    ],
+    "non_goals": [
+      "Cloud threat modeling",
+      "Network penetration testing",
+      "Encrypting archives unless separately approved"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "privacy",
+      "archive-security",
+      "data-integrity"
+    ]
+  },
+  {
+    "id": "VER-002",
+    "title": "Verify Android application flows and restart persistence",
+    "summary": "Create independent Android instrumentation coverage for camera/gallery acquisition, ranked review, album behavior, edits, search/filter, transfer, and process restart.",
+    "objective": "Demonstrate that the accepted user experience works on Android beyond isolated implementation tests.",
+    "context": "The application batch spans platform adapters, shared state, local persistence, and six user-facing screens.",
+    "owner_role": "Verification and Release",
+    "lane": "independent-verification",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP acceptance",
+    "allowed_areas": [
+      "verification/**",
+      "apps/androidApp/src/androidTest/**",
+      "apps/androidApp/src/test/**",
+      "shared/**/test/**",
+      "docs/verification/**"
+    ],
+    "depends_on": [
+      "UI-001",
+      "UI-002",
+      "UI-003",
+      "UI-004",
+      "UI-005",
+      "UI-006",
+      "APP-002",
+      "APP-003",
+      "APP-004",
+      "APP-005"
+    ],
+    "inputs": [
+      "Android application candidate",
+      "Fake and real recognition configurations",
+      "Media and archive fixtures"
+    ],
+    "outputs": [
+      "End-to-end instrumentation suite",
+      "Process-death/restart persistence suite",
+      "Accessibility and recoverable-error checklist",
+      "Application verification report"
+    ],
+    "implementation_notes": [
+      "Use deterministic test data and fake inference for application-only paths, then repeat a critical path with the production adapter.",
+      "Exercise system picker/camera/document boundaries using supported instrumentation techniques without weakening permissions."
+    ],
+    "acceptance_criteria": [
+      "Camera and gallery flows each reach explicit confirmation and create exactly one durable entry.",
+      "Favorites, notes, identity edits, search/filter, and deletion persist correctly across restart.",
+      "Export/import round-trips through the user flow and invalid archives never enable confirmation.",
+      "Canceled, denied, malformed, low-storage, and missing-image states are recoverable and do not create orphan records."
+    ],
+    "verification": [
+      "Run the suite on an emulator and at least one supported physical device.",
+      "Force-stop/relaunch or recreate process state at defined checkpoints.",
+      "Inspect runtime permissions and private storage behavior."
+    ],
+    "proof_required": [
+      "Instrumentation logs",
+      "Device/environment record",
+      "Screenshots or recording of critical flows",
+      "Application verification report"
+    ],
+    "edge_cases": [
+      "Process death during capture",
+      "Duplicate confirm",
+      "Entry deleted while visible",
+      "Low storage",
+      "Revoked picker access",
+      "Corrupt import"
+    ],
+    "non_goals": [
+      "iOS/desktop testing",
+      "Cloud or account testing",
+      "Visual polish beyond accepted usability"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "android-lifecycle",
+      "persistence",
+      "end-to-end"
+    ]
+  },
+  {
+    "id": "ML-005",
+    "title": "Export and verify ONNX model bundles",
+    "summary": "Export selected PyTorch candidates to ONNX with a matching manifest/class map and verify numeric and ranked-output equivalence in ONNX Runtime.",
+    "objective": "Produce portable candidate bundles whose runtime behavior matches the evaluated PyTorch model.",
+    "context": "The application runtime is ONNX Runtime and every export must be validated for compatibility and equivalence.",
+    "owner_role": "ML Engine Builder",
+    "lane": "onnx-export",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "ml/**",
+      "models/**",
+      "verification/ml/**",
+      "docs/ml/**"
+    ],
+    "depends_on": [
+      "ML-003",
+      "ML-004",
+      "CONTRACT-002"
+    ],
+    "inputs": [
+      "Candidate checkpoint and evaluation identity",
+      "Model manifest schema",
+      "Frozen cross-runtime fixtures"
+    ],
+    "outputs": [
+      "Config-driven ONNX export command",
+      "Generated candidate bundle outside Git until approved",
+      "Manifest/class map with hashes and notices",
+      "PyTorch-versus-ONNX equivalence report",
+      "Operator/runtime compatibility report"
+    ],
+    "implementation_notes": [
+      "Use the supported modern PyTorch ONNX export path and pin opset/runtime compatibility.",
+      "Compare preprocessing inputs, raw outputs, ordered candidates, and evaluation metrics.",
+      "A failed or unsupported export remains a candidate failure and must not be bundled."
+    ],
+    "acceptance_criteria": [
+      "The manifest hash, class map, input/output metadata, and exported model agree.",
+      "ONNX Runtime loads the model using the pinned environment and required operators.",
+      "Numeric differences remain within documented tolerances and ranked candidates meet the equivalence policy on frozen fixtures.",
+      "Held-out top-five/per-class metrics are reproduced with the exported model within documented tolerance."
+    ],
+    "verification": [
+      "Run export verification from a clean environment.",
+      "Run fixture-level numeric/ranking equivalence.",
+      "Re-run held-out evaluation through ONNX Runtime.",
+      "Validate manifest and model hashes."
+    ],
+    "proof_required": [
+      "Export log",
+      "Equivalence report",
+      "ONNX held-out report",
+      "Compatibility/operator report"
+    ],
+    "edge_cases": [
+      "Unsupported operator",
+      "Dynamic versus fixed input shape",
+      "Quantized output type",
+      "Class-order mismatch",
+      "Numerical ties changing rank"
+    ],
+    "non_goals": [
+      "Android UI integration",
+      "Approving a release model before size/device gates",
+      "Committing experimental binaries"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "onnx",
+      "cross-runtime",
+      "operator-compatibility"
+    ]
+  },
+  {
+    "id": "ML-006",
+    "title": "Implement the Android ONNX Runtime recognition adapter",
+    "summary": "Implement Android model loading, exact preprocessing, background inference, top-k postprocessing, cancellation, and structured errors behind RecognitionEngine.",
+    "objective": "Replace the fake engine without changing shared application or UI contracts.",
+    "context": "Platform-specific inference belongs behind the accepted shared boundary and must preserve the model manifest semantics.",
+    "owner_role": "ML Engine Builder",
+    "lane": "android-inference",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "apps/androidApp/src/**/inference/**",
+      "ml/**",
+      "models/**",
+      "verification/ml/**",
+      "docs/ml/**"
+    ],
+    "depends_on": [
+      "APP-001",
+      "CONTRACT-001",
+      "CONTRACT-002",
+      "CONTRACT-004",
+      "ML-005"
+    ],
+    "inputs": [
+      "RecognitionEngine contract and fake fixtures",
+      "Verified ONNX candidate bundle",
+      "Model manifest/class map"
+    ],
+    "outputs": [
+      "Android ONNX Runtime RecognitionEngine adapter",
+      "Manifest/hash validation at load time",
+      "Deterministic preprocessing/postprocessing",
+      "Structured load/inference/cancellation errors",
+      "Android cross-runtime fixture tests"
+    ],
+    "implementation_notes": [
+      "Load inference off the UI thread and reuse sessions safely.",
+      "Validate bundle hashes and metadata before accepting inference requests.",
+      "Use bounded image buffers and release native/tensor resources deterministically.",
+      "Do not add network fallback or telemetry."
+    ],
+    "acceptance_criteria": [
+      "The adapter implements the shared interface without leaking ONNX or Android types.",
+      "Android fixture rankings match the verified Python ONNX results within the accepted equivalence policy.",
+      "Invalid/mismatched bundles fail safely with explicit errors.",
+      "Inference cancellation, repeated calls, and lifecycle recreation do not leak sessions or save stale results."
+    ],
+    "verification": [
+      "Run Android fixture equivalence tests.",
+      "Run invalid manifest/hash/class-map tests.",
+      "Exercise repeated and canceled inference while observing native memory.",
+      "Run the app in airplane mode."
+    ],
+    "proof_required": [
+      "Android equivalence output",
+      "Resource/memory observation",
+      "Invalid-bundle test output"
+    ],
+    "edge_cases": [
+      "Corrupt bundled model",
+      "ABI/native library load failure",
+      "Low memory",
+      "Concurrent inference",
+      "Process recreation",
+      "Unsupported tensor type"
+    ],
+    "non_goals": [
+      "Remote inference",
+      "Model downloading",
+      "On-device training"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "android-native",
+      "memory",
+      "cross-runtime",
+      "concurrency"
+    ]
+  },
+  {
+    "id": "ML-007",
+    "title": "Optimize and qualify the bundled model on the benchmark device",
+    "summary": "Measure baseline candidates, apply compatible optimization or quantization, and select a bundle that satisfies accepted accuracy, latency, size, and memory gates.",
+    "objective": "Produce the release-candidate bundled model with traceable tradeoffs and no silent weakening of acceptance thresholds.",
+    "context": "The model must reach at least 80% top-five accuracy and median inference below two seconds within accepted package/model/memory budgets.",
+    "owner_role": "ML Engine Builder",
+    "lane": "android-inference",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "ml/**",
+      "models/**",
+      "verification/ml/**",
+      "docs/ml/**",
+      "apps/androidApp/src/**/inference/**"
+    ],
+    "depends_on": [
+      "DEC-002",
+      "DEC-003",
+      "ML-004",
+      "ML-005",
+      "ML-006"
+    ],
+    "inputs": [
+      "Accepted benchmark device/protocol",
+      "Accepted size/memory budgets",
+      "Evaluated ONNX candidates",
+      "Android runtime adapter"
+    ],
+    "outputs": [
+      "Candidate comparison report",
+      "Optimized release-candidate bundle and manifest",
+      "Device latency/memory/package-size report",
+      "Updated held-out and cross-runtime evidence",
+      "Model card documenting limitations and selection rationale"
+    ],
+    "implementation_notes": [
+      "Measure before and after each optimization and reject changes that break class mapping or equivalence.",
+      "Use the accepted device protocol and distinguish cold load, warm preprocessing, and inference timings.",
+      "Only the approved release candidate enters the bundled model path; large binary storage strategy must follow repository policy."
+    ],
+    "acceptance_criteria": [
+      "The selected ONNX bundle retains at least 80% held-out top-five accuracy and complete per-class reporting.",
+      "Median inference is below two seconds under the accepted benchmark protocol.",
+      "Model, package, installed, and peak-memory measurements satisfy the accepted budgets or record a human-approved blocker.",
+      "Cross-runtime equivalence, manifest hashes, license notices, and model card all match the selected artifact."
+    ],
+    "verification": [
+      "Reproduce held-out and per-class evaluation after optimization.",
+      "Run PyTorch/ONNX and Python/Android ranking equivalence.",
+      "Run the accepted cold/warm device benchmark and memory/package measurements.",
+      "Validate the final manifest and artifact hashes from a clean build."
+    ],
+    "proof_required": [
+      "Signed candidate comparison",
+      "Held-out/per-class report",
+      "Device benchmark report",
+      "Size/memory report",
+      "Final model card and manifest validation"
+    ],
+    "edge_cases": [
+      "Quantization changes ranking",
+      "Thermal throttling",
+      "First-run extraction overhead",
+      "Native ABI size differences",
+      "Class-specific accuracy regression"
+    ],
+    "non_goals": [
+      "Changing the accepted accuracy or device thresholds",
+      "Downloadable model packs",
+      "Public model marketing claims"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "accuracy",
+      "latency",
+      "quantization",
+      "release-gate"
+    ],
+    "handoff_notes": "Verification and Release must independently reproduce the final reports before closed testing."
+  },
+  {
+    "id": "VER-003",
+    "title": "Independently reproduce ML accuracy, equivalence, and device gates",
+    "summary": "Re-run held-out/per-class evaluation, PyTorch/ONNX/Android ranking equivalence, and the accepted device latency/size/memory protocol for the release candidate.",
+    "objective": "Ensure model acceptance is based on independently reproducible evidence rather than producer self-report.",
+    "context": "The accepted model gates are at least 80% held-out top-five accuracy and median inference below two seconds on the selected device, within accepted budgets.",
+    "owner_role": "Verification and Release",
+    "lane": "android-benchmark",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP acceptance",
+    "allowed_areas": [
+      "verification/**",
+      "ml/tests/**",
+      "apps/androidApp/src/androidTest/**",
+      "docs/verification/**"
+    ],
+    "depends_on": [
+      "DEC-001",
+      "DEC-002",
+      "DEC-003",
+      "ML-004",
+      "ML-005",
+      "ML-006",
+      "ML-007"
+    ],
+    "inputs": [
+      "Frozen held-out manifests",
+      "Release-candidate bundle and model card",
+      "Accepted benchmark device/protocol",
+      "Accepted size/memory budgets"
+    ],
+    "outputs": [
+      "Independent aggregate and per-class evaluation report",
+      "Cross-runtime equivalence report",
+      "Cold/warm device latency report",
+      "Package/model/installed/memory measurement report",
+      "Gate decision"
+    ],
+    "implementation_notes": [
+      "Verify hashes of code, environment, splits, model, manifest, and class map before running.",
+      "Do not tune or replace artifacts during independent verification; failures return to the owning task.",
+      "Record thermal/power state and raw timing samples."
+    ],
+    "acceptance_criteria": [
+      "Independent held-out top-five accuracy is at least 80% and includes every supported class with sample counts.",
+      "Python PyTorch, Python ONNX Runtime, and Android ONNX Runtime rankings satisfy the accepted equivalence policy.",
+      "Median device inference is below two seconds under the accepted protocol.",
+      "All accepted size and peak-memory budgets pass.",
+      "The final gate decision references immutable artifact and input hashes."
+    ],
+    "verification": [
+      "Run all evaluation and equivalence commands from a clean environment.",
+      "Run the full benchmark protocol on the named physical device.",
+      "Cross-check package and installed-size measurements using independent tools."
+    ],
+    "proof_required": [
+      "Raw and summarized metrics",
+      "Per-class report",
+      "Equivalence report",
+      "Device record and timing samples",
+      "Artifact hashes and gate decision"
+    ],
+    "edge_cases": [
+      "Thermal throttling",
+      "Class missing from held-out split",
+      "Ranking ties",
+      "ABI size differences",
+      "First-run extraction",
+      "Metric mismatch"
+    ],
+    "non_goals": [
+      "Lowering thresholds",
+      "Selecting a different model during verification",
+      "Marketing claims beyond the accepted test scope"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "independent-proof",
+      "accuracy",
+      "latency",
+      "release-gate"
+    ]
+  },
+  {
+    "id": "VER-005",
+    "title": "Verify the complete application in airplane mode",
+    "summary": "Exercise install-to-album, recognition, correction, persistence, search/filter, export, and import with network access disabled.",
+    "objective": "Prove the product's central subscription-free and remote-service-free promise as a complete user journey.",
+    "context": "Recognition and collection behavior must work fully offline with a bundled model and local data.",
+    "owner_role": "Verification and Release",
+    "lane": "independent-verification",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "MVP acceptance",
+    "allowed_areas": [
+      "verification/**",
+      "apps/androidApp/src/androidTest/**",
+      "docs/verification/**"
+    ],
+    "depends_on": [
+      "UI-001",
+      "UI-002",
+      "UI-003",
+      "UI-004",
+      "UI-005",
+      "UI-006",
+      "ML-006",
+      "ML-007",
+      "VER-002",
+      "VER-004"
+    ],
+    "inputs": [
+      "Integrated application candidate",
+      "Bundled release-candidate model",
+      "Representative supported and unsupported image fixtures"
+    ],
+    "outputs": [
+      "Airplane-mode end-to-end procedure",
+      "Critical-journey evidence",
+      "Observed network/dependency report",
+      "Offline acceptance decision"
+    ],
+    "implementation_notes": [
+      "Enable airplane mode before first application launch after installation where practical.",
+      "Observe network requests or failures with platform tooling; the app must not require connectivity to proceed.",
+      "Include both ranked-candidate confirmation and manual correction."
+    ],
+    "acceptance_criteria": [
+      "A fresh installation launches and exposes the bundled model/catalog without network access.",
+      "Camera and gallery images can be recognized, confirmed/corrected, and saved offline.",
+      "Album edits, restart persistence, search/filter, export, and import work offline.",
+      "No recognition, account, telemetry, or remote configuration request is required or retried in a user-disruptive way."
+    ],
+    "verification": [
+      "Run the documented journey on a supported physical device in airplane mode.",
+      "Inspect system/network logs for unexpected requests.",
+      "Restart the device/application and repeat a saved-entry lookup."
+    ],
+    "proof_required": [
+      "Device/environment record",
+      "Screen recording or timestamped screenshots",
+      "Network observation",
+      "Offline acceptance decision"
+    ],
+    "edge_cases": [
+      "First launch offline",
+      "DNS/network transition during operation",
+      "System picker behavior offline",
+      "Model load failure",
+      "Restart after save"
+    ],
+    "non_goals": [
+      "Testing cloud features",
+      "Online update behavior",
+      "Downloadable models"
+    ],
+    "estimated_size": "S",
+    "risk_tags": [
+      "offline",
+      "end-to-end",
+      "product-promise"
+    ]
+  },
+  {
+    "id": "REL-001",
+    "title": "Publish and verify a Google Play closed-testing build",
+    "summary": "Prepare signed release configuration and compliance materials, publish to a closed track, and verify install/update behavior with selected testers.",
+    "objective": "Meet the accepted MVP distribution boundary without expanding into a public production launch.",
+    "context": "Google Play closed testing is required; public release remains post-MVP. Credentials and approvals remain human-managed.",
+    "owner_role": "Verification and Release",
+    "lane": "release",
+    "repo_target": "categorizer",
+    "status": "ready",
+    "priority": "P0",
+    "milestone": "Google Play closed testing",
+    "allowed_areas": [
+      "apps/androidApp/**",
+      "verification/release/**",
+      "docs/verification/**",
+      ".github/**"
+    ],
+    "depends_on": [
+      "DEC-003",
+      "ML-007",
+      "VER-001",
+      "VER-002",
+      "VER-003",
+      "VER-004",
+      "VER-005"
+    ],
+    "inputs": [
+      "Accepted verification reports",
+      "Release-candidate application/model bundle",
+      "Human-managed signing and Play Console access",
+      "Required license/privacy disclosures"
+    ],
+    "outputs": [
+      "Reproducible signed release build procedure",
+      "Closed-track release checklist and compliance records",
+      "Published closed-testing artifact/version",
+      "Tester install/update evidence and rollback notes"
+    ],
+    "implementation_notes": [
+      "Never commit keystores, passwords, service credentials, or Play Console secrets.",
+      "Pin and record application ID, versioning, artifact hashes, model/catalog version, notices, and release notes.",
+      "Stop if store declarations conflict with the actual local-only behavior or required licenses."
+    ],
+    "acceptance_criteria": [
+      "All prerequisite verification gates pass and reference the exact release artifact/model hashes.",
+      "A signed release artifact satisfying accepted size budgets is uploaded to a Google Play closed-testing track.",
+      "At least one authorized tester installs the build through Play and verifies an update or documents why first-release update proof is deferred.",
+      "Store disclosures accurately describe local photos/data, offline inference, permissions, and absence of accounts/telemetry.",
+      "No secret material is present in Git or logs."
+    ],
+    "verification": [
+      "Rebuild the release artifact from a clean checkout using documented secret injection.",
+      "Compare uploaded artifact and model hashes with approved evidence.",
+      "Perform closed-track install and update checks.",
+      "Run a secret scan and review Play declarations/notices."
+    ],
+    "proof_required": [
+      "Clean release build log",
+      "Artifact/model hashes",
+      "Closed-track publication record",
+      "Tester install/update evidence",
+      "Secret scan and compliance checklist"
+    ],
+    "edge_cases": [
+      "Signing configuration unavailable",
+      "Store package-size rejection",
+      "ABI delivery differences",
+      "Model notice omission",
+      "Update migration failure",
+      "Tester account not enrolled"
+    ],
+    "non_goals": [
+      "Public production rollout",
+      "Paid subscription setup",
+      "Cloud service deployment"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "release",
+      "signing",
+      "store-compliance",
+      "secrets"
+    ],
+    "handoff_notes": "After this task is accepted, MVP implementation proof exists; public release still requires a separately approved post-MVP decision."
+  }
+]
