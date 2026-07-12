@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/project_lifecycle.schema.json",
+  "title": "ProjectLifecycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "repository",
+    "phase",
+    "phase_status",
+    "gates",
+    "artifacts",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "project_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9\\-]*$" },
+    "repository": { "$ref": "#/$defs/repository_readiness" },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "repository_setup",
+        "requirements",
+        "planning",
+        "task_splitting",
+        "execution_ready",
+        "implementation",
+        "paused",
+        "archived"
+      ]
+    },
+    "phase_status": {
+      "type": "string",
+      "enum": ["not_started", "in_progress", "review", "accepted", "blocked"]
+    },
+    "gates": { "$ref": "#/$defs/gates" },
+    "artifacts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact_state" }
+    },
+    "pull_requests": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pull_request_state" }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "next_action": { "$ref": "#/$defs/next_action" }
+  },
+  "$defs": {
+    "repository_readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "full_name",
+        "exists",
+        "initialized",
+        "accessible",
+        "default_branch",
+        "can_open_pull_requests"
+      ],
+      "properties": {
+        "provider": { "type": "string", "enum": ["github", "gitlab", "local_git", "other"] },
+        "full_name": { "type": "string", "minLength": 1 },
+        "exists": { "type": "boolean" },
+        "initialized": { "type": "boolean" },
+        "accessible": { "type": "boolean" },
+        "default_branch": { "type": "string", "minLength": 1 },
+        "can_open_pull_requests": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public", "private", "internal", "unknown"] },
+        "web_url": { "type": "string", "minLength": 1 }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_ready",
+        "requirements_accepted",
+        "planning_accepted",
+        "task_split_accepted",
+        "dispatch_ready"
+      ],
+      "properties": {
+        "repository_ready": { "type": "boolean" },
+        "requirements_accepted": { "type": "boolean" },
+        "planning_accepted": { "type": "boolean" },
+        "task_split_accepted": { "type": "boolean" },
+        "dispatch_ready": { "type": "boolean" }
+      }
+    },
+    "artifact_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "path", "stage", "status"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "stage": {
+          "type": "string",
+          "enum": ["repository_setup", "requirements", "planning", "task_splitting", "execution"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["missing", "draft", "in_pr", "merged", "invalid"]
+        },
+        "required": { "type": "boolean" },
+        "details": { "type": "string" }
+      }
+    },
+    "pull_request_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "number", "status", "url"],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": ["requirements", "planning", "task_splitting", "implementation"]
+        },
+        "number": { "type": "integer", "minimum": 1 },
+        "status": { "type": "string", "enum": ["draft", "open", "merged", "closed"] },
+        "url": { "type": "string", "minLength": 1 },
+        "base": { "type": "string" },
+        "head": { "type": "string" }
+      }
+    },
+    "next_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "label", "reason"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "create_repository",
+            "initialize_repository",
+            "continue_requirements",
+            "review_requirements_pr",
+            "start_planning",
+            "review_planning_pr",
+            "split_tasks",
+            "review_task_split_pr",
+            "open_dispatch",
+            "resume_blocked",
+            "none"
+          ]
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

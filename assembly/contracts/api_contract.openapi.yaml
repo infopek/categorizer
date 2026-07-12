@@ -1,0 +1,98 @@
+openapi: 3.1.0
+info:
+  title: AI Assembly Line API Contract
+  version: 0.1.0
+  description: >
+    Seed API contract draft for future read-only project-state access and future spec compilation.
+    This file documents planned interfaces only and does not imply an implemented backend in the current Phase 0 repository.
+servers:
+  - url: http://localhost:3000
+paths:
+  /project-spec:
+    get:
+      summary: Get the current machine-readable project spec
+      operationId: getProjectSpec
+      responses:
+        "200":
+          description: Project spec document
+          content:
+            application/json:
+              schema:
+                $ref: "./project_spec.schema.json"
+  /repo-plan:
+    get:
+      summary: Get the current repo split
+      operationId: getRepoPlan
+      responses:
+        "200":
+          description: Repo plan document
+          content:
+            application/json:
+              schema:
+                $ref: "./repo_plan.schema.json"
+  /tasks:
+    get:
+      summary: Get the current task backlog
+      operationId: getTaskBacklog
+      responses:
+        "200":
+          description: Array of task documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./task.schema.json"
+  /slots:
+    get:
+      summary: Get planned or active agent slots
+      operationId: getSlots
+      responses:
+        "200":
+          description: Array of slot documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./slot.schema.json"
+  /collaboration-state:
+    get:
+      summary: Get the current collaboration state draft
+      description: >
+        Future workflow surface for coordinating humans and web-based AI agents.
+        This is a contract draft only; it does not imply an implemented backend in the current Phase 0 repository.
+      operationId: getCollaborationState
+      responses:
+        "200":
+          description: Collaboration state document
+          content:
+            application/json:
+              schema:
+                $ref: "./collaboration_state.schema.json"
+  /compile-spec:
+    post:
+      summary: Compile a rough idea into a structured project spec draft
+      description: >
+        Future spec compiler draft route only. This path is not implemented by the current Phase 0 repository
+        and remains a contract-first planning artifact.
+      operationId: compileSpec
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - raw_idea
+              properties:
+                raw_idea:
+                  type: string
+      responses:
+        "200":
+          description: Structured project spec draft
+          content:
+            application/json:
+              schema:
+                $ref: "./project_spec.schema.json"

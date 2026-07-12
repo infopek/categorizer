@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/project_workspace.schema.json",
+  "title": "ProjectWorkspace",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "name",
+    "status",
+    "default_view",
+    "paths"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "minLength": 1 },
+    "project_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9\\-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "paused", "archived"]
+    },
+    "default_view": {
+      "type": "string",
+      "enum": ["overview", "planning-runs", "task-batches", "dispatch", "assignments", "verification"]
+    },
+    "repository": { "$ref": "#/$defs/repository" },
+    "workflow": { "$ref": "#/$defs/workflow" },
+    "paths": { "$ref": "#/$defs/workspace_paths" },
+    "implementation_repos": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/implementation_repo" }
+    },
+    "ai_guidance": { "$ref": "#/$defs/ai_guidance" }
+  },
+  "$defs": {
+    "relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": { "pattern": "(^/|^[A-Za-z]:|\\.\\.)" }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "full_name", "default_branch", "initialized"],
+      "properties": {
+        "provider": { "type": "string", "enum": ["github", "gitlab", "local_git", "other"] },
+        "full_name": { "type": "string", "minLength": 1 },
+        "default_branch": { "type": "string", "minLength": 1 },
+        "initialized": { "type": "boolean" },
+        "visibility": { "type": "string", "enum": ["public", "private", "internal", "unknown"] },
+        "web_url": { "type": "string", "minLength": 1 },
+        "implementation_root": { "$ref": "#/$defs/relative_path" }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "state_source", "change_boundary"],
+      "properties": {
+        "mode": { "type": "string", "enum": ["repository_first", "central_registry", "planning_only"] },
+        "state_source": {
+          "type": "string",
+          "enum": ["merged_artifacts_and_pull_requests", "local_files", "manual"]
+        },
+        "change_boundary": { "type": "string", "enum": ["pull_request", "direct_commit", "manual"] },
+        "requirements_pr": { "type": "string", "enum": ["separate", "combined", "optional"] },
+        "planning_pr": { "type": "string", "enum": ["separate", "combined", "optional"] },
+        "task_split_pr": { "type": "string", "enum": ["separate", "combined", "optional"] }
+      }
+    },
+    "workspace_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generated", "intake", "planning_runs", "context", "prompts"],
+      "properties": {
+        "generated": { "$ref": "#/$defs/generated_paths" },
+        "intake": { "$ref": "#/$defs/intake_paths" },
+        "requirements": { "$ref": "#/$defs/requirements_paths" },
+        "planning_runs": { "$ref": "#/$defs/relative_path" },
+        "context": { "$ref": "#/$defs/context_paths" },
+        "prompts": { "$ref": "#/$defs/relative_path" },
+        "contracts": { "$ref": "#/$defs/relative_path" },
+        "viewer": { "$ref": "#/$defs/relative_path" },
+        "tools": { "$ref": "#/$defs/relative_path" },
+        "repos": { "$ref": "#/$defs/relative_path" }
+      }
+    },
+    "generated_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_spec",
+        "repo_plan",
+        "task_backlog",
+        "task_batch_index",
+        "task_batches_dir",
+        "collaboration_state",
+        "agent_prompts",
+        "slots_db",
+        "task_runs_dir"
+      ],
+      "properties": {
+        "project_spec": { "$ref": "#/$defs/relative_path" },
+        "repo_plan": { "$ref": "#/$defs/relative_path" },
+        "task_backlog": { "$ref": "#/$defs/relative_path" },
+        "task_batch_index": { "$ref": "#/$defs/relative_path" },
+        "task_batches_dir": { "$ref": "#/$defs/relative_path" },
+        "collaboration_state": { "$ref": "#/$defs/relative_path" },
+        "agent_prompts": { "$ref": "#/$defs/relative_path" },
+        "slots_db": { "$ref": "#/$defs/relative_path" },
+        "task_runs_dir": { "$ref": "#/$defs/relative_path" },
+        "planning_runs_index": { "$ref": "#/$defs/relative_path" }
+      }
+    },
+    "intake_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dir", "project_intake"],
+      "properties": {
+        "dir": { "$ref": "#/$defs/relative_path" },
+        "intake_session": { "$ref": "#/$defs/relative_path" },
+        "project_intake": { "$ref": "#/$defs/relative_path" }
+      }
+    },
+    "requirements_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dir", "requirements_doc"],
+      "properties": {
+        "dir": { "$ref": "#/$defs/relative_path" },
+        "requirements_doc": { "$ref": "#/$defs/relative_path" }
+      }
+    },
+    "context_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dir", "handoff"],
+      "properties": {
+        "dir": { "$ref": "#/$defs/relative_path" },
+        "handoff": { "$ref": "#/$defs/relative_path" },
+        "repo_notes": { "$ref": "#/$defs/relative_path" },
+        "local_setup": { "$ref": "#/$defs/relative_path" }
+      }
+    },
+    "implementation_repo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo_id", "path", "kind"],
+      "properties": {
+        "repo_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9\\-]*$" },
+        "path": { "$ref": "#/$defs/relative_path" },
+        "kind": { "type": "string", "enum": ["local", "submodule", "external", "monorepo_path"] },
+        "remote_url": { "type": "string" },
+        "branch": { "type": "string" }
+      }
+    },
+    "ai_guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["onboarding_mode", "human_next_step"],
+      "properties": {
+        "onboarding_mode": {
+          "type": "string",
+          "enum": ["guided_pr", "download_bundle", "local_initializer", "manual"]
+        },
+        "human_next_step": { "type": "string", "minLength": 1 },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

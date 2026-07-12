@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "project_slug": "categorizer",
+  "intake_mode": "guided",
+  "project_goal": "Create a mobile-first application that identifies cars from camera or gallery photos entirely on-device and lets casual users build a private personal collection, while preserving a path to later platforms and recognition categories.",
+  "target_users": [
+    "Casual users who are curious about cars they encounter and want to collect identified sightings"
+  ],
+  "mvp": {
+    "summary": "An Android-first offline car categorizer and personal album covering approximately 100 to 200 commonly encountered car models.",
+    "must_have": [
+      "Accept both camera captures and gallery imports.",
+      "Run recognition fully on-device with a model bundled in the application.",
+      "Identify make and model, adding generation or approximate year where visually necessary; trim recognition is not required.",
+      "Present ranked recognition candidates and allow manual correction when none is correct.",
+      "Support approximately 100 to 200 commonly encountered car models.",
+      "Store app-managed photo copies with unnecessary metadata removed.",
+      "Maintain a local-only album containing the photo, confirmed identity, date, favorite state, and personal notes.",
+      "Provide album search and filtering.",
+      "Provide manual export and import for backup or transfer.",
+      "Reach Google Play closed testing."
+    ],
+    "postponed": [
+      "iOS and desktop applications",
+      "Recognition categories beyond cars, including animals",
+      "Downloadable model or category packs",
+      "Accounts, cloud backup, and synchronization",
+      "Social features and sharing",
+      "Location tracking, statistics, badges, and gamification",
+      "Telemetry and user-photo uploads for model training",
+      "Public Google Play release"
+    ]
+  },
+  "target_platforms": [
+    "Android 10 or newer on recent mid-range devices with approximately 4 GB RAM or more"
+  ],
+  "stack": {
+    "preference": "Kotlin Multiplatform with Compose Multiplatform for the application, ONNX Runtime for on-device inference, and Python with PyTorch and TorchVision for model development and ONNX export.",
+    "recommendation": "Use shared Kotlin domain and UI foundations while keeping camera, storage, and inference integrations behind platform-specific adapters; validate every exported ONNX model against the Android runtime.",
+    "options": [
+      {
+        "name": "Kotlin Multiplatform, Compose Multiplatform, and ONNX Runtime",
+        "best_for": "Android-first delivery with a low-refactor path to iOS and desktop",
+        "risks": [
+          "Camera, storage, and inference require platform-specific adapters.",
+          "ONNX operator compatibility and mobile performance must be verified for every model export."
+        ]
+      },
+      {
+        "name": "Native Android with Kotlin, Jetpack Compose, and LiteRT",
+        "best_for": "The smallest Android-only implementation",
+        "risks": [
+          "Later iOS and desktop applications would require substantial additional platform work."
+        ]
+      },
+      {
+        "name": "Flutter with platform-specific ONNX Runtime integrations",
+        "best_for": "A shared Dart UI across mobile and desktop",
+        "risks": [
+          "Inference integration crosses Dart and native boundaries on each platform."
+        ]
+      }
+    ],
+    "decision_status": "user_selected"
+  },
+  "existing_project": {
+    "state": "existing_repo",
+    "path": "/home/infopek/workspace/categorizer",
+    "notes": [
+      "GitHub repository: https://github.com/infopek/categorizer",
+      "Default branch: main",
+      "Requirements and bootstrap work is prepared on assembly/bootstrap-categorizer."
+    ]
+  },
+  "tools": [
+    {
+      "name": "Android Studio or IntelliJ IDEA",
+      "path": "",
+      "configuration": "Kotlin Multiplatform and Android development support",
+      "notes": "Exact local installation and version constraints will be resolved during planning."
+    },
+    {
+      "name": "Python ML environment",
+      "path": "",
+      "configuration": "PyTorch, TorchVision, ONNX export, and ONNX Runtime verification",
+      "notes": "Dependencies must be pinned after the initial licensed dataset and baseline model are selected."
+    },
+    {
+      "name": "Google Play Console",
+      "path": "",
+      "configuration": "Closed testing track",
+      "notes": "Availability and credentials remain human-managed."
+    }
+  ],
+  "team_mode": {
+    "humans": 1,
+    "ai_agents": 3,
+    "parallelization_goal": "Coordinate two or three AI agents across independently scoped application, ML pipeline, and validation work."
+  },
+  "working_style": {
+    "task_size": "small",
+    "review_style": "Use focused pull requests with explicit contracts between application, model pipeline, and validation work.",
+    "proof_required": [
+      "Relevant automated tests and static checks pass.",
+      "The exported ONNX model produces equivalent ranked outputs in the training environment and Android runtime within documented tolerances.",
+      "Held-out evaluation reports top-five accuracy and per-class results across the supported catalog.",
+      "A selected mid-range Android device reports median inference latency from a reproducible benchmark.",
+      "Closed-track installation, offline recognition, album persistence, export, and import are demonstrated."
+    ]
+  },
+  "constraints": [
+    "Recognition must not require an LLM, subscription, remote inference service, or network connection.",
+    "The bundled model and application must operate within the storage, memory, and performance limits of supported Android devices.",
+    "Training datasets, pretrained weights, and other assets must have licenses compatible with the intended application and distribution.",
+    "The supported catalog must remain approximately 100 to 200 car models for the MVP.",
+    "The architecture should preserve practical portability to iOS and desktop without adding those deliverables to the MVP."
+  ],
+  "safety_boundaries": [
+    "Keep collection data and inference local to the device in the MVP.",
+    "Remove unnecessary image metadata, including location metadata, from app-managed copies.",
+    "Do not upload user photos, corrections, or collection data for training or analytics.",
+    "Do not collect accounts, credentials, or cloud data for the MVP.",
+    "Do not use datasets, model weights, or images without verified compatible licensing."
+  ],
+  "assumptions": [
+    "A make-and-model result may include generation or approximate year only where needed for a useful distinction.",
+    "Manual correction is stored as album metadata and is not used for automatic retraining in the MVP.",
+    "The app may report that a car is unsupported or uncertain instead of forcing a confident identification.",
+    "Manual export and import use a documented, versioned format suitable for later migration or synchronization.",
+    "Development builds may be used before the required Google Play closed-testing milestone."
+  ],
+  "open_questions": [
+    {
+      "question": "Which licensed datasets, pretrained weights, and exact 100 to 200 car classes will form the initial catalog?",
+      "risk_if_unanswered": "Planning can proceed, but model feasibility, class balance, and licensing cannot be finalized."
+    },
+    {
+      "question": "Which specific mid-range Android device will be the latency benchmark target?",
+      "risk_if_unanswered": "The accepted two-second target lacks a reproducible hardware reference."
+    },
+    {
+      "question": "What maximum bundled application and model size is acceptable for closed testing?",
+      "risk_if_unanswered": "Model selection and quantization cannot be bounded by a release-size budget."
+    }
+  ],
+  "acceptance_signals": [
+    "A held-out representative test set shows the correct supported car within the top five candidates at least 80 percent of the time.",
+    "Per-class evaluation is reported so common classes cannot conceal weak supported classes.",
+    "Median on-device inference is below two seconds on the selected mid-range Android benchmark device.",
+    "Camera and gallery photos can be classified without network access, confirmed or corrected, and saved to the album.",
+    "Album entries survive application restarts and can be searched, filtered, favorited, annotated, exported, and imported.",
+    "Stored app-managed photos omit unnecessary metadata.",
+    "A signed build containing the bundled model is installable through Google Play closed testing."
+  ]
+}

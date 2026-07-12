@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-assembly-line/intake_session.schema.json",
+  "title": "IntakeSession",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_slug",
+    "mode",
+    "status",
+    "current_section",
+    "sections",
+    "stack_options",
+    "assumptions",
+    "open_questions",
+    "readiness",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["quick", "guided", "expert"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["not_started", "in_progress", "ready_for_intake_record", "intake_record_drafted", "blocked"]
+    },
+    "current_section": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "status", "questions"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": ["not_started", "in_progress", "complete", "blocked", "skipped"]
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "question", "answer", "risk_level", "affects"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9-]*$"
+                },
+                "question": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "answer": {
+                  "type": "string"
+                },
+                "risk_level": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high"]
+                },
+                "affects": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stack_options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "best_for", "risks", "recommendation_level"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "best_for": {
+            "type": "string",
+            "minLength": 1
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "recommendation_level": {
+            "type": "string",
+            "enum": ["recommended", "acceptable", "not_recommended", "unknown"]
+          }
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "risk_if_unanswered"],
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "risk_if_unanswered": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["can_generate_intake", "missing_high_risk_answers"],
+      "properties": {
+        "can_generate_intake": {
+          "type": "boolean"
+        },
+        "missing_high_risk_answers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "next_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "questions"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["ask_questions", "suggest_stack", "draft_project_intake", "handoff_to_planning", "blocked"]
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

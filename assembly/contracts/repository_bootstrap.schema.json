@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/repository_bootstrap.schema.json",
+  "title": "RepositoryBootstrapState",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "mode",
+    "repository",
+    "readiness",
+    "kit",
+    "requirements",
+    "status",
+    "blockers",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9\\-]*$"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "greenfield",
+        "existing_repository"
+      ]
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "full_name",
+        "default_branch",
+        "visibility",
+        "web_url"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "enum": [
+            "github",
+            "gitlab",
+            "local_git",
+            "other"
+          ]
+        },
+        "full_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "default_branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "private",
+            "internal",
+            "unknown"
+          ]
+        },
+        "web_url": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "readiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_exists",
+        "accessible",
+        "initialized",
+        "default_branch_exists",
+        "can_create_branch",
+        "can_open_pull_request"
+      ],
+      "properties": {
+        "repository_exists": {
+          "type": "boolean"
+        },
+        "accessible": {
+          "type": "boolean"
+        },
+        "initialized": {
+          "type": "boolean"
+        },
+        "default_branch_exists": {
+          "type": "boolean"
+        },
+        "can_create_branch": {
+          "type": "boolean"
+        },
+        "can_open_pull_request": {
+          "type": "boolean"
+        }
+      }
+    },
+    "kit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "installed",
+        "workspace_path",
+        "manifest_path"
+      ],
+      "properties": {
+        "installed": {
+          "type": "boolean"
+        },
+        "workspace_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intake_ready",
+        "project_intake_path",
+        "requirements_doc_path"
+      ],
+      "properties": {
+        "intake_ready": {
+          "type": "boolean"
+        },
+        "project_intake_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requirements_doc_path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "selecting_repository",
+        "repository_blocked",
+        "ready_for_intake",
+        "intake_in_progress",
+        "ready_for_requirements_pr",
+        "requirements_pr_open",
+        "complete"
+      ]
+    },
+    "branch_name": {
+      "type": "string"
+    },
+    "pull_request_url": {
+      "type": "string"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

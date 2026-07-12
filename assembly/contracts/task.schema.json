@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/task.schema.json",
+  "title": "Task",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "summary",
+    "owner_role",
+    "repo_target",
+    "depends_on",
+    "inputs",
+    "outputs",
+    "acceptance_criteria",
+    "verification"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9\\-]*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "objective": { "type": "string", "minLength": 1 },
+    "context": { "type": "string", "minLength": 1 },
+    "owner_role": { "type": "string", "minLength": 1 },
+    "lane": { "type": "string", "minLength": 1 },
+    "repo_target": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "ready", "in_progress", "blocked", "review", "done", "rejected"]
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["P0", "P1", "P2", "P3"]
+    },
+    "milestone": { "type": "string", "minLength": 1 },
+    "allowed_areas": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "depends_on": { "type": "array", "items": { "type": "string" } },
+    "blocks": { "type": "array", "items": { "type": "string" } },
+    "inputs": { "type": "array", "items": { "type": "string" } },
+    "outputs": { "type": "array", "items": { "type": "string" } },
+    "implementation_notes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "verification": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "proof_required": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "edge_cases": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "non_goals": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "estimated_size": {
+      "type": "string",
+      "enum": ["S", "M", "L"]
+    },
+    "risk_tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "handoff_notes": {
+      "type": "string"
+    }
+  }
+}
