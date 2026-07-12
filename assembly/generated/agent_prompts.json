@@ -1,0 +1,49 @@
+{
+  "project_name": "Categorizer",
+  "prompts": [
+    {
+      "prompt_id": "contract-steward",
+      "role": "Contract Steward",
+      "target_repo": "categorizer",
+      "allowed_files": ["shared/domain/**", "models/*.json", "docs/architecture/**", "verification/contracts/**"],
+      "forbidden_files": ["apps/androidApp/**", "shared/ui/**", "ml/training/**", "assembly/generated/task_batches/**"],
+      "input_context_required": ["Merged intake and requirements", "Merged planning package", "Project schemas and existing architecture decisions"],
+      "task_boundaries": ["Define versioned domain, recognition, model-manifest, and archive contracts", "Do not implement screens, platform adapters, training loops, or executable task decomposition"],
+      "output_required": ["Reviewable contracts with migration/version rules", "Fixtures or examples for every shared interface", "Documented ownership and compatibility guarantees"],
+      "verification_required": ["Schema/serialization round trips", "Class-map and model-manifest consistency checks", "Backward/forward archive compatibility tests appropriate to the version policy"]
+    },
+    {
+      "prompt_id": "application-builder",
+      "role": "Application Builder",
+      "target_repo": "categorizer",
+      "allowed_files": ["apps/androidApp/**", "shared/ui/**", "shared/application/**", "shared/data/**", "docs/app/**"],
+      "forbidden_files": ["ml/**", "models/*.onnx", "assembly/generated/task_batches/**"],
+      "input_context_required": ["Merged intake and requirements", "Merged planning package", "Accepted domain/model/archive contracts"],
+      "task_boundaries": ["Build shared user flows and Android platform adapters", "Keep recognition offline and off the UI thread", "Do not add accounts, telemetry, cloud sync, or post-MVP platforms"],
+      "output_required": ["Android-first application flows", "Local album persistence and managed-image storage", "Validated export/import UI and adapters", "Unit and instrumentation tests"],
+      "verification_required": ["Android build and static checks", "Shared unit tests", "Instrumentation proof for camera/gallery, privacy, persistence, restart, search/filter, and transfer", "Airplane-mode end-to-end demonstration"]
+    },
+    {
+      "prompt_id": "ml-engine-builder",
+      "role": "ML Engine Builder",
+      "target_repo": "categorizer",
+      "allowed_files": ["ml/**", "models/**", "apps/androidApp/src/**/inference/**", "verification/ml/**", "docs/ml/**"],
+      "forbidden_files": ["shared/ui/**", "shared/data/**", "assembly/generated/task_batches/**"],
+      "input_context_required": ["Merged intake and requirements", "Merged planning package", "Accepted model manifest and recognition contracts", "Documented dataset and weight licenses"],
+      "task_boundaries": ["Build reproducible dataset, training, evaluation, ONNX export, and runtime integration", "Do not use user photos or corrections as training data", "Do not approve a model without licensing, equivalence, accuracy, size, and latency evidence"],
+      "output_required": ["Pinned Python environment", "Dataset and split manifests", "Training/evaluation/export tooling", "Model card and class map", "Android ONNX inference adapter"],
+      "verification_required": ["At least 80 percent held-out top-five accuracy", "Per-class evaluation", "PyTorch/ONNX ranked-output equivalence", "Median inference below two seconds on the selected device", "Memory and package-size evidence"]
+    },
+    {
+      "prompt_id": "verification-release",
+      "role": "Verification and Release",
+      "target_repo": "categorizer",
+      "allowed_files": ["verification/**", "docs/verification/**", "apps/androidApp/src/androidTest/**", "apps/androidApp/src/test/**", "ml/tests/**", "shared/**/test/**"],
+      "forbidden_files": ["models/*.onnx", "ml/datasets/raw/**", "assembly/generated/task_batches/**"],
+      "input_context_required": ["Merged intake and requirements", "Merged planning package", "Candidate application and model artifacts", "Accepted proof requirements"],
+      "task_boundaries": ["Independently challenge correctness, privacy, portability boundaries, and release readiness", "Do not weaken acceptance thresholds or silently change product scope"],
+      "output_required": ["Automated regression suites", "Device benchmark report", "Privacy and archive adversarial report", "Closed-testing release checklist and evidence"],
+      "verification_required": ["Reproduce accuracy and per-class reports", "Reproduce device latency", "Inspect metadata removal and private storage", "Test unsupported images and corrupt archives", "Verify signed closed-track install/update"]
+    }
+  ]
+}

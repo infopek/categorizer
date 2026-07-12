@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1.0",
+  "generated_by": "tools/build_planning_runs_index.py",
+  "planning_runs_path": "planning_runs",
+  "required_outputs": [
+    "project_spec.json",
+    "repo_plan.json",
+    "agent_prompts.json",
+    "slots_db.json"
+  ],
+  "deferred_to_task_splitter": [
+    "task_batch_index.json",
+    "task_backlog.json"
+  ],
+  "runs": [
+    {
+      "slug": "planning-20260712",
+      "path": "planning_runs/planning-20260712",
+      "status": "outputs_present",
+      "has_input_idea": true,
+      "has_planning_prompt": true,
+      "has_review_notes": true,
+      "has_outputs_dir": true,
+      "outputs": {
+        "project_spec.json": true,
+        "repo_plan.json": true,
+        "agent_prompts.json": true,
+        "slots_db.json": true
+      },
+      "missing_outputs": [],
+      "deferred_outputs": {
+        "task_batch_index.json": false,
+        "task_backlog.json": false
+      },
+      "missing_scaffold": [],
+      "task_decomposition_deferred": true
+    }
+  ]
+}

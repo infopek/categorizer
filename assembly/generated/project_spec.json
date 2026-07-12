@@ -1,0 +1,148 @@
+{
+  "project_name": "Categorizer",
+  "product_summary": {
+    "goal": "Deliver an Android-first application that identifies supported cars from camera or gallery images entirely on-device and saves confirmed results in a private personal album.",
+    "users": [
+      "Casual users who are curious about cars they encounter and want to collect identified sightings"
+    ],
+    "non_goals": [
+      "iOS and desktop delivery in the MVP",
+      "Categories other than cars",
+      "Cloud accounts, backup, synchronization, telemetry, or remote inference",
+      "Social sharing, location tracking, badges, statistics, or gamification",
+      "Downloadable model packs or automatic retraining from user corrections",
+      "Public Google Play release"
+    ]
+  },
+  "safety_boundaries": [
+    "Inference and collection data remain on-device and usable without a network connection.",
+    "App-managed image copies remove unnecessary metadata, including location metadata.",
+    "User photos, corrections, and album data are not uploaded for analytics or training.",
+    "Datasets, pretrained weights, labels, and bundled assets require documented distribution-compatible licenses.",
+    "Unsupported or uncertain input must not be presented as a certain identification."
+  ],
+  "repo_split": [
+    {
+      "name": "categorizer",
+      "purpose": "Single product monorepo containing the shared application, Android shell, ML pipeline, model contract, verification, and lifecycle artifacts.",
+      "contains": [
+        "apps/androidApp for Android packaging and platform adapters",
+        "shared for Compose UI, domain logic, use cases, and persistence interfaces",
+        "ml for dataset manifests, training, evaluation, export, and model cards",
+        "models for approved bundled ONNX artifacts and machine-readable metadata",
+        "verification for fixtures, cross-runtime equivalence, benchmarks, and release evidence",
+        "assembly for durable lifecycle artifacts"
+      ],
+      "depends_on": []
+    }
+  ],
+  "domain_model": [
+    {
+      "name": "CarIdentity",
+      "fields": ["classId", "make", "model", "generationLabel?", "approximateYearRange?", "displayName"],
+      "relations": ["Referenced by RecognitionCandidate and AlbumEntry"]
+    },
+    {
+      "name": "RecognitionCandidate",
+      "fields": ["carIdentity", "rank", "score", "modelVersion"],
+      "relations": ["Produced by RecognitionEngine", "Selected to create an AlbumEntry"]
+    },
+    {
+      "name": "RecognitionResult",
+      "fields": ["resultId", "sourceImage", "candidates", "status", "inferenceDurationMs", "modelVersion"],
+      "relations": ["Contains ordered RecognitionCandidate values", "May be confirmed or manually corrected"]
+    },
+    {
+      "name": "AlbumEntry",
+      "fields": ["entryId", "managedImagePath", "confirmedIdentity", "albumDate", "isFavorite", "notes", "createdAt", "updatedAt", "schemaVersion"],
+      "relations": ["Created from a confirmed RecognitionResult", "Stored by AlbumRepository"]
+    },
+    {
+      "name": "ModelManifest",
+      "fields": ["modelVersion", "modelSha256", "inputShape", "normalization", "classMapVersion", "classes", "onnxOpset", "licenseReferences"],
+      "relations": ["Defines preprocessing and postprocessing for RecognitionEngine"]
+    },
+    {
+      "name": "AlbumArchive",
+      "fields": ["archiveSchemaVersion", "createdAt", "entries", "imageFiles", "checksums"],
+      "relations": ["Exported from and imported into AlbumRepository"]
+    }
+  ],
+  "frontend_screens": [
+    {
+      "name": "Album",
+      "renders_from": ["AlbumEntry list", "Search query", "Favorite and identity filters"],
+      "notes": "Default destination with empty, loading, populated, and recoverable-error states. Opens capture/import and entry details."
+    },
+    {
+      "name": "Image Source",
+      "renders_from": ["Camera availability", "Gallery picker availability"],
+      "notes": "Offers camera capture and system gallery selection without requesting broader media access than required."
+    },
+    {
+      "name": "Recognition Review",
+      "renders_from": ["Managed preview image", "RecognitionResult", "Ordered top candidates"],
+      "notes": "Lets the user confirm a candidate, enter a manual correction, retry, or cancel; clearly displays uncertain and unsupported states."
+    },
+    {
+      "name": "Album Entry Detail",
+      "renders_from": ["AlbumEntry"],
+      "notes": "Allows favorite and notes edits, identity correction, and deletion with confirmation."
+    },
+    {
+      "name": "Data Transfer",
+      "renders_from": ["Export status", "Import validation result", "Archive summary"],
+      "notes": "Exports a versioned archive and previews validation/conflicts before an atomic import."
+    },
+    {
+      "name": "About Model",
+      "renders_from": ["ModelManifest", "Supported catalog summary", "License notices"],
+      "notes": "Shows offline behavior, model/catalog version, limitations, and required notices."
+    }
+  ],
+  "backend_services": [
+    {
+      "name": "No remote backend",
+      "responsibility": "The MVP intentionally has no network service, account system, telemetry endpoint, or remote inference dependency.",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "Local persistence adapter",
+      "responsibility": "Provide transactional album metadata storage and private app-managed image storage behind shared interfaces.",
+      "inputs": ["Confirmed album mutations", "Sanitized image bytes", "Validated import archive"],
+      "outputs": ["AlbumEntry streams", "Managed image references", "Versioned export archive"]
+    }
+  ],
+  "core_engine_responsibilities": [
+    "Define a versioned model bundle contract covering input dimensions, color order, normalization, class mapping, output interpretation, hashes, and license references.",
+    "Normalize image orientation, crop/resize deterministically, strip unnecessary metadata, and create a private managed copy before persistence.",
+    "Run ONNX Runtime inference off the UI thread and return an ordered candidate list with scores, timing, and model version.",
+    "Apply an explicit uncertainty policy and support manual identity correction without treating corrections as training data.",
+    "Keep album use cases and repository interfaces in shared code while isolating Android camera, picker, filesystem, database, and ONNX bindings.",
+    "Implement versioned, checksummed export/import with validation and atomic failure behavior.",
+    "Keep model training reproducible through dataset manifests, split definitions, seeded runs, evaluation reports, ONNX export, quantization experiments, and model cards.",
+    "Keep model binaries out of ordinary source churn until licensing, size, accuracy, equivalence, and device-performance gates are satisfied."
+  ],
+  "verification_tasks": [
+    "Validate dataset and pretrained-weight licenses before any artifact becomes distributable.",
+    "Verify class-map uniqueness and exact agreement between training labels, model manifest, and application display identities.",
+    "Run shared unit tests for ranking, uncertainty, album mutations, search/filter, and archive version handling.",
+    "Run Android instrumentation tests for camera/gallery handoff, metadata removal, private storage, process restart persistence, and import/export.",
+    "Compare PyTorch and ONNX Runtime outputs on a frozen fixture set within documented numeric and ranking tolerances.",
+    "Report held-out top-five accuracy and per-class metrics for every supported class; the aggregate gate is at least 80 percent.",
+    "Benchmark warm and cold inference, memory, and package size on the selected mid-range Android device; median inference must remain below two seconds.",
+    "Exercise corrupted, incompatible, duplicate, and partial archives and prove import is validated before mutation.",
+    "Verify airplane-mode capture/import, inference, correction, album use, export, and import.",
+    "Produce a signed Google Play closed-testing build and record install/update evidence."
+  ],
+  "starter_prompts": {
+    "intake_interviewer": "Treat assembly/intake/project_intake.json and assembly/requirements/REQUIREMENTS.md as frozen merged requirements; reopen intake only for an explicitly requested scope change.",
+    "planning_agent": "Maintain architecture and verification planning only; preserve the offline/privacy boundaries and defer executable tasks to the Task Splitter.",
+    "contract_steward": "Own versioned domain, model-manifest, archive, and persistence contracts before parallel consumers implement them.",
+    "frontend_builder": "Build shared Compose flows and Android platform adapters against accepted contracts without adding networking, telemetry, or post-MVP features.",
+    "backend_builder": "There is no remote backend; own local transactional persistence, managed image storage, and validated archive transfer only.",
+    "core_engine_builder": "Own reproducible PyTorch training, ONNX export, model metadata, Android inference integration, equivalence testing, and performance evidence.",
+    "red_team_verifier": "Independently test privacy, unsupported inputs, corrupt archives, cross-runtime equivalence, per-class accuracy, device latency, and offline behavior."
+  }
+}
