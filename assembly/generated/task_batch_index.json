@@ -52,7 +52,7 @@
       "expected_task_ids": ["ML-001", "ML-002", "ML-003", "ML-004", "ML-005", "ML-006", "ML-007"],
       "depends_on_batches": ["contract-foundations"],
       "output_path": "assembly/generated/task_batches/ml-engine.json",
-      "status": "planned",
+      "status": "generated",
       "notes": "Builds the licensed, reproducible PyTorch-to-ONNX pipeline and Android runtime adapter against the shared contracts."
     },
     {
