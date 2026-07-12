@@ -26,7 +26,7 @@
       "expected_task_ids": ["APP-001", "APP-002", "APP-003", "APP-004", "APP-005"],
       "depends_on_batches": ["contract-foundations"],
       "output_path": "assembly/generated/task_batches/application-foundation.json",
-      "status": "planned",
+      "status": "generated",
       "notes": "Creates the buildable KMP/Android skeleton, local persistence, managed-image pipeline, recognition boundary, and archive engine."
     },
     {
