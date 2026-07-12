@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/project_spec.schema.json",
+  "title": "ProjectSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project_name",
+    "product_summary",
+    "safety_boundaries",
+    "repo_split",
+    "domain_model",
+    "frontend_screens",
+    "backend_services",
+    "core_engine_responsibilities",
+    "verification_tasks",
+    "starter_prompts"
+  ],
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "product_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal", "users", "non_goals"],
+      "properties": {
+        "goal": { "type": "string" },
+        "users": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "non_goals": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "safety_boundaries": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "repo_split": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/repoUnit" },
+      "minItems": 1
+    },
+    "domain_model": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/domainEntity" },
+      "minItems": 1
+    },
+    "frontend_screens": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/screen" },
+      "minItems": 1
+    },
+    "backend_services": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/service" },
+      "minItems": 1
+    },
+    "core_engine_responsibilities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "verification_tasks": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "starter_prompts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intake_interviewer",
+        "planning_agent",
+        "contract_steward",
+        "frontend_builder",
+        "backend_builder",
+        "core_engine_builder",
+        "red_team_verifier"
+      ],
+      "properties": {
+        "intake_interviewer": { "type": "string" },
+        "planning_agent": { "type": "string" },
+        "contract_steward": { "type": "string" },
+        "frontend_builder": { "type": "string" },
+        "backend_builder": { "type": "string" },
+        "core_engine_builder": { "type": "string" },
+        "red_team_verifier": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "repoUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "purpose", "contains", "depends_on"],
+      "properties": {
+        "name": { "type": "string" },
+        "purpose": { "type": "string" },
+        "contains": { "type": "array", "items": { "type": "string" } },
+        "depends_on": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "domainEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "fields"],
+      "properties": {
+        "name": { "type": "string" },
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "relations": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "screen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "renders_from"],
+      "properties": {
+        "name": { "type": "string" },
+        "renders_from": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "responsibility"],
+      "properties": {
+        "name": { "type": "string" },
+        "responsibility": { "type": "string" },
+        "inputs": { "type": "array", "items": { "type": "string" } },
+        "outputs": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

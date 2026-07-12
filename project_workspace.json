@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.2.0",
+  "project_id": "categorizer",
+  "name": "Categorizer",
+  "status": "draft",
+  "default_view": "overview",
+  "repository": {
+    "provider": "github",
+    "full_name": "infopek/categorizer",
+    "default_branch": "main",
+    "initialized": true,
+    "visibility": "public",
+    "web_url": "https://github.com/infopek/categorizer",
+    "implementation_root": "."
+  },
+  "workflow": {
+    "mode": "repository_first",
+    "state_source": "merged_artifacts_and_pull_requests",
+    "change_boundary": "pull_request",
+    "requirements_pr": "separate",
+    "planning_pr": "separate",
+    "task_split_pr": "separate"
+  },
+  "paths": {
+    "generated": {
+      "project_spec": "assembly/generated/project_spec.json",
+      "repo_plan": "assembly/generated/repo_plan.json",
+      "task_backlog": "assembly/generated/task_backlog.json",
+      "task_batch_index": "assembly/generated/task_batch_index.json",
+      "task_batches_dir": "assembly/generated/task_batches",
+      "collaboration_state": "assembly/generated/collaboration_state.json",
+      "agent_prompts": "assembly/generated/agent_prompts.json",
+      "slots_db": "assembly/generated/slots_db.json",
+      "task_runs_dir": "assembly/generated/task_runs",
+      "planning_runs_index": "assembly/generated/planning_runs_index.json"
+    },
+    "intake": {
+      "dir": "assembly/intake",
+      "intake_session": "assembly/intake/intake_session.json",
+      "project_intake": "assembly/intake/project_intake.json"
+    },
+    "requirements": {
+      "dir": "assembly/requirements",
+      "requirements_doc": "assembly/requirements/REQUIREMENTS.md"
+    },
+    "planning_runs": "assembly/planning_runs",
+    "context": {
+      "dir": "assembly/context",
+      "handoff": "assembly/context/handoff.md",
+      "repo_notes": "assembly/context/repository-notes.md",
+      "local_setup": "assembly/context/local-setup.md"
+    },
+    "prompts": "assembly/prompts",
+    "contracts": "assembly/contracts",
+    "viewer": "assembly/web",
+    "tools": "assembly/tools"
+  },
+  "implementation_repos": [
+    {
+      "repo_id": "categorizer",
+      "path": ".",
+      "kind": "monorepo_path",
+      "remote_url": "https://github.com/infopek/categorizer",
+      "branch": "main"
+    }
+  ],
+  "ai_guidance": {
+    "onboarding_mode": "guided_pr",
+    "human_next_step": "Complete guided intake and open the requirements/bootstrap pull request. Do not generate architecture or implementation tasks yet.",
+    "notes": [
+      "Chat context is temporary; merged repository files are authoritative.",
+      "Planning and task decomposition belong in later pull requests."
+    ]
+  }
+}

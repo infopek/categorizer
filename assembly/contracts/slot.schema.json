@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/slot.schema.json",
+  "title": "AgentSlot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "slot_id",
+    "role",
+    "status",
+    "inputs",
+    "outputs",
+    "allowed_actions",
+    "verification_requirements"
+  ],
+  "properties": {
+    "slot_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9\\-]+$"
+    },
+    "role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "ready", "active", "blocked", "review", "complete"]
+    },
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "outputs": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "allowed_actions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "verification_requirements": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

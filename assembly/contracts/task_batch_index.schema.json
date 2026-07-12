@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/task_batch_index.schema.json",
+  "title": "TaskBatchIndex",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_plan_path",
+    "batching_strategy",
+    "batches"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_plan_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "batching_strategy": {
+      "type": "string",
+      "enum": [
+        "owner_role",
+        "repo_target",
+        "lane",
+        "milestone",
+        "mixed"
+      ]
+    },
+    "batches": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/batch"
+      }
+    }
+  },
+  "$defs": {
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch_id",
+        "owner_role",
+        "repo_targets",
+        "lanes",
+        "milestones",
+        "expected_task_count",
+        "expected_task_ids",
+        "depends_on_batches",
+        "output_path",
+        "status"
+      ],
+      "properties": {
+        "batch_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9\\-]*$"
+        },
+        "owner_role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repo_targets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "lanes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "expected_task_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expected_task_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9\\-]*$"
+          }
+        },
+        "depends_on_batches": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9\\-]*$"
+          }
+        },
+        "output_path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?:[A-Za-z0-9._-]+/)*task_batches/[a-z0-9][a-z0-9\\-]*\\.json$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "planned",
+            "generated",
+            "validated",
+            "accepted",
+            "rejected"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

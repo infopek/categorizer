@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/repo_plan.schema.json",
+  "title": "RepoPlan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project_name", "repos"],
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repos": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "purpose", "contains", "depends_on", "excludes"],
+        "properties": {
+          "name": { "type": "string" },
+          "purpose": { "type": "string" },
+          "contains": { "type": "array", "items": { "type": "string" } },
+          "depends_on": { "type": "array", "items": { "type": "string" } },
+          "excludes": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

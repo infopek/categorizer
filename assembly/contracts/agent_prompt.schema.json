@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-assembly-line.local/contracts/agent_prompt.schema.json",
+  "title": "AgentPromptSet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["project_name", "prompts"],
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prompts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/agentPrompt"
+      }
+    }
+  },
+  "$defs": {
+    "agentPrompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prompt_id",
+        "role",
+        "target_repo",
+        "allowed_files",
+        "forbidden_files",
+        "input_context_required",
+        "task_boundaries",
+        "output_required",
+        "verification_required"
+      ],
+      "properties": {
+        "prompt_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9\\-]+$"
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_repo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "allowed_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "forbidden_files": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "input_context_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "task_boundaries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "output_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "verification_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

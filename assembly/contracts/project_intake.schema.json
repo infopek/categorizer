@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-assembly-line/project_intake.schema.json",
+  "title": "ProjectIntake",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_slug",
+    "intake_mode",
+    "project_goal",
+    "target_users",
+    "mvp",
+    "target_platforms",
+    "stack",
+    "existing_project",
+    "team_mode",
+    "working_style",
+    "constraints",
+    "safety_boundaries",
+    "assumptions",
+    "open_questions",
+    "acceptance_signals"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "intake_mode": {
+      "type": "string",
+      "enum": ["quick", "guided", "expert"]
+    },
+    "project_goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_users": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "mvp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "must_have", "postponed"],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "must_have": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "postponed": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "target_platforms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "stack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preference", "recommendation", "options", "decision_status"],
+      "properties": {
+        "preference": {
+          "type": "string"
+        },
+        "recommendation": {
+          "type": "string"
+        },
+        "decision_status": {
+          "type": "string",
+          "enum": ["user_selected", "ai_recommended", "undecided"]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "best_for", "risks"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "best_for": {
+                "type": "string",
+                "minLength": 1
+              },
+              "risks": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "existing_project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "path", "notes"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["greenfield", "existing_repo", "unknown"]
+        },
+        "path": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "path", "configuration", "notes"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string"
+          },
+          "configuration": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "team_mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["humans", "ai_agents", "parallelization_goal"],
+      "properties": {
+        "humans": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ai_agents": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parallelization_goal": {
+          "type": "string"
+        }
+      }
+    },
+    "working_style": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_size", "review_style", "proof_required"],
+      "properties": {
+        "task_size": {
+          "type": "string",
+          "enum": ["small", "medium", "large", "mixed"]
+        },
+        "review_style": {
+          "type": "string"
+        },
+        "proof_required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "safety_boundaries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["question", "risk_if_unanswered"],
+        "properties": {
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "risk_if_unanswered": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "acceptance_signals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
