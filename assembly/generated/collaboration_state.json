@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1.0",
+  "workspace_id": "categorizer",
+  "generated_from": "assembly/generated/task_backlog.json",
+  "actors": [
+    {
+      "actor_id": "repository-owner",
+      "display_name": "Repository Owner",
+      "kind": "human",
+      "status": "active",
+      "notes": "Human coordinator and approval authority; no tasks are auto-assigned."
+    }
+  ],
+  "task_assignments": [],
+  "task_claims": [],
+  "artifact_submissions": [],
+  "reviews": [],
+  "audit_events": []
+}

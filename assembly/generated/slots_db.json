@@ -2,7 +2,7 @@
   {
     "slot_id": "contract-steward",
     "role": "Contract Steward",
-    "status": "planned",
+    "status": "ready",
     "inputs": ["Merged requirements", "Merged planning package"],
     "outputs": ["Versioned domain contracts", "Model manifest contract", "Album archive contract", "Contract fixtures"],
     "allowed_actions": ["Edit contract-owned shared domain, model metadata, fixtures, and architecture documentation"],
@@ -22,7 +22,7 @@
   {
     "slot_id": "ml-engine-builder",
     "role": "ML Engine Builder",
-    "status": "planned",
+    "status": "ready",
     "inputs": ["Merged requirements", "Merged planning package", "Accepted model and inference contracts", "Licensed dataset/catalog decision"],
     "outputs": ["Reproducible ML pipeline", "Evaluated ONNX model bundle", "Android inference adapter", "Model card and performance evidence"],
     "allowed_actions": ["Edit ML, model, inference-adapter, and ML-verification areas"],
