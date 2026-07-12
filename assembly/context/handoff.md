@@ -2,7 +2,7 @@
 
 ## Current lifecycle phase
 
-Guided intake is accepted; requirements/bootstrap artifacts are ready for review.
+Requirements are merged. Planning run `planning-20260712` is drafted on `ai/planning-20260712` and pending planning pull-request review.
 
 ## Source of truth
 
@@ -12,7 +12,7 @@ Guided intake is accepted; requirements/bootstrap artifacts are ready for review
 
 ## Next action
 
-Validate and review the requirements/bootstrap branch, commit and push it, then open and merge the requirements pull request. After merge, start a fresh Planning Agent context from the merged repository files.
+Validate and review the planning package, then commit, push, open, and merge the planning pull request. After merge, start a fresh Task Splitter context from the merged repository files.
 
 ## Accepted direction
 
@@ -26,3 +26,13 @@ Validate and review the requirements/bootstrap branch, commit and push it, then 
 - Select the licensed datasets, pretrained weights, and exact initial catalog.
 - Select the representative mid-range Android benchmark device.
 - Establish the bundled application and model size budget.
+
+## Draft planning package
+
+- `assembly/generated/project_spec.json`
+- `assembly/generated/repo_plan.json`
+- `assembly/generated/agent_prompts.json`
+- `assembly/generated/slots_db.json`
+- `assembly/planning_runs/planning-20260712/`
+
+Final task decomposition remains deliberately deferred until this package is reviewed and merged.

@@ -1,0 +1,42 @@
+[
+  {
+    "slot_id": "contract-steward",
+    "role": "Contract Steward",
+    "status": "planned",
+    "inputs": ["Merged requirements", "Merged planning package"],
+    "outputs": ["Versioned domain contracts", "Model manifest contract", "Album archive contract", "Contract fixtures"],
+    "allowed_actions": ["Edit contract-owned shared domain, model metadata, fixtures, and architecture documentation"],
+    "verification_requirements": ["Serialization and schema checks pass", "Consumers can use fixtures without undocumented assumptions"],
+    "notes": "This lane establishes interfaces before application and ML consumers proceed in parallel."
+  },
+  {
+    "slot_id": "application-builder",
+    "role": "Application Builder",
+    "status": "planned",
+    "inputs": ["Merged requirements", "Merged planning package", "Accepted shared contracts", "Recognition-engine interface"],
+    "outputs": ["Shared application/UI modules", "Android shell and platform adapters", "Local album and archive flows", "Application tests"],
+    "allowed_actions": ["Edit application-owned Android, shared UI, application, and local data areas"],
+    "verification_requirements": ["Build and static checks pass", "Offline camera/gallery-to-album flow passes", "Persistence, metadata removal, search/filter, export, and import tests pass"],
+    "notes": "May use a deterministic fake recognition engine until the ML adapter satisfies the same contract."
+  },
+  {
+    "slot_id": "ml-engine-builder",
+    "role": "ML Engine Builder",
+    "status": "planned",
+    "inputs": ["Merged requirements", "Merged planning package", "Accepted model and inference contracts", "Licensed dataset/catalog decision"],
+    "outputs": ["Reproducible ML pipeline", "Evaluated ONNX model bundle", "Android inference adapter", "Model card and performance evidence"],
+    "allowed_actions": ["Edit ML, model, inference-adapter, and ML-verification areas"],
+    "verification_requirements": ["License gate passes", "Top-five and per-class evaluation passes", "PyTorch/ONNX equivalence passes", "Selected-device latency and size gates pass"],
+    "notes": "Blocked from release-ready model approval until the dataset/catalog, benchmark device, and size budget are resolved."
+  },
+  {
+    "slot_id": "verification-release",
+    "role": "Verification and Release",
+    "status": "planned",
+    "inputs": ["Merged requirements", "Merged planning package", "Application candidate", "Model candidate", "Accepted release gates"],
+    "outputs": ["Independent verification report", "Device benchmark report", "Privacy/archive adversarial report", "Closed-testing evidence"],
+    "allowed_actions": ["Edit verification, test, and verification-documentation areas"],
+    "verification_requirements": ["All acceptance signals are independently evidenced", "No task or release is accepted from self-reported proof alone"],
+    "notes": "Runs alongside implementation for early contract tests and becomes the final release gate."
+  }
+]

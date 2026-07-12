@@ -1,0 +1,77 @@
+# Planning Run Prompt
+
+You are producing a repository-first planning run for the `ai-assembly-line` workflow.
+
+## Run Slug
+
+`planning-20260712`
+
+## Preconditions
+
+- The product repository is initialized.
+- The requirements/bootstrap PR is merged.
+- `project_workspace.json` and accepted intake/requirements files exist.
+- Repository files, not chat history, are the source of truth.
+
+## Goal
+
+Convert the merged requirements into a safe, structured planning package and proposed planning PR.
+
+Generated outputs are drafts until the planning PR is reviewed and merged.
+
+## Accepted Requirements Reference
+
+# Accepted Requirements Input
+
+Authoritative merged inputs:
+
+- `project_workspace.json`
+- `assembly/intake/project_intake.json`
+- `assembly/requirements/REQUIREMENTS.md`
+- requirements merge commit `485eb1b`
+
+Plan an Android-first, fully offline car recognition and personal album application. The accepted stack is Kotlin Multiplatform, Compose Multiplatform, ONNX Runtime, and a Python/PyTorch/TorchVision training pipeline that exports ONNX models. Preserve the accepted 100–200 class boundary, top-five accuracy and latency gates, local-only privacy model, and explicit post-MVP scope. Keep dataset/catalog selection, the benchmark device, and the bundled-size budget visible as unresolved gates rather than inventing values.
+
+## Required Output Files
+
+Return exactly these planning artifact types:
+
+- `project_spec.json`
+- `repo_plan.json`
+- `agent_prompts.json`
+- `slots_db.json`
+
+## Deliberate Separation
+
+Do not produce:
+
+- `task_batch_index.json`
+- task batch files
+- `task_backlog.json`
+- task assignments or task claims
+
+Final task decomposition belongs to a fresh Task Splitter context after the planning PR is merged.
+
+## Output Requirements
+
+- `project_spec.json` describes the accepted product, boundaries, domain model, screens, responsibilities, interfaces, and verification strategy.
+- `repo_plan.json` defines repository/module ownership and allowed areas.
+- `agent_prompts.json` defines role-level boundaries tied to the repo plan.
+- `slots_db.json` defines planned role/lane slots and verification expectations; task readiness may be updated later by Task Splitter.
+
+## Constraints
+
+- Produce planning artifacts only.
+- Do not implement software.
+- Do not add hidden workflow state.
+- Keep outputs human-reviewable and machine-readable.
+- Keep project names, repo targets, role prompts, and slots internally consistent.
+- Preserve unresolved questions rather than inventing answers.
+
+## Response Format
+
+When repository write access is available, write the files to the paths declared by `project_workspace.json`, validate them, and open a planning PR.
+
+When repository write access is unavailable, return each file in its own fenced code block with the exact repository-root-relative path immediately above it.
+
+Use valid JSON for all four files.
