@@ -1,1 +1,2 @@
 # categorizer
+Some categorizer app
