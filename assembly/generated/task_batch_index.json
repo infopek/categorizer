@@ -1,0 +1,72 @@
+{
+  "schema_version": "0.1.0",
+  "source_plan_path": "assembly/generated/project_spec.json",
+  "batching_strategy": "mixed",
+  "batches": [
+    {
+      "batch_id": "contract-foundations",
+      "owner_role": "Contract Steward",
+      "repo_targets": ["categorizer"],
+      "lanes": ["decisions", "shared-contracts"],
+      "milestones": ["MVP foundation"],
+      "expected_task_count": 7,
+      "expected_task_ids": ["DEC-001", "DEC-002", "DEC-003", "CONTRACT-001", "CONTRACT-002", "CONTRACT-003", "CONTRACT-004"],
+      "depends_on_batches": [],
+      "output_path": "assembly/generated/task_batches/contract-foundations.json",
+      "status": "planned",
+      "notes": "Resolves the three explicit planning gates and defines shared domain, model-bundle, archive, and fixture contracts before parallel consumers implement them."
+    },
+    {
+      "batch_id": "application-foundation",
+      "owner_role": "Application Builder",
+      "repo_targets": ["categorizer"],
+      "lanes": ["application", "local-data", "android-platform"],
+      "milestones": ["MVP foundation"],
+      "expected_task_count": 5,
+      "expected_task_ids": ["APP-001", "APP-002", "APP-003", "APP-004", "APP-005"],
+      "depends_on_batches": ["contract-foundations"],
+      "output_path": "assembly/generated/task_batches/application-foundation.json",
+      "status": "planned",
+      "notes": "Creates the buildable KMP/Android skeleton, local persistence, managed-image pipeline, recognition boundary, and archive engine."
+    },
+    {
+      "batch_id": "application-experience",
+      "owner_role": "Application Builder",
+      "repo_targets": ["categorizer"],
+      "lanes": ["shared-ui", "android-user-flows"],
+      "milestones": ["MVP experience"],
+      "expected_task_count": 6,
+      "expected_task_ids": ["UI-001", "UI-002", "UI-003", "UI-004", "UI-005", "UI-006"],
+      "depends_on_batches": ["contract-foundations", "application-foundation"],
+      "output_path": "assembly/generated/task_batches/application-experience.json",
+      "status": "planned",
+      "notes": "Implements the accepted album, capture/import, recognition review, entry detail, transfer, and model-information flows."
+    },
+    {
+      "batch_id": "ml-engine",
+      "owner_role": "ML Engine Builder",
+      "repo_targets": ["categorizer"],
+      "lanes": ["data-governance", "training", "onnx-export", "android-inference"],
+      "milestones": ["MVP model"],
+      "expected_task_count": 7,
+      "expected_task_ids": ["ML-001", "ML-002", "ML-003", "ML-004", "ML-005", "ML-006", "ML-007"],
+      "depends_on_batches": ["contract-foundations"],
+      "output_path": "assembly/generated/task_batches/ml-engine.json",
+      "status": "planned",
+      "notes": "Builds the licensed, reproducible PyTorch-to-ONNX pipeline and Android runtime adapter against the shared contracts."
+    },
+    {
+      "batch_id": "verification-release",
+      "owner_role": "Verification and Release",
+      "repo_targets": ["categorizer"],
+      "lanes": ["independent-verification", "android-benchmark", "release"],
+      "milestones": ["MVP acceptance", "Google Play closed testing"],
+      "expected_task_count": 6,
+      "expected_task_ids": ["VER-001", "VER-002", "VER-003", "VER-004", "VER-005", "REL-001"],
+      "depends_on_batches": ["application-experience", "ml-engine"],
+      "output_path": "assembly/generated/task_batches/verification-release.json",
+      "status": "planned",
+      "notes": "Independently verifies contracts, privacy, archives, ML gates, offline behavior, and closed-track release readiness."
+    }
+  ]
+}
