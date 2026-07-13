@@ -1,0 +1,34 @@
+{
+  "cases": [
+    {
+      "name": "checksum_mismatch",
+      "mutation": "checksum_mismatch",
+      "expected_error": "SHA-256"
+    },
+    {
+      "name": "missing_image_file",
+      "mutation": "missing_image_file",
+      "expected_error": "missing declared image"
+    },
+    {
+      "name": "duplicate_entry_id",
+      "mutation": "duplicate_entry_id",
+      "expected_error": "entry_id values must be unique"
+    },
+    {
+      "name": "incompatible_version",
+      "mutation": "incompatible_version",
+      "expected_error": "archive_schema_version"
+    },
+    {
+      "name": "path_traversal",
+      "mutation": "path_traversal",
+      "expected_error": "unsafe archive member path"
+    },
+    {
+      "name": "duplicate_zip_member",
+      "mutation": "duplicate_zip_member",
+      "expected_error": "duplicate ZIP member names"
+    }
+  ]
+}
