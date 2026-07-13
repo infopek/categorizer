@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_id": "contract-fixture-cars-v1",
+  "class_count": 3,
+  "classes": [
+    {"index": 1, "class_id": "mercedes-benz-c-class-w204", "display_name": "Mercedes-Benz C-Class (W204)", "make": "Mercedes-Benz", "model": "C-Class"},
+    {"index": 0, "class_id": "bmw-3-series-e46", "display_name": "BMW 3 Series (E46)", "make": "BMW", "model": "3 Series"},
+    {"index": 2, "class_id": "porsche-911-997", "display_name": "Porsche 911 (997)", "make": "Porsche", "model": "911"}
+  ]
+}
