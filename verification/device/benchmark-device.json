@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1.0",
+  "decision_status": "accepted",
+  "accepted_at": "2026-07-13",
+  "access_confirmed_by": "repository-owner",
+  "manufacturer": "Samsung",
+  "product_name": "Galaxy S20 FE",
+  "model": "SM-G780G/DS",
+  "ram_gb": 6,
+  "android_version": "13",
+  "vendor_ui": "One UI 5.1",
+  "runtime_capture_required": [
+    "ro.product.device",
+    "ro.build.fingerprint",
+    "ro.soc.manufacturer",
+    "ro.soc.model",
+    "ro.product.cpu.abilist",
+    "ro.build.version.security_patch"
+  ],
+  "acceptance_gate": {
+    "metric": "warm inference-only latency",
+    "statistic": "median",
+    "maximum_ms_exclusive": 2000
+  }
+}
