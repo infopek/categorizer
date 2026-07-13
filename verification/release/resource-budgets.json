@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.1.0",
+  "decision_status": "accepted",
+  "proposed_at": "2026-07-13",
+  "accepted_at": "2026-07-13",
+  "accepted_by": "repository-owner",
+  "scope": "Google Play closed-testing Android build with one bundled offline ONNX model",
+  "units": {
+    "MB": "1,000,000 bytes",
+    "MiB": "1,048,576 bytes"
+  },
+  "budgets": {
+    "bundled_onnx_file": {
+      "metric": "uncompressed ONNX file size inside the release source artifact",
+      "unit": "MiB",
+      "optimization_target_maximum": 80,
+      "hard_gate_maximum": 150
+    },
+    "play_compressed_download": {
+      "metric": "maximum compressed download size for one supported device configuration",
+      "unit": "MB",
+      "optimization_target_maximum": 150,
+      "hard_gate_maximum": 200
+    },
+    "installed_footprint": {
+      "metric": "total installed application footprint after first successful recognition",
+      "unit": "MiB",
+      "optimization_target_maximum": 300,
+      "hard_gate_maximum": 500
+    },
+    "peak_runtime_pss": {
+      "metric": "peak application TOTAL PSS during the accepted 100-request warm inference sequence",
+      "unit": "MiB",
+      "optimization_target_maximum": 768,
+      "hard_gate_maximum": 1024
+    },
+    "inference_working_memory": {
+      "metric": "peak TOTAL PSS minus idle pre-session TOTAL PSS in the same process",
+      "unit": "MiB",
+      "optimization_target_maximum": 512,
+      "hard_gate_maximum": 768
+    }
+  },
+  "evidence_directory": "verification/release/results/",
+  "external_context": {
+    "checked_at": "2026-07-13",
+    "google_play_base_module_limit_mb": 500,
+    "google_play_mobile_data_warning_threshold_mb": 200,
+    "source": "https://support.google.com/googleplay/android-developer/answer/9859372?hl=en"
+  }
+}
