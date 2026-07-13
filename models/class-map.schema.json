@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/infopek/categorizer/models/class-map.schema.json",
+  "title": "Categorizer ordered class map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_id", "class_count", "classes"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "catalog_id": {"type": "string", "minLength": 1},
+    "class_count": {"type": "integer", "minimum": 1},
+    "classes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["index", "class_id", "display_name", "make", "model"],
+        "properties": {
+          "index": {"type": "integer", "minimum": 0},
+          "class_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "display_name": {"type": "string", "minLength": 1},
+          "make": {"type": "string", "minLength": 1},
+          "model": {"type": "string", "minLength": 1},
+          "generation_label": {"type": "string", "minLength": 1},
+          "approximate_year_range": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

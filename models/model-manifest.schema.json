@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/infopek/categorizer/models/model-manifest.schema.json",
+  "title": "Categorizer model bundle manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "model_version",
+    "artifact_status",
+    "model",
+    "class_map",
+    "input",
+    "preprocessing",
+    "output",
+    "onnx_runtime",
+    "licenses"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "bundle_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "model_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "artifact_status": {"enum": ["contract_fixture", "release_candidate", "released"]},
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filename", "format", "sha256", "size_bytes"],
+      "properties": {
+        "filename": {"type": "string", "pattern": "^[^/\\\\]+\\.onnx$"},
+        "format": {"const": "ONNX"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "size_bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "class_map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filename", "schema_version", "catalog_id", "class_count", "sha256"],
+      "properties": {
+        "filename": {"type": "string", "pattern": "^[^/\\\\]+\\.json$"},
+        "schema_version": {"const": "1.0.0"},
+        "catalog_id": {"type": "string", "minLength": 1},
+        "class_count": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tensor_name", "element_type", "layout", "shape", "color_order"],
+      "properties": {
+        "tensor_name": {"type": "string", "minLength": 1},
+        "element_type": {"const": "float32"},
+        "layout": {"enum": ["NCHW", "NHWC"]},
+        "shape": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "color_order": {"enum": ["RGB", "BGR"]}
+      }
+    },
+    "preprocessing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["orientation", "resize", "crop", "value_scale", "normalization"],
+      "properties": {
+        "orientation": {"const": "apply_exif_then_strip_metadata"},
+        "resize": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "shorter_side", "interpolation"],
+          "properties": {
+            "mode": {"const": "shorter_side"},
+            "shorter_side": {"type": "integer", "minimum": 1},
+            "interpolation": {"enum": ["bilinear", "bicubic"]}
+          }
+        },
+        "crop": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "height", "width"],
+          "properties": {
+            "mode": {"const": "center"},
+            "height": {"type": "integer", "minimum": 1},
+            "width": {"type": "integer", "minimum": 1}
+          }
+        },
+        "value_scale": {"type": "number", "exclusiveMinimum": 0},
+        "normalization": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mean", "std"],
+          "properties": {
+            "mean": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {"type": "number"}
+            },
+            "std": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {"type": "number", "exclusiveMinimum": 0}
+            }
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tensor_name",
+        "element_type",
+        "shape",
+        "class_axis",
+        "semantics",
+        "score_transform",
+        "ranking",
+        "top_k"
+      ],
+      "properties": {
+        "tensor_name": {"type": "string", "minLength": 1},
+        "element_type": {"const": "float32"},
+        "shape": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "class_axis": {"type": "integer", "minimum": 0},
+        "semantics": {"enum": ["logits", "probabilities"]},
+        "score_transform": {"enum": ["softmax", "identity"]},
+        "ranking": {"const": "descending_score_then_ascending_class_index"},
+        "top_k": {"type": "integer", "minimum": 1}
+      }
+    },
+    "onnx_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opset", "minimum_version", "required_execution_providers"],
+      "properties": {
+        "opset": {"type": "integer", "minimum": 1},
+        "minimum_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "required_execution_providers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "licenses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model_spdx_expression", "notice_files", "source_artifacts"],
+      "properties": {
+        "model_spdx_expression": {"type": "string", "minLength": 1},
+        "notice_files": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[^/\\\\]+$"}
+        },
+        "source_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "source_url", "license", "license_url"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1},
+              "source_url": {"type": "string", "pattern": "^https://"},
+              "license": {"type": "string", "minLength": 1},
+              "license_url": {"type": "string", "pattern": "^https://"}
+            }
+          }
+        }
+      }
+    }
+  }
+}
