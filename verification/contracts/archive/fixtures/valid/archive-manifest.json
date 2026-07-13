@@ -1,0 +1,42 @@
+{
+  "format": "categorizer-album-archive",
+  "archive_schema_version": "1.0.0",
+  "archive_id": "contract-fixture-archive-001",
+  "created_at_epoch_ms": 1783962000000,
+  "exporting_app": {
+    "application_id": "dev.categorizer.app",
+    "version_name": "0.1.0-contract-fixture",
+    "version_code": 1
+  },
+  "entry_count": 1,
+  "image_count": 1,
+  "entries": [
+    {
+      "entry_id": "entry-001",
+      "entry_schema_version": 1,
+      "image_id": "image-001",
+      "confirmed_identity": {
+        "class_id": "mercedes-benz-c-class-w204",
+        "make": "Mercedes-Benz",
+        "model": "C-Class",
+        "generation_label": "W204",
+        "display_name": "Mercedes-Benz C-Class (W204)",
+        "source": "MODEL_CATALOG"
+      },
+      "album_date": "2026-07-13",
+      "is_favorite": true,
+      "notes": "Synthetic contract fixture",
+      "created_at_epoch_ms": 1783962000000,
+      "updated_at_epoch_ms": 1783962000000
+    }
+  ],
+  "image_files": [
+    {
+      "image_id": "image-001",
+      "relative_path": "images/image-001.png",
+      "media_type": "image/png",
+      "size_bytes": 68,
+      "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460"
+    }
+  ]
+}
