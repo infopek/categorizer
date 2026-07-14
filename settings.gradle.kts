@@ -18,3 +18,4 @@ rootProject.name = "categorizer"
 
 include(":apps:androidApp")
 include(":shared:domain")
+include(":shared:application")
