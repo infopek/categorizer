@@ -99,6 +99,33 @@ class AndroidAlbumRepository(
         }
     }
 
+    internal fun entryIdsByImageId(): Map<String, String> = synchronized(lock) {
+        database.readableDatabase.query(
+            ALBUM_TABLE, arrayOf("entry_id", "image_id"), null, null, null, null, null
+        ).use { cursor ->
+            buildMap {
+                while (cursor.moveToNext()) put(cursor.getString(1), cursor.getString(0))
+            }
+        }
+    }
+
+    internal fun importAtomically(entries: List<AlbumEntry>) {
+        if (entries.any { !managedImageExists(it.managedImage) }) {
+            throw IOException("An imported managed image is missing")
+        }
+        synchronized(lock) {
+            val writable = database.writableDatabase
+            writable.beginTransaction()
+            try {
+                entries.forEach { writable.insertOrThrow(ALBUM_TABLE, null, it.toValues()) }
+                writable.setTransactionSuccessful()
+            } finally {
+                writable.endTransaction()
+            }
+        }
+        notifyObservers()
+    }
+
     private fun findEntry(
         entryId: String,
         readableDatabase: android.database.sqlite.SQLiteDatabase = database.readableDatabase
