@@ -6,8 +6,11 @@ import categorizer.domain.testing.InMemoryAlbumRepository
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
+import kotlin.test.Test
 
-fun main() {
+class FakeAdapterChecks {
+    @Test
+    fun deterministicAdapters() {
     val engine = DeterministicRecognitionEngine()
     val recognitionOutcomes = listOf(
         ContractFixtures.candidateImage,
@@ -66,7 +69,8 @@ fun main() {
     check(runSuspend { repository.update(ContractFixtures.favoriteEntry.copy(notes = "no event")) } is AlbumResult.Success)
     check(favoriteEvents.size == eventCountAfterCancel)
 
-    println("RESULT OK fake_adapter_checks=18 recognition_states=5 album_operations=7")
+        println("RESULT OK fake_adapter_checks=18 recognition_states=5 album_operations=7")
+    }
 }
 
 private fun <T> successValue(result: AlbumResult<T>): T = when (result) {

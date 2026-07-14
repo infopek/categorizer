@@ -66,7 +66,7 @@ class InMemoryAlbumRepository(initialEntries: List<AlbumEntry> = emptyList()) : 
     }
 
     private fun matchingEntries(query: AlbumQuery): List<AlbumEntry> {
-        val needle = query.text.trim().toLowerCase()
+        val needle = query.text.trim().lowercase()
         val filtered = entries.values.filter { entry ->
             (!query.favoritesOnly || entry.isFavorite) &&
                 (query.classId == null || entry.confirmedIdentity.classId == query.classId) &&
@@ -80,7 +80,7 @@ class InMemoryAlbumRepository(initialEntries: List<AlbumEntry> = emptyList()) : 
                 compareBy<AlbumEntry> { it.albumDate }.thenBy { it.entryId }
             )
             AlbumSort.IDENTITY_ASCENDING -> filtered.sortedWith(
-                compareBy<AlbumEntry> { it.confirmedIdentity.displayName.toLowerCase() }
+                compareBy<AlbumEntry> { it.confirmedIdentity.displayName.lowercase() }
                     .thenBy { it.entryId }
             )
         }
@@ -93,7 +93,7 @@ class InMemoryAlbumRepository(initialEntries: List<AlbumEntry> = emptyList()) : 
         entry.confirmedIdentity.generationLabel.orEmpty(),
         entry.confirmedIdentity.approximateYearRange.orEmpty(),
         entry.notes
-    ).joinToString(" ").toLowerCase()
+    ).joinToString(" ").lowercase()
 
     private fun notifyObservers() {
         observers.toList().filter { it.active }.forEach { registration ->

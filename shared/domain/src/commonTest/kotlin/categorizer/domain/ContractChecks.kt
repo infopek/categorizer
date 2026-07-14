@@ -1,6 +1,10 @@
 package categorizer.domain
 
-fun main() {
+import kotlin.test.Test
+
+class ContractChecks {
+    @Test
+    fun domainInvariants() {
     val image = ManagedImageRef("image-1", "images/image-1.jpg")
     val identity = CarIdentity(
         "porsche-911-992", "Porsche", "911", "992", "2019-present", "Porsche 911 (992)"
@@ -35,7 +39,8 @@ fun main() {
     expectFailure("absolute path") { ManagedImageRef("bad", "/tmp/photo.jpg") }
     expectFailure("path traversal") { ManagedImageRef("bad", "images/../photo.jpg") }
     expectFailure("invalid date") { entry.copy(albumDate = "12/07/2026") }
-    println("RESULT OK domain_contract_checks=9")
+        println("RESULT OK domain_contract_checks=9")
+    }
 }
 
 private fun expectFailure(label: String, block: () -> Unit) {
