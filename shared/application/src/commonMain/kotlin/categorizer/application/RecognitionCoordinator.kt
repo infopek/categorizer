@@ -114,7 +114,12 @@ class RecognitionCoordinator(
         is RecognitionUiState.Uncertain -> CompletedDetails(
             RecognitionResult(resultId, sourceImage, candidates, RecognitionStatus.UNCERTAIN, inferenceDurationMs, modelVersion)
         )
-        is RecognitionUiState.Unsupported,
+        is RecognitionUiState.Unsupported -> CompletedDetails(
+            RecognitionResult(
+                resultId, sourceImage, emptyList(), RecognitionStatus.UNSUPPORTED,
+                inferenceDurationMs, modelVersion
+            )
+        )
         is RecognitionUiState.Error,
         RecognitionUiState.Idle,
         is RecognitionUiState.Running -> null

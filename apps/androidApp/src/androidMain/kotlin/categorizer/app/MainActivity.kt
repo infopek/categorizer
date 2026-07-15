@@ -7,29 +7,69 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import categorizer.application.ManualIdentityInput
+import categorizer.application.ManualIdentityValidation
+import categorizer.application.RecognitionCoordinator
+import categorizer.application.RecognitionEntrySaver
+import categorizer.application.RecognitionSaveDraft
+import categorizer.application.RecognitionSaveResult
+import categorizer.application.RecognitionUiState
+import categorizer.application.validate
 import categorizer.data.AndroidAlbumRepository
 import categorizer.domain.ManagedImageRef
+import categorizer.domain.RecognitionEngine
+import categorizer.domain.RecognitionError
+import categorizer.domain.RecognitionErrorCode
+import categorizer.domain.RecognitionOutcome
 import categorizer.media.AndroidImageAcquisition
 import categorizer.media.ImageAcquisitionResult
 import categorizer.media.ManagedImageStore
+import java.time.LocalDate
+import java.util.UUID
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var albumRepository: AndroidAlbumRepository
     private lateinit var acquisition: AndroidImageAcquisition
     private lateinit var acquisitionController: AcquisitionFlowController
     private lateinit var imageStore: ManagedImageStore
+    private lateinit var recognitionCoordinator: RecognitionCoordinator
+    private lateinit var entrySaver: RecognitionEntrySaver
+    private val activityScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var showingAcquisition by mutableStateOf(false)
+    private var showingRecognition by mutableStateOf(false)
     private var acquisitionState by mutableStateOf<AcquisitionScreenState>(AcquisitionScreenState.Choosing())
+    private var recognitionState by mutableStateOf<RecognitionUiState>(RecognitionUiState.Idle)
+    private var reviewSaveState by mutableStateOf<ReviewSaveState>(ReviewSaveState.Ready)
     private var activeRequestToken = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         albumRepository = AndroidAlbumRepository(applicationContext)
+        entrySaver = RecognitionEntrySaver(albumRepository)
+        recognitionCoordinator = RecognitionCoordinator(
+            engine = UnavailableRecognitionEngine,
+            scope = activityScope
+        )
+        activityScope.launch {
+            recognitionCoordinator.state.collectLatest { recognitionState = it }
+        }
         imageStore = ManagedImageStore(applicationContext)
         showingAcquisition = savedInstanceState?.getBoolean(KEY_SHOWING_ACQUISITION) ?: false
+        showingRecognition = savedInstanceState?.getBoolean(KEY_SHOWING_RECOGNITION) ?: false
         acquisitionState = restoreState(savedInstanceState)
         acquisitionController = AcquisitionFlowController(acquisitionState) { acquisitionState = it }
         activeRequestToken = acquisitionController.activeToken
+        if (showingRecognition) {
+            (acquisitionState as? AcquisitionScreenState.Review)?.let {
+                recognitionCoordinator.submit(it.image)
+            } ?: run { showingRecognition = false }
+        }
         acquisition = AndroidImageAcquisition(
             activity = this,
             onProcessing = ::onProcessing,
@@ -37,21 +77,30 @@ class MainActivity : ComponentActivity() {
         )
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (showingAcquisition) leaveAcquisition() else {
+                if (showingRecognition) leaveRecognition() else if (showingAcquisition) leaveAcquisition() else {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
                 }
             }
         })
         setContent {
-            if (showingAcquisition) {
+            if (showingRecognition) {
+                RecognitionReviewScreen(
+                    state = recognitionState,
+                    saveState = reviewSaveState,
+                    onRetry = recognitionCoordinator::retry,
+                    onCancel = ::leaveRecognition,
+                    onConfirmCandidate = ::confirmCandidate,
+                    onConfirmManual = ::confirmManual
+                )
+            } else if (showingAcquisition) {
                 AcquisitionScreen(
                     state = acquisitionState,
                     onCamera = { launch(AcquisitionSource.CAMERA) },
                     onGallery = { launch(AcquisitionSource.GALLERY) },
                     onRetry = acquisitionController::reset,
                     onCancel = ::leaveAcquisition,
-                    onContinue = {},
+                    onContinue = ::startRecognition,
                     onChooseAnother = ::discardAndReset
                 )
             } else {
@@ -69,11 +118,14 @@ class MainActivity : ComponentActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_SHOWING_ACQUISITION, showingAcquisition)
+        outState.putBoolean(KEY_SHOWING_RECOGNITION, showingRecognition)
         saveState(outState, acquisitionState)
     }
 
     override fun onDestroy() {
         acquisition.close()
+        recognitionCoordinator.dispose()
+        activityScope.cancel()
         albumRepository.close()
         super.onDestroy()
     }
@@ -106,6 +158,53 @@ class MainActivity : ComponentActivity() {
     private fun discardAndReset() {
         (acquisitionController.state as? AcquisitionScreenState.Review)?.let { imageStore.delete(it.image) }
         acquisitionController.reset()
+    }
+
+    private fun startRecognition() {
+        val image = (acquisitionController.state as? AcquisitionScreenState.Review)?.image ?: return
+        reviewSaveState = ReviewSaveState.Ready
+        showingRecognition = true
+        recognitionCoordinator.submit(image)
+    }
+
+    private fun confirmCandidate(classId: String) {
+        recognitionCoordinator.confirmCandidate(classId)?.let(::saveDraft)
+    }
+
+    private fun confirmManual(input: ManualIdentityInput) {
+        val identity = (input.validate() as? ManualIdentityValidation.Valid)?.identity ?: return
+        recognitionCoordinator.manualCorrection(identity)?.let(::saveDraft)
+    }
+
+    private fun saveDraft(draft: RecognitionSaveDraft) {
+        if (reviewSaveState is ReviewSaveState.Saving) return
+        reviewSaveState = ReviewSaveState.Saving
+        activityScope.launch {
+            when (val result = entrySaver.save(
+                draft = draft,
+                entryId = UUID.randomUUID().toString(),
+                albumDate = LocalDate.now().toString(),
+                nowEpochMs = System.currentTimeMillis()
+            )) {
+                is RecognitionSaveResult.Saved -> {
+                    recognitionCoordinator.cancel()
+                    acquisitionController.reset()
+                    showingRecognition = false
+                    showingAcquisition = false
+                    reviewSaveState = ReviewSaveState.Ready
+                }
+                RecognitionSaveResult.DuplicateIgnored -> Unit
+                is RecognitionSaveResult.Failed -> reviewSaveState = ReviewSaveState.Failed(
+                    result.message, result.recoverable
+                )
+            }
+        }
+    }
+
+    private fun leaveRecognition() {
+        recognitionCoordinator.cancel()
+        showingRecognition = false
+        leaveAcquisition()
     }
 
     private fun leaveAcquisition() {
@@ -160,6 +259,7 @@ class MainActivity : ComponentActivity() {
 
     private companion object {
         const val KEY_SHOWING_ACQUISITION = "showing_acquisition"
+        const val KEY_SHOWING_RECOGNITION = "showing_recognition"
         const val KEY_STATE = "acquisition_state"
         const val KEY_SOURCE = "acquisition_source"
         const val KEY_IMAGE_ID = "acquisition_image_id"
@@ -171,4 +271,15 @@ class MainActivity : ComponentActivity() {
         const val STATE_REVIEW = "review"
         const val STATE_ERROR = "error"
     }
+}
+
+private object UnavailableRecognitionEngine : RecognitionEngine {
+    override suspend fun recognize(input: categorizer.domain.RecognitionInput): RecognitionOutcome =
+        RecognitionOutcome.Failed(
+            RecognitionError(
+                RecognitionErrorCode.MODEL_UNAVAILABLE,
+                "The bundled recognition model is not installed in this build.",
+                recoverable = false
+            )
+        )
 }
