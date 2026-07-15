@@ -1,9 +1,11 @@
 package categorizer.app
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,6 +21,7 @@ import categorizer.application.RecognitionSaveDraft
 import categorizer.application.RecognitionSaveResult
 import categorizer.application.RecognitionUiState
 import categorizer.application.validate
+import categorizer.archive.*
 import categorizer.data.AndroidAlbumRepository
 import categorizer.domain.ManagedImageRef
 import categorizer.domain.RecognitionEngine
@@ -29,6 +32,7 @@ import categorizer.media.AndroidImageAcquisition
 import categorizer.media.ImageAcquisitionResult
 import categorizer.media.ManagedImageStore
 import java.time.LocalDate
+import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +49,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var recognitionCoordinator: RecognitionCoordinator
     private lateinit var entrySaver: RecognitionEntrySaver
     private lateinit var entryEditor: AlbumEntryEditor
+    private lateinit var archiveService: AlbumArchiveService
     private val activityScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var showingAcquisition by mutableStateOf(false)
     private var showingRecognition by mutableStateOf(false)
@@ -53,6 +58,11 @@ class MainActivity : ComponentActivity() {
     private var reviewSaveState by mutableStateOf<ReviewSaveState>(ReviewSaveState.Ready)
     private var selectedEntryId by mutableStateOf<String?>(null)
     private var entryDetailState by mutableStateOf<EntryDetailUiState>(EntryDetailUiState.Loading)
+    private var showingTransfer by mutableStateOf(false)
+    private var transferState by mutableStateOf<TransferUiState>(TransferUiState.Ready)
+    private var importPlan: ValidatedImportPlan? = null
+    private val exportDestination = registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { it?.let(::exportTo) ?: transferCancelled("Export canceled") }
+    private val importSource = registerForActivityResult(ActivityResultContracts.OpenDocument()) { it?.let(::previewImport) ?: transferCancelled("Import canceled") }
     private var activeRequestToken = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +70,7 @@ class MainActivity : ComponentActivity() {
         albumRepository = AndroidAlbumRepository(applicationContext)
         entrySaver = RecognitionEntrySaver(albumRepository)
         entryEditor = AlbumEntryEditor(albumRepository)
+        archiveService = AlbumArchiveService(applicationContext, albumRepository)
         recognitionCoordinator = RecognitionCoordinator(
             engine = UnavailableRecognitionEngine,
             scope = activityScope
@@ -87,7 +98,8 @@ class MainActivity : ComponentActivity() {
         )
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (showingRecognition) leaveRecognition()
+                if (showingTransfer) showingTransfer = false
+                else if (showingRecognition) leaveRecognition()
                 else if (showingAcquisition) leaveAcquisition()
                 else if (selectedEntryId != null) selectedEntryId = null
                 else {
@@ -97,7 +109,9 @@ class MainActivity : ComponentActivity() {
             }
         })
         setContent {
-            if (selectedEntryId != null) {
+            if (showingTransfer) {
+                AlbumTransferScreen(transferState, { showingTransfer = false }, { exportDestination.launch("categorizer-backup.zip") }, { importSource.launch(arrayOf("application/zip", "application/octet-stream")) }, ::confirmImport)
+            } else if (selectedEntryId != null) {
                 AlbumEntryDetailScreen(
                     state = entryDetailState,
                     onBack = { selectedEntryId = null },
@@ -132,7 +146,8 @@ class MainActivity : ComponentActivity() {
                         acquisitionController.reset()
                         showingAcquisition = true
                     },
-                    onOpenEntry = ::openEntry
+                    onOpenEntry = ::openEntry,
+                    onTransfer = { transferState = TransferUiState.Ready; showingTransfer = true }
                 )
             }
         }
@@ -276,6 +291,41 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun exportTo(uri: Uri) {
+        transferState = TransferUiState.Working("Creating backup…")
+        activityScope.launch(Dispatchers.IO) {
+            val temp = File(cacheDir, "album-export-${UUID.randomUUID()}.zip")
+            transferState = when (val result = archiveService.export(temp, System.currentTimeMillis())) {
+                is ArchiveResult.Success -> try { contentResolver.openOutputStream(uri, "w")!!.use { out -> temp.inputStream().use { it.copyTo(out) } }; TransferUiState.Exported(result.value.entryCount, result.value.imageCount) } catch (e: Exception) { TransferUiState.Error("Could not save backup", listOf(e.message ?: "Destination unavailable")) }
+                is ArchiveResult.Failure -> archiveError("Could not create backup", result)
+            }
+            temp.delete()
+        }
+    }
+
+    private fun previewImport(uri: Uri) {
+        transferState = TransferUiState.Working("Validating backup…")
+        activityScope.launch(Dispatchers.IO) {
+            val temp = File(cacheDir, "album-import-${UUID.randomUUID()}.zip")
+            try { contentResolver.openInputStream(uri)!!.use { input -> temp.outputStream().use { input.copyTo(it) } } } catch (_: Exception) { transferState = TransferUiState.Error("Could not read backup", listOf("Access was revoked or the file is unavailable.")); return@launch }
+            var result = archiveService.validate(temp)
+            if (result is ArchiveResult.Failure && result.errors.isNotEmpty() && result.errors.all { it.code == ArchiveErrorCode.CONFLICT }) result = archiveService.validate(temp, result.errors.associate { it.message.substringAfterLast(": ") to ArchiveConflictDecision.KEEP_EXISTING })
+            when (result) {
+                is ArchiveResult.Success -> { importPlan = result.value; val p = result.value.preview; transferState = TransferUiState.Preview(p.archiveId, p.totalEntries, p.importCount, p.requiredBytes, p.conflicts.size) }
+                is ArchiveResult.Failure -> { temp.delete(); transferState = archiveError("Invalid backup", result) }
+            }
+        }
+    }
+
+    private fun confirmImport() {
+        val plan = importPlan ?: return
+        transferState = TransferUiState.Working("Importing backup…")
+        activityScope.launch(Dispatchers.IO) { transferState = when (val result = archiveService.commit(plan)) { is ArchiveResult.Success -> TransferUiState.Imported(result.value.importedEntryIds.size, result.value.importedBytes); is ArchiveResult.Failure -> archiveError("Import failed", result) }; plan.archive.delete(); importPlan = null }
+    }
+
+    private fun transferCancelled(title: String) { transferState = TransferUiState.Error(title, listOf("No file was changed.")) }
+    private fun archiveError(title: String, failure: ArchiveResult.Failure) = TransferUiState.Error(title, failure.errors.map { "${it.code}: ${it.message}" })
 
     private fun restoreState(bundle: Bundle?): AcquisitionScreenState {
         val kind = bundle?.getString(KEY_STATE) ?: return AcquisitionScreenState.Choosing()

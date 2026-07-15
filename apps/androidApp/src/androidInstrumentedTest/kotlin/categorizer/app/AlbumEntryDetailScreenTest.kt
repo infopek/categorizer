@@ -40,8 +40,8 @@ class AlbumEntryDetailScreenTest {
         assertEquals(entry.entryId, favoriteEntry?.entryId)
 
         click(findText("Edit details"))
-        findText("Personal notes")
         scrollToEnd()
+        findText("Personal notes")
         screenshot("editing")
         click(findText("Cancel editing"))
         findText("Spotted in Budapest")
@@ -59,7 +59,7 @@ class AlbumEntryDetailScreenTest {
         scrollToEnd()
         findText("Could not save changes")
         scrollToStart()
-        val fields = findNodes { it.className == "android.widget.EditText" }
+        val fields = waitForNodes(2) { it.className == "android.widget.EditText" }
         setText(fields[0], "")
         setText(fields[1], "")
         scrollToEnd()
@@ -110,6 +110,15 @@ class AlbumEntryDetailScreenTest {
     private fun findNodes(predicate: (AccessibilityNodeInfo) -> Boolean): List<AccessibilityNodeInfo> {
         val root = InstrumentationRegistry.getInstrumentation().uiAutomation.rootInActiveWindow ?: return emptyList()
         return buildList { root.collect(predicate, this) }
+    }
+
+    private fun waitForNodes(count: Int, predicate: (AccessibilityNodeInfo) -> Boolean): List<AccessibilityNodeInfo> {
+        val deadline = System.currentTimeMillis() + 5_000
+        while (System.currentTimeMillis() < deadline) {
+            findNodes(predicate).takeIf { it.size >= count }?.let { return it }
+            Thread.sleep(50)
+        }
+        return findNodes(predicate)
     }
 
     private fun AccessibilityNodeInfo.collect(
