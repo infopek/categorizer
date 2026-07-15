@@ -25,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -51,7 +52,8 @@ fun CategorizerApp(
     repository: AlbumRepository,
     onAddSighting: () -> Unit = {},
     onOpenEntry: (String) -> Unit = {},
-    onTransfer: () -> Unit = {}
+    onTransfer: () -> Unit = {},
+    onModelInfo: () -> Unit = {}
 ) {
     var state by remember(repository) { mutableStateOf<AlbumBrowserState>(AlbumBrowserState.Loading) }
     val controller = remember(repository) { AlbumBrowserController(repository) { state = it } }
@@ -73,7 +75,8 @@ fun CategorizerApp(
                 onRetry = controller::retry,
                 onAddSighting = onAddSighting,
                 onOpenEntry = onOpenEntry,
-                onTransfer = onTransfer
+                onTransfer = onTransfer,
+                onModelInfo = onModelInfo
             )
         }
     }
@@ -91,7 +94,8 @@ internal fun AlbumBrowserScreen(
     onRetry: () -> Unit,
     onAddSighting: () -> Unit,
     onOpenEntry: (String) -> Unit,
-    onTransfer: () -> Unit = {}
+    onTransfer: () -> Unit = {},
+    onModelInfo: () -> Unit = {}
 ) {
     Scaffold { padding ->
         Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)) {
@@ -107,6 +111,7 @@ internal fun AlbumBrowserScreen(
                 Button(onClick = onAddSighting) { Text("Add") }
             }
             FilledTonalButton(onClick = onTransfer, modifier = Modifier.fillMaxWidth()) { Text("Backup or restore album") }
+            TextButton(onClick = onModelInfo, modifier = Modifier.fillMaxWidth()) { Text("About recognition and privacy") }
 
             if (state !is AlbumBrowserState.EmptyCollection) {
                 SearchAndFilters(
