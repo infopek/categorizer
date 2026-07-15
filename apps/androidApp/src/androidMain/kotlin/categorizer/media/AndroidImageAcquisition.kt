@@ -1,6 +1,7 @@
 package categorizer.media
 
 import android.net.Uri
+import android.content.ActivityNotFoundException
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.ComponentActivity
@@ -14,6 +15,7 @@ import java.util.concurrent.Executors
 
 class AndroidImageAcquisition(
     private val activity: ComponentActivity,
+    private val onProcessing: () -> Unit,
     private val onResult: (ImageAcquisitionResult) -> Unit
 ) : Closeable {
     private val store = ManagedImageStore(activity)
@@ -21,11 +23,17 @@ class AndroidImageAcquisition(
     private val mainHandler = Handler(Looper.getMainLooper())
     private val cameraFiles = CameraCaptureFiles(activity)
     private var pendingCapture: PendingCameraCapture? = cameraFiles.restore()
+    private var launchInFlight = pendingCapture != null
+    private var closed = false
 
     private val galleryLauncher = activity.registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        if (uri == null) onResult(ImageAcquisitionResult.Cancelled) else sanitize(uri)
+        launchInFlight = false
+        if (uri == null) deliver(ImageAcquisitionResult.Cancelled) else {
+            onProcessing()
+            sanitize(uri)
+        }
     }
 
     private val cameraLauncher = activity.registerForActivityResult(
@@ -33,25 +41,34 @@ class AndroidImageAcquisition(
     ) { captured ->
         val pending = pendingCapture
         pendingCapture = null
+        launchInFlight = false
         if (!captured || pending == null) {
             pending?.let(cameraFiles::discard)
-            onResult(ImageAcquisitionResult.Cancelled)
+            deliver(ImageAcquisitionResult.Cancelled)
         } else {
+            onProcessing()
             sanitize(pending.fileUri) { cameraFiles.discard(pending) }
         }
     }
 
-    fun pickFromGallery() {
-        galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    fun pickFromGallery(): Boolean {
+        if (closed || launchInFlight) return false
+        launchInFlight = true
+        return launch {
+            galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
     }
 
-    fun takePhoto() {
+    fun takePhoto(): Boolean {
+        if (closed || launchInFlight) return false
         pendingCapture?.let(cameraFiles::discard)
         pendingCapture = cameraFiles.create()
-        cameraLauncher.launch(checkNotNull(pendingCapture).fileUri)
+        launchInFlight = true
+        return launch { cameraLauncher.launch(checkNotNull(pendingCapture).fileUri) }
     }
 
     override fun close() {
+        closed = true
         executor.shutdownNow()
     }
 
@@ -59,8 +76,41 @@ class AndroidImageAcquisition(
         executor.execute {
             val result = store.import(uri)
             after()
-            mainHandler.post { onResult(result) }
+            mainHandler.post { deliver(result) }
         }
+    }
+
+    private fun launch(block: () -> Unit): Boolean = try {
+        block()
+        true
+    } catch (_: ActivityNotFoundException) {
+        launchInFlight = false
+        pendingCapture?.let(cameraFiles::discard)
+        pendingCapture = null
+        deliver(
+            ImageAcquisitionResult.Failure(
+                ImageAcquisitionError(
+                    ImageAcquisitionErrorCode.SOURCE_UNAVAILABLE,
+                    "No compatible application is available for this image source"
+                )
+            )
+        )
+        false
+    } catch (_: SecurityException) {
+        launchInFlight = false
+        deliver(
+            ImageAcquisitionResult.Failure(
+                ImageAcquisitionError(
+                    ImageAcquisitionErrorCode.SOURCE_UNAVAILABLE,
+                    "The selected image source is unavailable"
+                )
+            )
+        )
+        false
+    }
+
+    private fun deliver(result: ImageAcquisitionResult) {
+        if (!closed) onResult(result)
     }
 
 }
