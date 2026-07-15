@@ -50,7 +50,8 @@ import categorizer.domain.ManagedImageRef
 fun CategorizerApp(
     repository: AlbumRepository,
     onAddSighting: () -> Unit = {},
-    onOpenEntry: (String) -> Unit = {}
+    onOpenEntry: (String) -> Unit = {},
+    onTransfer: () -> Unit = {}
 ) {
     var state by remember(repository) { mutableStateOf<AlbumBrowserState>(AlbumBrowserState.Loading) }
     val controller = remember(repository) { AlbumBrowserController(repository) { state = it } }
@@ -71,7 +72,8 @@ fun CategorizerApp(
                 onClearFilters = controller::clearFilters,
                 onRetry = controller::retry,
                 onAddSighting = onAddSighting,
-                onOpenEntry = onOpenEntry
+                onOpenEntry = onOpenEntry,
+                onTransfer = onTransfer
             )
         }
     }
@@ -88,7 +90,8 @@ internal fun AlbumBrowserScreen(
     onClearFilters: () -> Unit,
     onRetry: () -> Unit,
     onAddSighting: () -> Unit,
-    onOpenEntry: (String) -> Unit
+    onOpenEntry: (String) -> Unit,
+    onTransfer: () -> Unit = {}
 ) {
     Scaffold { padding ->
         Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)) {
@@ -103,6 +106,7 @@ internal fun AlbumBrowserScreen(
                 }
                 Button(onClick = onAddSighting) { Text("Add") }
             }
+            FilledTonalButton(onClick = onTransfer, modifier = Modifier.fillMaxWidth()) { Text("Backup or restore album") }
 
             if (state !is AlbumBrowserState.EmptyCollection) {
                 SearchAndFilters(
