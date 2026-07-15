@@ -1,0 +1,4 @@
+-r requirements.in
+
+pip-tools==7.5.3
+pytest==9.1.1

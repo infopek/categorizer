@@ -6,3 +6,22 @@ local.properties
 .idea/
 captures/
 .DS_Store
+
+# Local Python/ML environments and generated artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+ml/data/
+ml/datasets/
+ml/cache/
+ml/runs/
+ml/checkpoints/
+ml/artifacts/
+*.pt
+*.pth
+*.ckpt
+*.onnx
