@@ -25,6 +25,7 @@ data class ImageAcquisitionError(
 )
 
 enum class ImageAcquisitionErrorCode {
+    SOURCE_UNAVAILABLE,
     UNREADABLE_INPUT,
     UNSUPPORTED_FORMAT,
     IMAGE_TOO_LARGE,
