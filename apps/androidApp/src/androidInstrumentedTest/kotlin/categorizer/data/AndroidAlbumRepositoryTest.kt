@@ -108,6 +108,41 @@ class AndroidAlbumRepositoryTest {
     }
 
     @Test
+    fun editedIdentityNotesAndFavoriteSurviveRestartAndAffectQueries() {
+        val original = entry("edited", "2026-07-11", false, "before")
+        createManagedImage(original)
+        success(runSuspend { repository.create(original) })
+        val edited = original.copy(
+            confirmedIdentity = original.confirmedIdentity.copy(
+                classId = "user:porsche-911-992",
+                make = "Porsche",
+                model = "911",
+                generationLabel = "992",
+                displayName = "Porsche 911 (992)",
+                source = IdentitySource.USER_CONFIRMED
+            ),
+            isFavorite = true,
+            notes = "Edited after review",
+            updatedAtEpochMs = 2
+        )
+        success(runSuspend { repository.update(edited) })
+        repository.close()
+
+        repository = AndroidAlbumRepository(context, databaseName)
+        assertEquals(edited, success(runSuspend { repository.get(edited.entryId) }))
+        assertEquals(
+            listOf(edited.entryId),
+            success(runSuspend { repository.query(AlbumQuery(text = "after", favoritesOnly = true)) })
+                .map { it.entryId }
+        )
+        assertEquals(
+            listOf(edited.entryId),
+            success(runSuspend { repository.query(AlbumQuery(classId = "user:porsche-911-992")) })
+                .map { it.entryId }
+        )
+    }
+
+    @Test
     fun missingManagedImageIsRejectedWithoutDurableMutation() {
         val missing = entry("missing", "2026-07-11", false, "")
         val failure = assertIs<AlbumResult.Failure>(runSuspend { repository.create(missing) })

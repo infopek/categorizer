@@ -7,6 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import categorizer.application.AlbumEntryEditInput
+import categorizer.application.AlbumEntryEditValidation
+import categorizer.application.AlbumEntryEditor
+import categorizer.application.AlbumEntryEditorResult
 import categorizer.application.ManualIdentityInput
 import categorizer.application.ManualIdentityValidation
 import categorizer.application.RecognitionCoordinator
@@ -40,18 +44,22 @@ class MainActivity : ComponentActivity() {
     private lateinit var imageStore: ManagedImageStore
     private lateinit var recognitionCoordinator: RecognitionCoordinator
     private lateinit var entrySaver: RecognitionEntrySaver
+    private lateinit var entryEditor: AlbumEntryEditor
     private val activityScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var showingAcquisition by mutableStateOf(false)
     private var showingRecognition by mutableStateOf(false)
     private var acquisitionState by mutableStateOf<AcquisitionScreenState>(AcquisitionScreenState.Choosing())
     private var recognitionState by mutableStateOf<RecognitionUiState>(RecognitionUiState.Idle)
     private var reviewSaveState by mutableStateOf<ReviewSaveState>(ReviewSaveState.Ready)
+    private var selectedEntryId by mutableStateOf<String?>(null)
+    private var entryDetailState by mutableStateOf<EntryDetailUiState>(EntryDetailUiState.Loading)
     private var activeRequestToken = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         albumRepository = AndroidAlbumRepository(applicationContext)
         entrySaver = RecognitionEntrySaver(albumRepository)
+        entryEditor = AlbumEntryEditor(albumRepository)
         recognitionCoordinator = RecognitionCoordinator(
             engine = UnavailableRecognitionEngine,
             scope = activityScope
@@ -62,6 +70,7 @@ class MainActivity : ComponentActivity() {
         imageStore = ManagedImageStore(applicationContext)
         showingAcquisition = savedInstanceState?.getBoolean(KEY_SHOWING_ACQUISITION) ?: false
         showingRecognition = savedInstanceState?.getBoolean(KEY_SHOWING_RECOGNITION) ?: false
+        selectedEntryId = savedInstanceState?.getString(KEY_SELECTED_ENTRY_ID)
         acquisitionState = restoreState(savedInstanceState)
         acquisitionController = AcquisitionFlowController(acquisitionState) { acquisitionState = it }
         activeRequestToken = acquisitionController.activeToken
@@ -70,6 +79,7 @@ class MainActivity : ComponentActivity() {
                 recognitionCoordinator.submit(it.image)
             } ?: run { showingRecognition = false }
         }
+        selectedEntryId?.let(::loadEntry)
         acquisition = AndroidImageAcquisition(
             activity = this,
             onProcessing = ::onProcessing,
@@ -77,14 +87,26 @@ class MainActivity : ComponentActivity() {
         )
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (showingRecognition) leaveRecognition() else if (showingAcquisition) leaveAcquisition() else {
+                if (showingRecognition) leaveRecognition()
+                else if (showingAcquisition) leaveAcquisition()
+                else if (selectedEntryId != null) selectedEntryId = null
+                else {
                     isEnabled = false
                     onBackPressedDispatcher.onBackPressed()
                 }
             }
         })
         setContent {
-            if (showingRecognition) {
+            if (selectedEntryId != null) {
+                AlbumEntryDetailScreen(
+                    state = entryDetailState,
+                    onBack = { selectedEntryId = null },
+                    onRetry = { selectedEntryId?.let(::loadEntry) },
+                    onToggleFavorite = { entry -> saveEntry(AlbumEntryEditInput.from(entry).copy(isFavorite = !entry.isFavorite)) },
+                    onSave = ::saveEntry,
+                    onDelete = ::deleteEntry
+                )
+            } else if (showingRecognition) {
                 RecognitionReviewScreen(
                     state = recognitionState,
                     saveState = reviewSaveState,
@@ -109,7 +131,8 @@ class MainActivity : ComponentActivity() {
                     onAddSighting = {
                         acquisitionController.reset()
                         showingAcquisition = true
-                    }
+                    },
+                    onOpenEntry = ::openEntry
                 )
             }
         }
@@ -119,6 +142,7 @@ class MainActivity : ComponentActivity() {
         super.onSaveInstanceState(outState)
         outState.putBoolean(KEY_SHOWING_ACQUISITION, showingAcquisition)
         outState.putBoolean(KEY_SHOWING_RECOGNITION, showingRecognition)
+        outState.putString(KEY_SELECTED_ENTRY_ID, selectedEntryId)
         saveState(outState, acquisitionState)
     }
 
@@ -212,6 +236,47 @@ class MainActivity : ComponentActivity() {
         showingAcquisition = false
     }
 
+    private fun openEntry(entryId: String) {
+        selectedEntryId = entryId
+        loadEntry(entryId)
+    }
+
+    private fun loadEntry(entryId: String) {
+        entryDetailState = EntryDetailUiState.Loading
+        activityScope.launch {
+            entryDetailState = when (val result = entryEditor.load(entryId)) {
+                is AlbumEntryEditorResult.Success -> EntryDetailUiState.Ready(result.value)
+                is AlbumEntryEditorResult.Failed -> EntryDetailUiState.Unavailable(result.error)
+            }
+        }
+    }
+
+    private fun saveEntry(input: AlbumEntryEditInput) {
+        val ready = entryDetailState as? EntryDetailUiState.Ready ?: return
+        val validation = input.validate(ready.entry, System.currentTimeMillis())
+        val updated = (validation as? AlbumEntryEditValidation.Valid)?.entry ?: return
+        entryDetailState = ready.copy(saving = true, error = null)
+        activityScope.launch {
+            entryDetailState = when (val result = entryEditor.save(updated)) {
+                is AlbumEntryEditorResult.Success -> EntryDetailUiState.Ready(result.value)
+                is AlbumEntryEditorResult.Failed -> ready.copy(saving = false, error = result.error)
+            }
+        }
+    }
+
+    private fun deleteEntry() {
+        val entryId = selectedEntryId ?: return
+        activityScope.launch {
+            when (val result = entryEditor.delete(entryId)) {
+                is AlbumEntryEditorResult.Success -> {
+                    imageStore.delete(result.value.removedImage)
+                    selectedEntryId = null
+                }
+                is AlbumEntryEditorResult.Failed -> entryDetailState = EntryDetailUiState.Unavailable(result.error)
+            }
+        }
+    }
+
     private fun restoreState(bundle: Bundle?): AcquisitionScreenState {
         val kind = bundle?.getString(KEY_STATE) ?: return AcquisitionScreenState.Choosing()
         return when (kind) {
@@ -260,6 +325,7 @@ class MainActivity : ComponentActivity() {
     private companion object {
         const val KEY_SHOWING_ACQUISITION = "showing_acquisition"
         const val KEY_SHOWING_RECOGNITION = "showing_recognition"
+        const val KEY_SELECTED_ENTRY_ID = "selected_entry_id"
         const val KEY_STATE = "acquisition_state"
         const val KEY_SOURCE = "acquisition_source"
         const val KEY_IMAGE_ID = "acquisition_image_id"
