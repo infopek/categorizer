@@ -59,6 +59,8 @@ class MainActivity : ComponentActivity() {
     private var selectedEntryId by mutableStateOf<String?>(null)
     private var entryDetailState by mutableStateOf<EntryDetailUiState>(EntryDetailUiState.Loading)
     private var showingTransfer by mutableStateOf(false)
+    private var showingModelInfo by mutableStateOf(false)
+    private var modelInfoState by mutableStateOf<ModelInfoUiState>(ModelInfoUiState.Loading)
     private var transferState by mutableStateOf<TransferUiState>(TransferUiState.Ready)
     private var importPlan: ValidatedImportPlan? = null
     private val exportDestination = registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { it?.let(::exportTo) ?: transferCancelled("Export canceled") }
@@ -98,7 +100,8 @@ class MainActivity : ComponentActivity() {
         )
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (showingTransfer) showingTransfer = false
+                if (showingModelInfo) showingModelInfo = false
+                else if (showingTransfer) showingTransfer = false
                 else if (showingRecognition) leaveRecognition()
                 else if (showingAcquisition) leaveAcquisition()
                 else if (selectedEntryId != null) selectedEntryId = null
@@ -109,7 +112,9 @@ class MainActivity : ComponentActivity() {
             }
         })
         setContent {
-            if (showingTransfer) {
+            if (showingModelInfo) {
+                ModelInfoScreen(modelInfoState) { showingModelInfo = false }
+            } else if (showingTransfer) {
                 AlbumTransferScreen(transferState, { showingTransfer = false }, { exportDestination.launch("categorizer-backup.zip") }, { importSource.launch(arrayOf("application/zip", "application/octet-stream")) }, ::confirmImport)
             } else if (selectedEntryId != null) {
                 AlbumEntryDetailScreen(
@@ -147,7 +152,8 @@ class MainActivity : ComponentActivity() {
                         showingAcquisition = true
                     },
                     onOpenEntry = ::openEntry,
-                    onTransfer = { transferState = TransferUiState.Ready; showingTransfer = true }
+                    onTransfer = { transferState = TransferUiState.Ready; showingTransfer = true },
+                    onModelInfo = { modelInfoState = AndroidModelInfoLoader(applicationContext).load(); showingModelInfo = true }
                 )
             }
         }
