@@ -23,7 +23,10 @@ jinja2==3.1.6
 markupsafe==3.0.3
     # via jinja2
 ml-dtypes==0.5.4
-    # via onnx
+    # via
+    #   onnx
+    #   onnx-ir
+    #   onnxscript
 mpmath==1.3.0
     # via sympy
 networkx==3.6.1
@@ -33,16 +36,26 @@ numpy==2.4.1
     #   -r ml/requirements.in
     #   ml-dtypes
     #   onnx
+    #   onnx-ir
     #   onnxruntime
+    #   onnxscript
     #   torchvision
 onnx==1.22.0
-    # via -r ml/requirements.in
+    # via
+    #   -r ml/requirements.in
+    #   onnx-ir
+    #   onnxscript
+onnx-ir==0.2.1
+    # via onnxscript
 onnxruntime==1.27.0
+    # via -r ml/requirements.in
+onnxscript==0.7.1
     # via -r ml/requirements.in
 packaging==26.2
     # via
     #   build
     #   onnxruntime
+    #   onnxscript
     #   pytest
     #   wheel
 pillow==12.3.0
@@ -64,7 +77,9 @@ pyproject-hooks==1.2.0
 pytest==9.1.1
     # via -r ml/requirements-dev.in
 sympy==1.14.0
-    # via torch
+    # via
+    #   onnx-ir
+    #   torch
 torch==2.12.1+cpu
     # via
     #   -r ml/requirements.in
@@ -74,6 +89,8 @@ torchvision==0.27.1+cpu
 typing-extensions==4.16.0
     # via
     #   onnx
+    #   onnx-ir
+    #   onnxscript
     #   torch
 wheel==0.47.0
     # via pip-tools
