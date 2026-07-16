@@ -9,7 +9,7 @@ The collector queries Commons file search and `imageinfo` extended metadata, the
 Raw images and generated manifests remain ignored. Every candidate starts as `pending` with `label_review_required`. Review the image against its proposed class and description page, then create a JSON decision map such as `{"commons-123-example":"approved"}` and apply it:
 
 ```bash
-.venv/bin/python ml/dataset/render_review.py --manifest ml/datasets/wikimedia/pending-manifest.json --root ml/datasets/wikimedia/images --output ml/datasets/wikimedia/review.html
+.venv/bin/python ml/dataset/render_review.py --manifest ml/datasets/wikimedia/reviewed-manifest.json --root ml/datasets/wikimedia/images --output ml/datasets/wikimedia/review.html
 .venv/bin/python ml/dataset/apply_reviews.py --manifest ml/datasets/wikimedia/pending-manifest.json --decisions /local/decisions.json --reviewer reviewer-name --output ml/datasets/wikimedia/reviewed-manifest.json
 ```
 
