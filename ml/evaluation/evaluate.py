@@ -8,8 +8,7 @@ from typing import Any
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-from torchvision.models import mobilenet_v3_small
-from ml.training.train import ManifestDataset, git_revision, read, sha256, state_hash
+from ml.training.train import ManifestDataset,build_model,git_revision,read,sha256,state_hash
 
 def ranked(logits:list[float])->list[int]:
  values=np.asarray(logits,dtype=np.float64)
@@ -57,7 +56,7 @@ def main()->int:
  if catalog.get("class_count")!=len(classes) or manifest.get("catalog_id")!=catalog.get("catalog_id") or splits.get("catalog_id")!=catalog.get("catalog_id"):raise ValueError("class map mismatch")
  checkpoint=torch.load(a.checkpoint,map_location="cpu",weights_only=False)
  if checkpoint.get("identity")!=identity:raise ValueError("checkpoint identity mismatch")
- config=configs["baselines"][identity["baseline"]];model=mobilenet_v3_small(weights=None,num_classes=len(class_ids));model.load_state_dict(checkpoint["model"]);model.eval()
+ config=configs["baselines"][identity["baseline"]];model=build_model(config,len(class_ids));model.load_state_dict(checkpoint["model"]);model.eval()
  if state_hash(model)!=run.get("checkpoint_state_sha256"):raise ValueError("checkpoint state identity mismatch")
  rows=held_out(manifest,splits,a.root);dataset=ManifestDataset(rows,a.root,{x:i for i,x in enumerate(class_ids)},config);records=[]
  with torch.no_grad():

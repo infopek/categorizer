@@ -19,6 +19,7 @@ ml/data/
 ml/datasets/
 ml/cache/
 ml/runs/
+ml/weights/
 ml/checkpoints/
 ml/artifacts/
 *.pt

@@ -6,7 +6,9 @@ from pathlib import Path
 from typing import Any
 import numpy as np
 import torch
+import timm
 from PIL import Image, ImageOps
+from safetensors.torch import load_file
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models import mobilenet_v3_small
 from torchvision.transforms import InterpolationMode
@@ -54,6 +56,16 @@ def state_hash(model):
  h=hashlib.sha256()
  for name,tensor in sorted(model.state_dict().items()):h.update(name.encode());h.update(tensor.detach().cpu().contiguous().numpy().tobytes())
  return h.hexdigest()
+def build_model(config,num_classes,initialize=False):
+ if config["architecture"]=="mobilenet_v3_small":return mobilenet_v3_small(weights=None,num_classes=num_classes)
+ if config["architecture"]!="timm_mobilenetv3_small_100":raise ValueError("unsupported architecture")
+ model=timm.create_model("mobilenetv3_small_100",pretrained=False,num_classes=1000)
+ if initialize:
+  path=Path(config["weights"])
+  if not path.is_file() or sha256(path)!=config["weight_sha256"]:raise ValueError("approved pretrained artifact missing or hash mismatch")
+  model.load_state_dict(load_file(path),strict=True)
+ model.reset_classifier(num_classes)
+ return model
 def epoch_pass(model,loader,criterion,device,optimizer=None):
  model.train(optimizer is not None);loss_sum=correct=total=0;context=torch.enable_grad() if optimizer else torch.no_grad()
  with context:
@@ -68,11 +80,11 @@ def epoch_pass(model,loader,criterion,device,optimizer=None):
 def main()->int:
  p=argparse.ArgumentParser();p.add_argument("--manifest",type=Path,required=True);p.add_argument("--splits",type=Path,required=True);p.add_argument("--root",type=Path,required=True);p.add_argument("--catalog",type=Path,default=Path("ml/catalog/mvp-car-catalog.json"));p.add_argument("--configs",type=Path,default=Path("ml/training/baselines.json"));p.add_argument("--baseline",default="mobilenet_v3_small_224");p.add_argument("--output",type=Path,required=True);p.add_argument("--seed",type=int,default=1701);p.add_argument("--epochs",type=int);p.add_argument("--resume",type=Path);a=p.parse_args();seed_all(a.seed)
  config=dict(read(a.configs)["baselines"][a.baseline])
- if config["weights"] is not None or config["weight_source"]!="random_initialization":raise ValueError("only accepted random initialization is allowed")
+ if config["weight_source"]!="random_initialization" and not(config["architecture"]=="timm_mobilenetv3_small_100" and config.get("weight_sha256")):raise ValueError("unapproved weight source")
  epochs=a.epochs if a.epochs is not None else config["epochs"]
  if epochs<1:raise ValueError("epochs must be positive")
  rows,class_ids,manifest_hash,splits_hash=load_inputs(a.manifest,a.splits,a.root,a.catalog);index={x:i for i,x in enumerate(class_ids)};generator=torch.Generator().manual_seed(a.seed)
- loaders={name:DataLoader(ManifestDataset(items,a.root,index,config),batch_size=config["batch_size"],shuffle=name=="train",generator=generator,num_workers=0) for name,items in rows.items()};device=torch.device("cuda" if torch.cuda.is_available() else "cpu");model=mobilenet_v3_small(weights=None,num_classes=len(class_ids)).to(device);optimizer=torch.optim.AdamW(model.parameters(),lr=config["learning_rate"],weight_decay=config["weight_decay"]);start=0;metrics=[];identity={"manifest_sha256":manifest_hash,"splits_sha256":splits_hash,"seed":a.seed,"baseline":a.baseline}
+ loaders={name:DataLoader(ManifestDataset(items,a.root,index,config),batch_size=config["batch_size"],shuffle=name=="train",generator=generator,num_workers=0) for name,items in rows.items()};device=torch.device("cuda" if torch.cuda.is_available() else "cpu");model=build_model(config,len(class_ids),initialize=not a.resume).to(device);optimizer=torch.optim.AdamW(model.parameters(),lr=config["learning_rate"],weight_decay=config["weight_decay"]);start=0;metrics=[];identity={"manifest_sha256":manifest_hash,"splits_sha256":splits_hash,"seed":a.seed,"baseline":a.baseline}
  if a.resume:
   checkpoint=torch.load(a.resume,map_location=device,weights_only=False)
   if checkpoint["identity"]!=identity:raise ValueError("resume checkpoint identity mismatch")
