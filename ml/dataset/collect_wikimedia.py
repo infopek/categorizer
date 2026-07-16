@@ -44,13 +44,13 @@ def candidate_count(assets,class_id):return sum(x["class_id"]==class_id and x["r
 QUERY_ALIASES={
  "bmw-3-series-g20":["BMW G20",'incategory:"BMW G20"'],
  "bmw-5-series-g30":["BMW G30",'incategory:"BMW G30"'],
- "volkswagen-t-roc":['incategory:"Volkswagen T-Roc"'],
+ "volkswagen-t-roc":["VW T-Roc","Volkswagen T-Roc 2018","Volkswagen T-Roc front",'incategory:"Volkswagen T-Roc"'],
  "mercedes-benz-c-class-w205":['incategory:"Mercedes-Benz W205"'],
  "mercedes-benz-c-class-w206":["Mercedes-Benz W206",'incategory:"Mercedes-Benz W206"'],
  "audi-q3":['incategory:"Audi Q3"'],
- "tesla-model-x":['incategory:"Tesla Model X"'],
+ "tesla-model-x":["Tesla Model X front","Tesla Model X 2020",'incategory:"Tesla Model X"'],
  "skoda-karoq":["Škoda Karoq",'incategory:"Škoda Karoq"'],
- "lexus-es":['incategory:"Lexus ES"'],
+ "lexus-es":["Lexus ES 300h","Lexus ES XV60","Lexus ES XV70",'incategory:"Lexus ES (XV60)"','incategory:"Lexus ES (XZ10)"','incategory:"Lexus ES"'],
 }
 def main():
  p=argparse.ArgumentParser();p.add_argument("--catalog",type=Path,default=Path("ml/catalog/mvp-car-catalog.json"));p.add_argument("--root",type=Path,required=True);p.add_argument("--manifest",type=Path,required=True);p.add_argument("--class-id",action="append",dest="class_ids");p.add_argument("--per-class",type=int,default=5);p.add_argument("--search-limit",type=int,default=30);p.add_argument("--max-bytes",type=int,default=20*1024*1024);p.add_argument("--delay",type=float,default=.5);a=p.parse_args();catalog=json.loads(a.catalog.read_text());a.root.mkdir(parents=True,exist_ok=True)
