@@ -40,13 +40,20 @@ def license_info(metadata):
  short=str(metadata.get("LicenseShortName",{}).get("value","")).lower().replace(" ","-")
  return LICENSES.get(short)
 def safe_id(pageid,title):return f"commons-{pageid}-"+re.sub(r"[^a-z0-9]+","-",title.lower()).strip("-")[:60]
+QUERY_ALIASES={
+ "bmw-3-series-g20":["BMW G20",'incategory:"BMW G20"'],
+ "bmw-5-series-g30":["BMW G30",'incategory:"BMW G30"'],
+ "skoda-karoq":["Škoda Karoq",'incategory:"Škoda Karoq"'],
+}
 def main():
- p=argparse.ArgumentParser();p.add_argument("--catalog",type=Path,default=Path("ml/catalog/mvp-car-catalog.json"));p.add_argument("--root",type=Path,required=True);p.add_argument("--manifest",type=Path,required=True);p.add_argument("--per-class",type=int,default=5);p.add_argument("--search-limit",type=int,default=30);p.add_argument("--max-bytes",type=int,default=20*1024*1024);p.add_argument("--delay",type=float,default=.5);a=p.parse_args();catalog=json.loads(a.catalog.read_text());a.root.mkdir(parents=True,exist_ok=True)
+ p=argparse.ArgumentParser();p.add_argument("--catalog",type=Path,default=Path("ml/catalog/mvp-car-catalog.json"));p.add_argument("--root",type=Path,required=True);p.add_argument("--manifest",type=Path,required=True);p.add_argument("--class-id",action="append",dest="class_ids");p.add_argument("--per-class",type=int,default=5);p.add_argument("--search-limit",type=int,default=30);p.add_argument("--max-bytes",type=int,default=20*1024*1024);p.add_argument("--delay",type=float,default=.5);a=p.parse_args();catalog=json.loads(a.catalog.read_text());a.root.mkdir(parents=True,exist_ok=True)
  value=json.loads(a.manifest.read_text()) if a.manifest.exists() else {"schema_version":"1.0.0","catalog_id":catalog["catalog_id"],"assets":[]}
  for asset in value["assets"]:asset["license_url"]=https_url(asset.get("license_url"),LICENSES.get(asset["license_id"].lower(),("","https://commons.wikimedia.org/wiki/Commons:Reusing_content_outside_Wikimedia"))[1])
  a.manifest.parent.mkdir(parents=True,exist_ok=True);a.manifest.write_text(json.dumps(value,indent=2,sort_keys=True)+"\n");existing={x["asset_id"] for x in value["assets"]};counts={}
  for klass in catalog["classes"]:
   class_id=klass["class_id"];accepted=sum(x["class_id"]==class_id for x in value["assets"]);generation=klass.get("generation_label","");queries=[f'"{klass["display_name"]}" filetype:bitmap',f'{klass["make"]} {klass["model"]} {generation} filetype:bitmap',f'{klass["make"]} {klass["model"]} automobile filetype:bitmap']
+  if a.class_ids and class_id not in a.class_ids:continue
+  queries=[f'{query} filetype:bitmap' for query in QUERY_ALIASES.get(class_id,[])]+queries
   for query in queries:
    if accepted>=a.per_class:break
    data=request({"action":"query","format":"json","formatversion":"2","generator":"search","gsrsearch":query,"gsrnamespace":"6","gsrlimit":a.search_limit,"prop":"imageinfo","iiprop":"url|extmetadata|mime|size","iiurlwidth":"1024"})

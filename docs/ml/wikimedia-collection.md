@@ -6,6 +6,12 @@ The collector queries Commons file search and `imageinfo` extended metadata, the
 .venv/bin/python ml/dataset/collect_wikimedia.py --root ml/datasets/wikimedia/images --manifest ml/datasets/wikimedia/pending-manifest.json --per-class 5
 ```
 
+Repeat `--class-id` to collect only selected catalog classes, for example:
+
+```bash
+.venv/bin/python ml/dataset/collect_wikimedia.py --root ml/datasets/wikimedia/images --manifest ml/datasets/wikimedia/reviewed-manifest.json --class-id bmw-3-series-g20 --class-id skoda-karoq --per-class 5
+```
+
 Raw images and generated manifests remain ignored. Every candidate starts as `pending` with `label_review_required`. Review the image against its proposed class and description page, then create a JSON decision map such as `{"commons-123-example":"approved"}` and apply it:
 
 ```bash
