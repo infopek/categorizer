@@ -31,6 +31,7 @@ import categorizer.domain.RecognitionOutcome
 import categorizer.media.AndroidImageAcquisition
 import categorizer.media.ImageAcquisitionResult
 import categorizer.media.ManagedImageStore
+import categorizer.inference.AndroidOnnxRecognitionEngine
 import java.time.LocalDate
 import java.io.File
 import java.util.UUID
@@ -47,6 +48,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var acquisitionController: AcquisitionFlowController
     private lateinit var imageStore: ManagedImageStore
     private lateinit var recognitionCoordinator: RecognitionCoordinator
+    private lateinit var recognitionEngine: AndroidOnnxRecognitionEngine
     private lateinit var entrySaver: RecognitionEntrySaver
     private lateinit var entryEditor: AlbumEntryEditor
     private lateinit var archiveService: AlbumArchiveService
@@ -73,8 +75,9 @@ class MainActivity : ComponentActivity() {
         entrySaver = RecognitionEntrySaver(albumRepository)
         entryEditor = AlbumEntryEditor(albumRepository)
         archiveService = AlbumArchiveService(applicationContext, albumRepository)
+        recognitionEngine = AndroidOnnxRecognitionEngine(applicationContext)
         recognitionCoordinator = RecognitionCoordinator(
-            engine = UnavailableRecognitionEngine,
+            engine = recognitionEngine,
             scope = activityScope
         )
         activityScope.launch {
@@ -171,6 +174,7 @@ class MainActivity : ComponentActivity() {
         acquisition.close()
         recognitionCoordinator.dispose()
         activityScope.cancel()
+        recognitionEngine.close()
         albumRepository.close()
         super.onDestroy()
     }
@@ -393,15 +397,4 @@ class MainActivity : ComponentActivity() {
         const val STATE_REVIEW = "review"
         const val STATE_ERROR = "error"
     }
-}
-
-private object UnavailableRecognitionEngine : RecognitionEngine {
-    override suspend fun recognize(input: categorizer.domain.RecognitionInput): RecognitionOutcome =
-        RecognitionOutcome.Failed(
-            RecognitionError(
-                RecognitionErrorCode.MODEL_UNAVAILABLE,
-                "The bundled recognition model is not installed in this build.",
-                recoverable = false
-            )
-        )
 }
