@@ -42,6 +42,16 @@ Therefore:
 - The initial compliant baseline must use random initialization, or a later weight may be admitted only after an artifact-specific license/provenance record is reviewed.
 - ImageNet/third-party pretrained weights remain excluded until that record exists.
 
+### Accepted amendment: one pinned `timm` artifact
+
+On 2026-07-16 the repository owner accepted the exact
+`timm/mobilenetv3_small_100.lamb_in1k` `model.safetensors` artifact recorded in
+`docs/ml/pretrained-weight-artifact-proposal.md`. That artifact alone is conditionally
+approved for transfer-learning initialization under its recorded Apache-2.0 model
+license, immutable revision, SHA-256 verification, provenance disclosure, notice, and
+full evaluation requirements. This amendment does not approve TorchVision weights,
+other `timm` artifacts, or ImageNet assets generally.
+
 Primary source links:
 
 - TorchVision BSD-3-Clause license: https://github.com/pytorch/vision/blob/main/LICENSE
