@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+"""Render a local, offline label-review page that exports explicit decisions."""
+import argparse,html,json
+from pathlib import Path
+p=argparse.ArgumentParser();p.add_argument("--manifest",type=Path,required=True);p.add_argument("--root",type=Path,required=True);p.add_argument("--output",type=Path,required=True);a=p.parse_args();assets=json.loads(a.manifest.read_text())["assets"];cards=[]
+for x in assets:
+ uri=(a.root/x["local_path"]).resolve().as_uri();aid=html.escape(x["asset_id"]);cards.append(f'''<article><img src="{uri}" loading="lazy"><h3>{html.escape(x["class_id"])}</h3><p>{aid}</p><p>{html.escape(x["license_id"])} · <a href="{html.escape(x["description_url"])}">source</a></p><label><input type="radio" name="{aid}" value="approved"> approve</label><label><input type="radio" name="{aid}" value="rejected"> reject</label></article>''')
+page='''<!doctype html><meta charset="utf-8"><title>Categorizer label review</title><style>body{font:16px sans-serif;margin:20px}main{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}article{border:1px solid #bbb;padding:12px}img{width:100%;height:220px;object-fit:contain;background:#eee}button{position:sticky;top:10px;padding:12px;font-size:18px}</style><button onclick="save()">Export decisions.json</button><main>'''+''.join(cards)+'''</main><script>function save(){const d={};document.querySelectorAll('input:checked').forEach(x=>d[x.name]=x.value);const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download='decisions.json';a.click()}</script>''';a.output.write_text(page);print(f"RESULT OK assets={len(assets)} output={a.output}")
