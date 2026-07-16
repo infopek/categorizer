@@ -19,7 +19,8 @@ def digest(path:Path)->str:
   for chunk in iter(lambda:f.read(1048576),b""):h.update(chunk)
  return h.hexdigest()
 def dhash(path:Path)->int:
- with Image.open(path) as image:p=list(image.convert("L").resize((9,8)).getdata())
+ with Image.open(path) as image:
+  resized=image.convert("L").resize((9,8));p=list(resized.get_flattened_data() if hasattr(resized,"get_flattened_data") else resized.getdata())
  return sum((p[r*9+c]>p[r*9+c+1])<<(r*8+c) for r in range(8) for c in range(8))
 
 def validate(manifest:dict[str,Any],root:Path,catalog_path:Path):

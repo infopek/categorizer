@@ -1,6 +1,17 @@
 # Deterministic baseline training
 
-ML-003 trains MobileNetV3 Small from random initialization. No pretrained weight is downloaded because no pretrained artifact is currently approved. The 224-pixel configuration is the dataset baseline; the 32-pixel configuration is only for pipeline verification.
+ML-003 retains a MobileNetV3 Small random-initialization baseline. The 224-pixel configuration is the dataset baseline; the 32-pixel configuration is only for pipeline verification.
+
+DEC-001 now also permits one exact `timm` MobileNetV3 Small artifact. Fetch and verify it,
+then select the transfer baseline explicitly:
+
+```bash
+.venv/bin/python ml/training/fetch_pretrained.py
+.venv/bin/python ml/training/train.py --manifest ml/datasets/manifest.json --splits ml/datasets/splits.json --root /local/images --baseline mobilenet_v3_small_timm_transfer --output ml/runs/timm-transfer --seed 1701
+```
+
+The fetcher pins the immutable repository revision and SHA-256. The source artifact,
+derived checkpoints, and runs remain ignored.
 
 Run artifacts belong under ignored `ml/runs/`, never in Git:
 
