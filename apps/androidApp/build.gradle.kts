@@ -31,6 +31,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core)
+            implementation(libs.onnxruntime.android)
         }
         androidInstrumentedTest.dependencies {
             implementation(kotlin("test"))
@@ -64,6 +65,7 @@ android {
     }
 
     sourceSets["main"].assets.srcDir(rootProject.file("ml/catalog"))
+    sourceSets["androidTest"].assets.srcDir("src/androidInstrumentedTest/assets")
 
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
