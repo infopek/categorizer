@@ -12,3 +12,15 @@ Install the optional local pilot dependency into the ignored project environment
 ```
 
 Open `review.html` locally and export explicit decisions. Teacher proposals remain pending until a human reviews them; they must not be consumed as training truth merely because a box was generated. Model caches, rendered images, proposals, decisions, archives, and weights remain outside Git under ignored paths.
+
+Apply a complete export with strict asset/index validation:
+
+```bash
+.venv/bin/python ml/detection/apply_box_reviews.py \
+  --proposals ml/artifacts/lepidoptera/detection-pilot-v2/proposals.json \
+  --decisions ~/Downloads/detection-decisions.json \
+  --reviewer repository-owner \
+  --output ml/artifacts/lepidoptera/detection-pilot-v2/reviewed-annotations.json
+```
+
+Only `accepted` decisions with at least one explicitly selected proposal become training-eligible. Adjustment, multiple-subject, rejected, and no-visible-subject decisions remain in the reviewed manifest but are excluded until resolved.
