@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "category_id": "lepidoptera",
+  "notices": [
+    {
+      "name": "Austrian Lepidoptera image dataset and MaxViT-T checkpoint",
+      "creators": "Friederike Barkmann, Andreas Lindner, Ronald Würflinger, Helmut Höttinger, and Johannes Rüdisser",
+      "source": "https://doi.org/10.25452/figshare.plus.29135618",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "Barkmann et al. (2025), Machine learning training data: over 500,000 images of butterflies and moths (Lepidoptera) with species labels, Figshare, DOI 10.25452/figshare.plus.29135618."
+    },
+    {
+      "name": "MaxVit_ButterflyIdentification training scripts",
+      "source": "https://github.com/FriederikeBarkmann/MaxVit_ButterflyIdentification",
+      "license": "MIT",
+      "license_url": "https://opensource.org/license/mit"
+    }
+  ]
+}
