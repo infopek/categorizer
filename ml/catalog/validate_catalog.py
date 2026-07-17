@@ -13,13 +13,28 @@ OPTIONAL = {"generation_label", "approximate_year_range"}
 
 
 def main() -> int:
-    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
-    classes = catalog["classes"]
+    catalog_path = Path(sys.argv[1]) if len(sys.argv) > 1 else CATALOG_PATH
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    if "added_classes" in catalog:
+        base = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+        if catalog.get("catalog_id") == base.get("catalog_id"):
+            if base["classes"][-len(catalog["added_classes"]):] != catalog["added_classes"]:
+                print("ERROR accepted catalog suffix does not match amendment")
+                return 1
+            classes = base["classes"]
+        elif catalog.get("base_catalog_id") != base.get("catalog_id"):
+            print("ERROR proposal base_catalog_id does not match accepted catalog")
+            return 1
+        else:
+            classes = base["classes"] + catalog["added_classes"]
+    else:
+        classes = catalog["classes"]
     errors: list[str] = []
 
     if not 100 <= len(classes) <= 200:
         errors.append(f"class count must be 100-200, got {len(classes)}")
-    if catalog.get("class_count") != len(classes):
+    declared_count = catalog.get("combined_class_count", catalog.get("class_count"))
+    if declared_count != len(classes):
         errors.append("declared class_count does not match classes")
 
     ids: set[str] = set()
