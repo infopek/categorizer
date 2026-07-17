@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "figshare_article_id": 29135618,
+  "doi": "10.25452/figshare.plus.29135618",
+  "retrieved_at": "2026-07-17",
+  "license": {
+    "id": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "image_archives": {
+    "count": 186,
+    "total_bytes": 338589209390,
+    "acquisition_status": "deferred"
+  },
+  "files": [
+    {
+      "figshare_file_id": 56259125,
+      "name": "Images_per_species.csv",
+      "bytes": 4217,
+      "md5": "b36c5ad93f26d430b45d5a6131bcf5fd",
+      "sha256": "c5214438a186fe46304a088f020dd19fbede5171de9baf55a3b66440341e3af8",
+      "download_url": "https://ndownloader.figshare.com/files/56259125"
+    },
+    {
+      "figshare_file_id": 55170923,
+      "name": "Scripts_model_training.zip",
+      "bytes": 12591,
+      "md5": "c19df4d03583c0b8992f36b09b72d303",
+      "sha256": "021feab78d26450a5fd6e41a2c1596ce3c8b49bd4afb87abaae8169120909ca0",
+      "download_url": "https://ndownloader.figshare.com/files/55170923"
+    },
+    {
+      "figshare_file_id": 55170962,
+      "name": "pytorch_model.bin",
+      "bytes": 122783842,
+      "md5": "040fea4abf59a631d41e3878f51d073c",
+      "sha256": "ac3cf138930a8b6f52dcb064ff44ace39b701d3412812e457930463073e5eca0",
+      "download_url": "https://ndownloader.figshare.com/files/55170962"
+    }
+  ]
+}
