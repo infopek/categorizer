@@ -15,18 +15,70 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["settings.gradle.kts", "build.gradle.kts", "gradle/**", "gradlew", "gradlew.bat", "apps/androidApp/**", "shared/**", "docs/app/**", ".gitignore"],
-      "depends_on": ["CONTRACT-001"],
-      "inputs": ["Merged planning package", "Shared domain contracts", "Accepted Android 10+ platform boundary"],
-      "outputs": ["Pinned Gradle/Kotlin/Compose project configuration", "Buildable shared and Android application modules", "Minimal Android launcher and Compose root", "Developer setup documentation and baseline CI-ready commands"],
-      "implementation_notes": ["Configure Android minimum SDK to match Android 10/API 29 unless a documented toolchain constraint requires a compatible equivalent.", "Do not add iOS or desktop deliverables; shared code should avoid unnecessary Android coupling.", "Keep dependency versions centralized and do not add network, auth, analytics, or cloud SDKs."],
-      "acceptance_criteria": ["A clean checkout can invoke the documented Gradle wrapper commands without manual file edits.", "The Android debug application assembles and launches to a minimal Compose root.", "Shared domain code compiles without importing Android UI, filesystem, database, or ONNX APIs.", "Static checks and unit-test source sets are wired for later tasks."],
-      "verification": ["Run the Gradle wrapper version command.", "Run the Android debug assemble task.", "Run configured shared unit tests and static checks.", "Inspect the dependency graph for unapproved network or telemetry libraries."],
-      "proof_required": ["Build and check logs", "Documented toolchain versions", "Module-boundary summary"],
-      "edge_cases": ["JDK/Android Gradle Plugin incompatibility", "Paths containing spaces", "Offline Gradle execution after dependencies are cached"],
-      "non_goals": ["Feature-complete screens", "ONNX Runtime integration", "iOS or desktop packaging", "Google Play signing"],
+      "allowed_areas": [
+        "settings.gradle.kts",
+        "build.gradle.kts",
+        "gradle/**",
+        "gradlew",
+        "gradlew.bat",
+        "apps/androidApp/**",
+        "shared/**",
+        "docs/app/**",
+        ".gitignore"
+      ],
+      "depends_on": [
+        "CONTRACT-001"
+      ],
+      "inputs": [
+        "Merged planning package",
+        "Shared domain contracts",
+        "Accepted Android 10+ platform boundary"
+      ],
+      "outputs": [
+        "Pinned Gradle/Kotlin/Compose project configuration",
+        "Buildable shared and Android application modules",
+        "Minimal Android launcher and Compose root",
+        "Developer setup documentation and baseline CI-ready commands"
+      ],
+      "implementation_notes": [
+        "Configure Android minimum SDK to match Android 10/API 29 unless a documented toolchain constraint requires a compatible equivalent.",
+        "Do not add iOS or desktop deliverables; shared code should avoid unnecessary Android coupling.",
+        "Keep dependency versions centralized and do not add network, auth, analytics, or cloud SDKs."
+      ],
+      "acceptance_criteria": [
+        "A clean checkout can invoke the documented Gradle wrapper commands without manual file edits.",
+        "The Android debug application assembles and launches to a minimal Compose root.",
+        "Shared domain code compiles without importing Android UI, filesystem, database, or ONNX APIs.",
+        "Static checks and unit-test source sets are wired for later tasks."
+      ],
+      "verification": [
+        "Run the Gradle wrapper version command.",
+        "Run the Android debug assemble task.",
+        "Run configured shared unit tests and static checks.",
+        "Inspect the dependency graph for unapproved network or telemetry libraries."
+      ],
+      "proof_required": [
+        "Build and check logs",
+        "Documented toolchain versions",
+        "Module-boundary summary"
+      ],
+      "edge_cases": [
+        "JDK/Android Gradle Plugin incompatibility",
+        "Paths containing spaces",
+        "Offline Gradle execution after dependencies are cached"
+      ],
+      "non_goals": [
+        "Feature-complete screens",
+        "ONNX Runtime integration",
+        "iOS or desktop packaging",
+        "Google Play signing"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["build-system", "toolchain", "module-boundary"],
+      "risk_tags": [
+        "build-system",
+        "toolchain",
+        "module-boundary"
+      ],
       "handoff_notes": "All application tasks use the documented wrapper commands and extend these module boundaries."
     },
     {
@@ -41,18 +93,65 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["apps/androidApp/**", "shared/data/**", "shared/application/**", "docs/app/**"],
-      "depends_on": ["APP-001", "CONTRACT-001"],
-      "inputs": ["AlbumEntry and AlbumRepository contracts", "Accepted local-only privacy boundary"],
-      "outputs": ["Database schema and entities", "AlbumRepository adapter and domain mappers", "Schema versioning/migration baseline", "Persistence unit and Android integration tests"],
-      "implementation_notes": ["Store only managed relative image identifiers or validated private paths, never transient gallery URIs as durable references.", "Define deterministic search behavior and sort order.", "Keep database transactions explicit for multi-record operations."],
-      "acceptance_criteria": ["Create, observe, update, favorite, annotate, search/filter, and delete operations satisfy the shared contract.", "Entries survive process recreation and application restart.", "Database details do not escape the adapter boundary.", "Deleting an entry has a documented and tested managed-image cleanup policy."],
-      "verification": ["Run repository contract tests against the real adapter.", "Run migration/schema tests.", "Run Android restart persistence tests.", "Inspect stored records for absence of original external URIs and unnecessary metadata."],
-      "proof_required": ["Unit and integration test output", "Schema/migration documentation"],
-      "edge_cases": ["Missing managed image", "Duplicate entry ID", "Blank notes", "Unicode search", "Delete failure after metadata mutation"],
-      "non_goals": ["Cloud database", "Synchronization", "Archive import/export implementation"],
+      "allowed_areas": [
+        "apps/androidApp/**",
+        "shared/data/**",
+        "shared/application/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-001",
+        "CONTRACT-001"
+      ],
+      "inputs": [
+        "AlbumEntry and AlbumRepository contracts",
+        "Accepted local-only privacy boundary"
+      ],
+      "outputs": [
+        "Database schema and entities",
+        "AlbumRepository adapter and domain mappers",
+        "Schema versioning/migration baseline",
+        "Persistence unit and Android integration tests"
+      ],
+      "implementation_notes": [
+        "Store only managed relative image identifiers or validated private paths, never transient gallery URIs as durable references.",
+        "Define deterministic search behavior and sort order.",
+        "Keep database transactions explicit for multi-record operations."
+      ],
+      "acceptance_criteria": [
+        "Create, observe, update, favorite, annotate, search/filter, and delete operations satisfy the shared contract.",
+        "Entries survive process recreation and application restart.",
+        "Database details do not escape the adapter boundary.",
+        "Deleting an entry has a documented and tested managed-image cleanup policy."
+      ],
+      "verification": [
+        "Run repository contract tests against the real adapter.",
+        "Run migration/schema tests.",
+        "Run Android restart persistence tests.",
+        "Inspect stored records for absence of original external URIs and unnecessary metadata."
+      ],
+      "proof_required": [
+        "Unit and integration test output",
+        "Schema/migration documentation"
+      ],
+      "edge_cases": [
+        "Missing managed image",
+        "Duplicate entry ID",
+        "Blank notes",
+        "Unicode search",
+        "Delete failure after metadata mutation"
+      ],
+      "non_goals": [
+        "Cloud database",
+        "Synchronization",
+        "Archive import/export implementation"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["persistence", "data-integrity", "privacy"]
+      "risk_tags": [
+        "persistence",
+        "data-integrity",
+        "privacy"
+      ]
     },
     {
       "id": "APP-003",
@@ -66,18 +165,67 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["apps/androidApp/**", "shared/application/**", "docs/app/**"],
-      "depends_on": ["APP-001", "CONTRACT-001"],
-      "inputs": ["Android camera and photo-picker capabilities", "Managed image privacy requirements", "Recognition input contract"],
-      "outputs": ["Camera capture adapter", "System gallery picker adapter", "Orientation-normalization and metadata-stripping pipeline", "Private managed-image store and cleanup behavior", "Instrumentation fixtures/tests"],
-      "implementation_notes": ["Prefer system picker/camera contracts that minimize broad storage permissions.", "Decode with bounded memory and preserve correct visual orientation before stripping metadata.", "Use atomic file creation/rename where possible and clean temporary files on cancel or error."],
-      "acceptance_criteria": ["Camera and gallery flows each produce a readable private app-managed image.", "The managed copy renders with correct orientation and contains no unnecessary EXIF location/device metadata.", "Canceled, malformed, oversized, and unreadable inputs return recoverable errors without orphaned durable entries.", "The app does not rely on permanent access to the original gallery item."],
-      "verification": ["Run instrumentation tests with rotated, metadata-rich, large, malformed, and canceled fixtures.", "Inspect managed outputs with an independent metadata reader.", "Measure peak decode memory on representative large images."],
-      "proof_required": ["Instrumentation results", "Before/after metadata inspection", "Memory observation for large-image fixture"],
-      "edge_cases": ["EXIF rotation", "HEIC or unsupported formats", "Very large images", "Revoked picker access", "Low storage", "Process death during capture"],
-      "non_goals": ["Live video recognition", "Editing or uploading originals", "Location collection"],
+      "allowed_areas": [
+        "apps/androidApp/**",
+        "shared/application/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-001",
+        "CONTRACT-001"
+      ],
+      "inputs": [
+        "Android camera and photo-picker capabilities",
+        "Managed image privacy requirements",
+        "Recognition input contract"
+      ],
+      "outputs": [
+        "Camera capture adapter",
+        "System gallery picker adapter",
+        "Orientation-normalization and metadata-stripping pipeline",
+        "Private managed-image store and cleanup behavior",
+        "Instrumentation fixtures/tests"
+      ],
+      "implementation_notes": [
+        "Prefer system picker/camera contracts that minimize broad storage permissions.",
+        "Decode with bounded memory and preserve correct visual orientation before stripping metadata.",
+        "Use atomic file creation/rename where possible and clean temporary files on cancel or error."
+      ],
+      "acceptance_criteria": [
+        "Camera and gallery flows each produce a readable private app-managed image.",
+        "The managed copy renders with correct orientation and contains no unnecessary EXIF location/device metadata.",
+        "Canceled, malformed, oversized, and unreadable inputs return recoverable errors without orphaned durable entries.",
+        "The app does not rely on permanent access to the original gallery item."
+      ],
+      "verification": [
+        "Run instrumentation tests with rotated, metadata-rich, large, malformed, and canceled fixtures.",
+        "Inspect managed outputs with an independent metadata reader.",
+        "Measure peak decode memory on representative large images."
+      ],
+      "proof_required": [
+        "Instrumentation results",
+        "Before/after metadata inspection",
+        "Memory observation for large-image fixture"
+      ],
+      "edge_cases": [
+        "EXIF rotation",
+        "HEIC or unsupported formats",
+        "Very large images",
+        "Revoked picker access",
+        "Low storage",
+        "Process death during capture"
+      ],
+      "non_goals": [
+        "Live video recognition",
+        "Editing or uploading originals",
+        "Location collection"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["android-media", "privacy", "memory"]
+      "risk_tags": [
+        "android-media",
+        "privacy",
+        "memory"
+      ]
     },
     {
       "id": "APP-004",
@@ -91,18 +239,65 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["shared/application/**", "shared/ui/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["APP-001", "APP-003", "CONTRACT-004"],
-      "inputs": ["RecognitionEngine contract", "Deterministic fake engine and fixtures", "Managed image source"],
-      "outputs": ["Recognition orchestration use case", "Presentation state for idle/running/candidates/uncertain/unsupported/error", "Cancellation and retry behavior", "Unit tests driven by fake responses"],
-      "implementation_notes": ["Run recognition away from the UI thread and make concurrent submissions deterministic.", "Preserve candidate order, scores, model version, and timing without inventing confidence claims.", "Manual correction is album metadata only and never a training submission."],
-      "acceptance_criteria": ["Every contract result state maps to an explicit presentation state.", "Duplicate taps, cancellation, retry, and stale completion cannot save the wrong result.", "A candidate confirmation or manual correction produces a valid save command but does not persist until explicitly confirmed.", "Replacing the fake engine with the production adapter requires no screen or domain contract change."],
-      "verification": ["Run deterministic unit tests for success, uncertain, unsupported, error, cancellation, retry, and out-of-order completion.", "Run concurrency tests with controlled fake delays."],
-      "proof_required": ["Unit-test output", "State-transition documentation"],
-      "edge_cases": ["Empty candidate list", "Equal scores", "Rapid repeated submissions", "Engine failure after preprocessing", "Screen disposal during inference"],
-      "non_goals": ["ONNX Runtime adapter", "Training feedback upload", "Final screen styling"],
+      "allowed_areas": [
+        "shared/application/**",
+        "shared/ui/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-001",
+        "APP-003",
+        "CONTRACT-004"
+      ],
+      "inputs": [
+        "RecognitionEngine contract",
+        "Deterministic fake engine and fixtures",
+        "Managed image source"
+      ],
+      "outputs": [
+        "Recognition orchestration use case",
+        "Presentation state for idle/running/candidates/uncertain/unsupported/error",
+        "Cancellation and retry behavior",
+        "Unit tests driven by fake responses"
+      ],
+      "implementation_notes": [
+        "Run recognition away from the UI thread and make concurrent submissions deterministic.",
+        "Preserve candidate order, scores, model version, and timing without inventing confidence claims.",
+        "Manual correction is album metadata only and never a training submission."
+      ],
+      "acceptance_criteria": [
+        "Every contract result state maps to an explicit presentation state.",
+        "Duplicate taps, cancellation, retry, and stale completion cannot save the wrong result.",
+        "A candidate confirmation or manual correction produces a valid save command but does not persist until explicitly confirmed.",
+        "Replacing the fake engine with the production adapter requires no screen or domain contract change."
+      ],
+      "verification": [
+        "Run deterministic unit tests for success, uncertain, unsupported, error, cancellation, retry, and out-of-order completion.",
+        "Run concurrency tests with controlled fake delays."
+      ],
+      "proof_required": [
+        "Unit-test output",
+        "State-transition documentation"
+      ],
+      "edge_cases": [
+        "Empty candidate list",
+        "Equal scores",
+        "Rapid repeated submissions",
+        "Engine failure after preprocessing",
+        "Screen disposal during inference"
+      ],
+      "non_goals": [
+        "ONNX Runtime adapter",
+        "Training feedback upload",
+        "Final screen styling"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["concurrency", "state-management", "inference-boundary"]
+      "risk_tags": [
+        "concurrency",
+        "state-management",
+        "inference-boundary"
+      ]
     },
     {
       "id": "APP-005",
@@ -116,18 +311,71 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["shared/application/**", "shared/data/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["APP-002", "APP-003", "CONTRACT-003", "CONTRACT-004"],
-      "inputs": ["Accepted archive contract and fixtures", "AlbumRepository adapter", "Private managed-image store"],
-      "outputs": ["Archive exporter", "Non-mutating archive validator and preview", "Atomic importer with conflict handling", "Round-trip and adversarial tests"],
-      "implementation_notes": ["Validate archive version, paths, declared sizes, checksums, entry references, and resource limits before database/file mutation.", "Stage imported files privately and commit metadata/files as one recoverable operation.", "Return a human-readable preview and structured errors for UI consumption."],
-      "acceptance_criteria": ["A valid export imports into an empty profile with equivalent album data and image bytes.", "Corrupt, incompatible, traversal, missing-file, duplicate, oversized, or partial archives cause no partial durable mutation.", "Conflict behavior is deterministic and matches the accepted contract.", "Exports contain sanitized managed copies and no internal absolute paths."],
-      "verification": ["Run archive round-trip tests.", "Run every positive and negative contract fixture.", "Inject failures during staging and commit and verify rollback/cleanup.", "Inspect archive contents for path and metadata privacy."],
-      "proof_required": ["Round-trip and adversarial test output", "Atomicity failure-injection evidence", "Example archive manifest"],
-      "edge_cases": ["Low storage", "Interrupted export/import", "Duplicate entry IDs", "Duplicate image hashes", "Zip bomb or excessive file count", "Newer archive version"],
-      "non_goals": ["Cloud backup", "Incremental synchronization", "Sharing archives publicly"],
+      "allowed_areas": [
+        "shared/application/**",
+        "shared/data/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-002",
+        "APP-003",
+        "CONTRACT-003",
+        "CONTRACT-004"
+      ],
+      "inputs": [
+        "Accepted archive contract and fixtures",
+        "AlbumRepository adapter",
+        "Private managed-image store"
+      ],
+      "outputs": [
+        "Archive exporter",
+        "Non-mutating archive validator and preview",
+        "Atomic importer with conflict handling",
+        "Round-trip and adversarial tests"
+      ],
+      "implementation_notes": [
+        "Validate archive version, paths, declared sizes, checksums, entry references, and resource limits before database/file mutation.",
+        "Stage imported files privately and commit metadata/files as one recoverable operation.",
+        "Return a human-readable preview and structured errors for UI consumption."
+      ],
+      "acceptance_criteria": [
+        "A valid export imports into an empty profile with equivalent album data and image bytes.",
+        "Corrupt, incompatible, traversal, missing-file, duplicate, oversized, or partial archives cause no partial durable mutation.",
+        "Conflict behavior is deterministic and matches the accepted contract.",
+        "Exports contain sanitized managed copies and no internal absolute paths."
+      ],
+      "verification": [
+        "Run archive round-trip tests.",
+        "Run every positive and negative contract fixture.",
+        "Inject failures during staging and commit and verify rollback/cleanup.",
+        "Inspect archive contents for path and metadata privacy."
+      ],
+      "proof_required": [
+        "Round-trip and adversarial test output",
+        "Atomicity failure-injection evidence",
+        "Example archive manifest"
+      ],
+      "edge_cases": [
+        "Low storage",
+        "Interrupted export/import",
+        "Duplicate entry IDs",
+        "Duplicate image hashes",
+        "Zip bomb or excessive file count",
+        "Newer archive version"
+      ],
+      "non_goals": [
+        "Cloud backup",
+        "Incremental synchronization",
+        "Sharing archives publicly"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["archive", "atomicity", "security", "privacy"],
+      "risk_tags": [
+        "archive",
+        "atomicity",
+        "security",
+        "privacy"
+      ],
       "handoff_notes": "The application-experience batch can bind Data Transfer UI directly to the structured preview and result types."
     }
   ]

@@ -15,18 +15,66 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP acceptance",
-      "allowed_areas": ["verification/**", "shared/**/test/**", "ml/tests/**", "docs/verification/**"],
-      "depends_on": ["CONTRACT-001", "CONTRACT-002", "CONTRACT-003", "CONTRACT-004"],
-      "inputs": ["Accepted shared contracts", "Positive and negative fixtures", "Compatibility/version policies"],
-      "outputs": ["Independent contract test harness", "Manifest/class-map negative tests", "Archive compatibility/security fixture tests", "Contract conformance report"],
-      "implementation_notes": ["Consume public interfaces and checked-in fixtures rather than implementation internals.", "Include failures for duplicate class IDs, hash mismatch, incompatible versions, traversal paths, corrupt archives, and unsupported recognition states."],
-      "acceptance_criteria": ["Every shared contract has at least one positive and one negative independent test.", "Manifest, archive, and domain fixtures are validated without relying on producer self-tests.", "Compatibility and error outcomes match the accepted policy.", "The suite runs through documented repository commands."],
-      "verification": ["Run the independent suite against current contracts.", "Intentionally corrupt representative fixtures and confirm failures are detected.", "Record covered invariants and any gaps."],
-      "proof_required": ["Test output", "Contract coverage matrix", "Conformance report"],
-      "edge_cases": ["Unknown future fields", "Class-map reorder", "Manual identity outside catalog", "Archive path traversal", "Hash mismatch"],
-      "non_goals": ["Implementing production adapters", "Changing accepted contract semantics"],
+      "allowed_areas": [
+        "verification/**",
+        "shared/**/test/**",
+        "ml/tests/**",
+        "docs/verification/**"
+      ],
+      "depends_on": [
+        "CONTRACT-001",
+        "CONTRACT-002",
+        "CONTRACT-003",
+        "CONTRACT-004"
+      ],
+      "inputs": [
+        "Accepted shared contracts",
+        "Positive and negative fixtures",
+        "Compatibility/version policies"
+      ],
+      "outputs": [
+        "Independent contract test harness",
+        "Manifest/class-map negative tests",
+        "Archive compatibility/security fixture tests",
+        "Contract conformance report"
+      ],
+      "implementation_notes": [
+        "Consume public interfaces and checked-in fixtures rather than implementation internals.",
+        "Include failures for duplicate class IDs, hash mismatch, incompatible versions, traversal paths, corrupt archives, and unsupported recognition states."
+      ],
+      "acceptance_criteria": [
+        "Every shared contract has at least one positive and one negative independent test.",
+        "Manifest, archive, and domain fixtures are validated without relying on producer self-tests.",
+        "Compatibility and error outcomes match the accepted policy.",
+        "The suite runs through documented repository commands."
+      ],
+      "verification": [
+        "Run the independent suite against current contracts.",
+        "Intentionally corrupt representative fixtures and confirm failures are detected.",
+        "Record covered invariants and any gaps."
+      ],
+      "proof_required": [
+        "Test output",
+        "Contract coverage matrix",
+        "Conformance report"
+      ],
+      "edge_cases": [
+        "Unknown future fields",
+        "Class-map reorder",
+        "Manual identity outside catalog",
+        "Archive path traversal",
+        "Hash mismatch"
+      ],
+      "non_goals": [
+        "Implementing production adapters",
+        "Changing accepted contract semantics"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["contract-drift", "compatibility", "security"]
+      "risk_tags": [
+        "contract-drift",
+        "compatibility",
+        "security"
+      ]
     },
     {
       "id": "VER-002",
@@ -40,18 +88,76 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP acceptance",
-      "allowed_areas": ["verification/**", "apps/androidApp/src/androidTest/**", "apps/androidApp/src/test/**", "shared/**/test/**", "docs/verification/**"],
-      "depends_on": ["UI-001", "UI-002", "UI-003", "UI-004", "UI-005", "UI-006", "APP-002", "APP-003", "APP-004", "APP-005"],
-      "inputs": ["Android application candidate", "Fake and real recognition configurations", "Media and archive fixtures"],
-      "outputs": ["End-to-end instrumentation suite", "Process-death/restart persistence suite", "Accessibility and recoverable-error checklist", "Application verification report"],
-      "implementation_notes": ["Use deterministic test data and fake inference for application-only paths, then repeat a critical path with the production adapter.", "Exercise system picker/camera/document boundaries using supported instrumentation techniques without weakening permissions."],
-      "acceptance_criteria": ["Camera and gallery flows each reach explicit confirmation and create exactly one durable entry.", "Favorites, notes, identity edits, search/filter, and deletion persist correctly across restart.", "Export/import round-trips through the user flow and invalid archives never enable confirmation.", "Canceled, denied, malformed, low-storage, and missing-image states are recoverable and do not create orphan records."],
-      "verification": ["Run the suite on an emulator and at least one supported physical device.", "Force-stop/relaunch or recreate process state at defined checkpoints.", "Inspect runtime permissions and private storage behavior."],
-      "proof_required": ["Instrumentation logs", "Device/environment record", "Screenshots or recording of critical flows", "Application verification report"],
-      "edge_cases": ["Process death during capture", "Duplicate confirm", "Entry deleted while visible", "Low storage", "Revoked picker access", "Corrupt import"],
-      "non_goals": ["iOS/desktop testing", "Cloud or account testing", "Visual polish beyond accepted usability"],
+      "allowed_areas": [
+        "verification/**",
+        "apps/androidApp/src/androidTest/**",
+        "apps/androidApp/src/test/**",
+        "shared/**/test/**",
+        "docs/verification/**"
+      ],
+      "depends_on": [
+        "UI-001",
+        "UI-002",
+        "UI-003",
+        "UI-004",
+        "UI-005",
+        "UI-006",
+        "APP-002",
+        "APP-003",
+        "APP-004",
+        "APP-005"
+      ],
+      "inputs": [
+        "Android application candidate",
+        "Fake and real recognition configurations",
+        "Media and archive fixtures"
+      ],
+      "outputs": [
+        "End-to-end instrumentation suite",
+        "Process-death/restart persistence suite",
+        "Accessibility and recoverable-error checklist",
+        "Application verification report"
+      ],
+      "implementation_notes": [
+        "Use deterministic test data and fake inference for application-only paths, then repeat a critical path with the production adapter.",
+        "Exercise system picker/camera/document boundaries using supported instrumentation techniques without weakening permissions."
+      ],
+      "acceptance_criteria": [
+        "Camera and gallery flows each reach explicit confirmation and create exactly one durable entry.",
+        "Favorites, notes, identity edits, search/filter, and deletion persist correctly across restart.",
+        "Export/import round-trips through the user flow and invalid archives never enable confirmation.",
+        "Canceled, denied, malformed, low-storage, and missing-image states are recoverable and do not create orphan records."
+      ],
+      "verification": [
+        "Run the suite on an emulator and at least one supported physical device.",
+        "Force-stop/relaunch or recreate process state at defined checkpoints.",
+        "Inspect runtime permissions and private storage behavior."
+      ],
+      "proof_required": [
+        "Instrumentation logs",
+        "Device/environment record",
+        "Screenshots or recording of critical flows",
+        "Application verification report"
+      ],
+      "edge_cases": [
+        "Process death during capture",
+        "Duplicate confirm",
+        "Entry deleted while visible",
+        "Low storage",
+        "Revoked picker access",
+        "Corrupt import"
+      ],
+      "non_goals": [
+        "iOS/desktop testing",
+        "Cloud or account testing",
+        "Visual polish beyond accepted usability"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["android-lifecycle", "persistence", "end-to-end"]
+      "risk_tags": [
+        "android-lifecycle",
+        "persistence",
+        "end-to-end"
+      ]
     },
     {
       "id": "VER-003",
@@ -65,18 +171,78 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP acceptance",
-      "allowed_areas": ["verification/**", "ml/tests/**", "apps/androidApp/src/androidTest/**", "docs/verification/**"],
-      "depends_on": ["DEC-001", "DEC-002", "DEC-003", "ML-004", "ML-005", "ML-006", "ML-007"],
-      "inputs": ["Frozen held-out manifests", "Release-candidate bundle and model card", "Accepted benchmark device/protocol", "Accepted size/memory budgets"],
-      "outputs": ["Independent aggregate and per-class evaluation report", "Cross-runtime equivalence report", "Cold/warm device latency report", "Package/model/installed/memory measurement report", "Gate decision"],
-      "implementation_notes": ["Verify hashes of code, environment, splits, model, manifest, and class map before running.", "Do not tune or replace artifacts during independent verification; failures return to the owning task.", "Record thermal/power state and raw timing samples."],
-      "acceptance_criteria": ["Independent held-out top-five accuracy is at least 80% and includes every supported class with sample counts.", "Python PyTorch, Python ONNX Runtime, and Android ONNX Runtime rankings satisfy the accepted equivalence policy.", "Median device inference is below two seconds under the accepted protocol.", "All accepted size and peak-memory budgets pass.", "The final gate decision references immutable artifact and input hashes."],
-      "verification": ["Run all evaluation and equivalence commands from a clean environment.", "Run the full benchmark protocol on the named physical device.", "Cross-check package and installed-size measurements using independent tools."],
-      "proof_required": ["Raw and summarized metrics", "Per-class report", "Equivalence report", "Device record and timing samples", "Artifact hashes and gate decision"],
-      "edge_cases": ["Thermal throttling", "Class missing from held-out split", "Ranking ties", "ABI size differences", "First-run extraction", "Metric mismatch"],
-      "non_goals": ["Lowering thresholds", "Selecting a different model during verification", "Marketing claims beyond the accepted test scope"],
+      "allowed_areas": [
+        "verification/**",
+        "ml/tests/**",
+        "apps/androidApp/src/androidTest/**",
+        "docs/verification/**"
+      ],
+      "depends_on": [
+        "DEC-001",
+        "DEC-002",
+        "DEC-003",
+        "ML-004",
+        "ML-005",
+        "ML-006",
+        "ML-007"
+      ],
+      "inputs": [
+        "Frozen held-out manifests",
+        "Release-candidate bundle and model card",
+        "Accepted benchmark device/protocol",
+        "Accepted size/memory budgets"
+      ],
+      "outputs": [
+        "Independent aggregate and per-class evaluation report",
+        "Cross-runtime equivalence report",
+        "Cold/warm device latency report",
+        "Package/model/installed/memory measurement report",
+        "Gate decision"
+      ],
+      "implementation_notes": [
+        "Verify hashes of code, environment, splits, model, manifest, and class map before running.",
+        "Do not tune or replace artifacts during independent verification; failures return to the owning task.",
+        "Record thermal/power state and raw timing samples."
+      ],
+      "acceptance_criteria": [
+        "Independent held-out top-five accuracy is at least 80% and includes every supported class with sample counts.",
+        "Python PyTorch, Python ONNX Runtime, and Android ONNX Runtime rankings satisfy the accepted equivalence policy.",
+        "Median device inference is below two seconds under the accepted protocol.",
+        "All accepted size and peak-memory budgets pass.",
+        "The final gate decision references immutable artifact and input hashes."
+      ],
+      "verification": [
+        "Run all evaluation and equivalence commands from a clean environment.",
+        "Run the full benchmark protocol on the named physical device.",
+        "Cross-check package and installed-size measurements using independent tools."
+      ],
+      "proof_required": [
+        "Raw and summarized metrics",
+        "Per-class report",
+        "Equivalence report",
+        "Device record and timing samples",
+        "Artifact hashes and gate decision"
+      ],
+      "edge_cases": [
+        "Thermal throttling",
+        "Class missing from held-out split",
+        "Ranking ties",
+        "ABI size differences",
+        "First-run extraction",
+        "Metric mismatch"
+      ],
+      "non_goals": [
+        "Lowering thresholds",
+        "Selecting a different model during verification",
+        "Marketing claims beyond the accepted test scope"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["independent-proof", "accuracy", "latency", "release-gate"]
+      "risk_tags": [
+        "independent-proof",
+        "accuracy",
+        "latency",
+        "release-gate"
+      ]
     },
     {
       "id": "VER-004",
@@ -90,18 +256,72 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP acceptance",
-      "allowed_areas": ["verification/**", "apps/androidApp/src/androidTest/**", "apps/androidApp/src/test/**", "shared/**/test/**", "docs/verification/**"],
-      "depends_on": ["APP-003", "APP-005", "UI-005", "CONTRACT-003"],
-      "inputs": ["Managed-image pipeline", "Archive exporter/importer", "Positive and adversarial fixtures"],
-      "outputs": ["Independent metadata/privacy inspection", "Archive fuzz/adversarial suite", "Atomicity failure-injection results", "Privacy and archive risk report"],
-      "implementation_notes": ["Inspect actual saved and exported image bytes with an independent metadata reader.", "Test traversal, absolute paths, symlinks if applicable, duplicate names/IDs, checksum mismatch, excessive counts/sizes, truncation, and interruption.", "Snapshot album/file state before each failed import and compare afterward."],
-      "acceptance_criteria": ["Managed and exported copies contain no unnecessary location/device metadata.", "Private files are not exposed through unintended public paths or logs.", "All malicious, corrupt, incompatible, and resource-exhaustion fixtures fail before durable mutation.", "Injected failures leave album metadata and managed files in a consistent state with temporary data cleaned."],
-      "verification": ["Run independent EXIF/metadata inspection.", "Run adversarial archive corpus and resource-limit cases.", "Run failure injection at staging and commit boundaries and compare state snapshots."],
-      "proof_required": ["Metadata inspection output", "Adversarial corpus results", "Before/after atomicity snapshots", "Risk report"],
-      "edge_cases": ["Zip bomb", "Path traversal", "Duplicate entry IDs", "Checksum collision assumptions", "Interrupted write", "Low storage", "Unsupported image metadata blocks"],
-      "non_goals": ["Cloud threat modeling", "Network penetration testing", "Encrypting archives unless separately approved"],
+      "allowed_areas": [
+        "verification/**",
+        "apps/androidApp/src/androidTest/**",
+        "apps/androidApp/src/test/**",
+        "shared/**/test/**",
+        "docs/verification/**"
+      ],
+      "depends_on": [
+        "APP-003",
+        "APP-005",
+        "UI-005",
+        "CONTRACT-003"
+      ],
+      "inputs": [
+        "Managed-image pipeline",
+        "Archive exporter/importer",
+        "Positive and adversarial fixtures"
+      ],
+      "outputs": [
+        "Independent metadata/privacy inspection",
+        "Archive fuzz/adversarial suite",
+        "Atomicity failure-injection results",
+        "Privacy and archive risk report"
+      ],
+      "implementation_notes": [
+        "Inspect actual saved and exported image bytes with an independent metadata reader.",
+        "Test traversal, absolute paths, symlinks if applicable, duplicate names/IDs, checksum mismatch, excessive counts/sizes, truncation, and interruption.",
+        "Snapshot album/file state before each failed import and compare afterward."
+      ],
+      "acceptance_criteria": [
+        "Managed and exported copies contain no unnecessary location/device metadata.",
+        "Private files are not exposed through unintended public paths or logs.",
+        "All malicious, corrupt, incompatible, and resource-exhaustion fixtures fail before durable mutation.",
+        "Injected failures leave album metadata and managed files in a consistent state with temporary data cleaned."
+      ],
+      "verification": [
+        "Run independent EXIF/metadata inspection.",
+        "Run adversarial archive corpus and resource-limit cases.",
+        "Run failure injection at staging and commit boundaries and compare state snapshots."
+      ],
+      "proof_required": [
+        "Metadata inspection output",
+        "Adversarial corpus results",
+        "Before/after atomicity snapshots",
+        "Risk report"
+      ],
+      "edge_cases": [
+        "Zip bomb",
+        "Path traversal",
+        "Duplicate entry IDs",
+        "Checksum collision assumptions",
+        "Interrupted write",
+        "Low storage",
+        "Unsupported image metadata blocks"
+      ],
+      "non_goals": [
+        "Cloud threat modeling",
+        "Network penetration testing",
+        "Encrypting archives unless separately approved"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["privacy", "archive-security", "data-integrity"]
+      "risk_tags": [
+        "privacy",
+        "archive-security",
+        "data-integrity"
+      ]
     },
     {
       "id": "VER-005",
@@ -115,18 +335,74 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP acceptance",
-      "allowed_areas": ["verification/**", "apps/androidApp/src/androidTest/**", "docs/verification/**"],
-      "depends_on": ["UI-001", "UI-002", "UI-003", "UI-004", "UI-005", "UI-006", "ML-006", "ML-007", "VER-002", "VER-004"],
-      "inputs": ["Integrated application candidate", "Bundled release-candidate model", "Representative supported and unsupported image fixtures"],
-      "outputs": ["Airplane-mode end-to-end procedure", "Critical-journey evidence", "Observed network/dependency report", "Offline acceptance decision"],
-      "implementation_notes": ["Enable airplane mode before first application launch after installation where practical.", "Observe network requests or failures with platform tooling; the app must not require connectivity to proceed.", "Include both ranked-candidate confirmation and manual correction."],
-      "acceptance_criteria": ["A fresh installation launches and exposes the bundled model/catalog without network access.", "Camera and gallery images can be recognized, confirmed/corrected, and saved offline.", "Album edits, restart persistence, search/filter, export, and import work offline.", "No recognition, account, telemetry, or remote configuration request is required or retried in a user-disruptive way."],
-      "verification": ["Run the documented journey on a supported physical device in airplane mode.", "Inspect system/network logs for unexpected requests.", "Restart the device/application and repeat a saved-entry lookup."],
-      "proof_required": ["Device/environment record", "Screen recording or timestamped screenshots", "Network observation", "Offline acceptance decision"],
-      "edge_cases": ["First launch offline", "DNS/network transition during operation", "System picker behavior offline", "Model load failure", "Restart after save"],
-      "non_goals": ["Testing cloud features", "Online update behavior", "Downloadable models"],
+      "allowed_areas": [
+        "verification/**",
+        "apps/androidApp/src/androidTest/**",
+        "docs/verification/**"
+      ],
+      "depends_on": [
+        "UI-001",
+        "UI-002",
+        "UI-003",
+        "UI-004",
+        "UI-005",
+        "UI-006",
+        "ML-006",
+        "ML-007",
+        "VER-002",
+        "VER-004"
+      ],
+      "inputs": [
+        "Integrated application candidate",
+        "Bundled release-candidate model",
+        "Representative supported and unsupported image fixtures"
+      ],
+      "outputs": [
+        "Airplane-mode end-to-end procedure",
+        "Critical-journey evidence",
+        "Observed network/dependency report",
+        "Offline acceptance decision"
+      ],
+      "implementation_notes": [
+        "Enable airplane mode before first application launch after installation where practical.",
+        "Observe network requests or failures with platform tooling; the app must not require connectivity to proceed.",
+        "Include both ranked-candidate confirmation and manual correction."
+      ],
+      "acceptance_criteria": [
+        "A fresh installation launches and exposes the bundled model/catalog without network access.",
+        "Camera and gallery images can be recognized, confirmed/corrected, and saved offline.",
+        "Album edits, restart persistence, search/filter, export, and import work offline.",
+        "No recognition, account, telemetry, or remote configuration request is required or retried in a user-disruptive way."
+      ],
+      "verification": [
+        "Run the documented journey on a supported physical device in airplane mode.",
+        "Inspect system/network logs for unexpected requests.",
+        "Restart the device/application and repeat a saved-entry lookup."
+      ],
+      "proof_required": [
+        "Device/environment record",
+        "Screen recording or timestamped screenshots",
+        "Network observation",
+        "Offline acceptance decision"
+      ],
+      "edge_cases": [
+        "First launch offline",
+        "DNS/network transition during operation",
+        "System picker behavior offline",
+        "Model load failure",
+        "Restart after save"
+      ],
+      "non_goals": [
+        "Testing cloud features",
+        "Online update behavior",
+        "Downloadable models"
+      ],
       "estimated_size": "S",
-      "risk_tags": ["offline", "end-to-end", "product-promise"]
+      "risk_tags": [
+        "offline",
+        "end-to-end",
+        "product-promise"
+      ]
     },
     {
       "id": "REL-001",
@@ -140,18 +416,78 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "Google Play closed testing",
-      "allowed_areas": ["apps/androidApp/**", "verification/release/**", "docs/verification/**", ".github/**"],
-      "depends_on": ["DEC-003", "ML-007", "VER-001", "VER-002", "VER-003", "VER-004", "VER-005"],
-      "inputs": ["Accepted verification reports", "Release-candidate application/model bundle", "Human-managed signing and Play Console access", "Required license/privacy disclosures"],
-      "outputs": ["Reproducible signed release build procedure", "Closed-track release checklist and compliance records", "Published closed-testing artifact/version", "Tester install/update evidence and rollback notes"],
-      "implementation_notes": ["Never commit keystores, passwords, service credentials, or Play Console secrets.", "Pin and record application ID, versioning, artifact hashes, model/catalog version, notices, and release notes.", "Stop if store declarations conflict with the actual local-only behavior or required licenses."],
-      "acceptance_criteria": ["All prerequisite verification gates pass and reference the exact release artifact/model hashes.", "A signed release artifact satisfying accepted size budgets is uploaded to a Google Play closed-testing track.", "At least one authorized tester installs the build through Play and verifies an update or documents why first-release update proof is deferred.", "Store disclosures accurately describe local photos/data, offline inference, permissions, and absence of accounts/telemetry.", "No secret material is present in Git or logs."],
-      "verification": ["Rebuild the release artifact from a clean checkout using documented secret injection.", "Compare uploaded artifact and model hashes with approved evidence.", "Perform closed-track install and update checks.", "Run a secret scan and review Play declarations/notices."],
-      "proof_required": ["Clean release build log", "Artifact/model hashes", "Closed-track publication record", "Tester install/update evidence", "Secret scan and compliance checklist"],
-      "edge_cases": ["Signing configuration unavailable", "Store package-size rejection", "ABI delivery differences", "Model notice omission", "Update migration failure", "Tester account not enrolled"],
-      "non_goals": ["Public production rollout", "Paid subscription setup", "Cloud service deployment"],
+      "allowed_areas": [
+        "apps/androidApp/**",
+        "verification/release/**",
+        "docs/verification/**",
+        ".github/**"
+      ],
+      "depends_on": [
+        "DEC-003",
+        "ML-007",
+        "VER-001",
+        "VER-002",
+        "VER-003",
+        "VER-004",
+        "VER-005"
+      ],
+      "inputs": [
+        "Accepted verification reports",
+        "Release-candidate application/model bundle",
+        "Human-managed signing and Play Console access",
+        "Required license/privacy disclosures"
+      ],
+      "outputs": [
+        "Reproducible signed release build procedure",
+        "Closed-track release checklist and compliance records",
+        "Published closed-testing artifact/version",
+        "Tester install/update evidence and rollback notes"
+      ],
+      "implementation_notes": [
+        "Never commit keystores, passwords, service credentials, or Play Console secrets.",
+        "Pin and record application ID, versioning, artifact hashes, model/catalog version, notices, and release notes.",
+        "Stop if store declarations conflict with the actual local-only behavior or required licenses."
+      ],
+      "acceptance_criteria": [
+        "All prerequisite verification gates pass and reference the exact release artifact/model hashes.",
+        "A signed release artifact satisfying accepted size budgets is uploaded to a Google Play closed-testing track.",
+        "At least one authorized tester installs the build through Play and verifies an update or documents why first-release update proof is deferred.",
+        "Store disclosures accurately describe local photos/data, offline inference, permissions, and absence of accounts/telemetry.",
+        "No secret material is present in Git or logs."
+      ],
+      "verification": [
+        "Rebuild the release artifact from a clean checkout using documented secret injection.",
+        "Compare uploaded artifact and model hashes with approved evidence.",
+        "Perform closed-track install and update checks.",
+        "Run a secret scan and review Play declarations/notices."
+      ],
+      "proof_required": [
+        "Clean release build log",
+        "Artifact/model hashes",
+        "Closed-track publication record",
+        "Tester install/update evidence",
+        "Secret scan and compliance checklist"
+      ],
+      "edge_cases": [
+        "Signing configuration unavailable",
+        "Store package-size rejection",
+        "ABI delivery differences",
+        "Model notice omission",
+        "Update migration failure",
+        "Tester account not enrolled"
+      ],
+      "non_goals": [
+        "Public production rollout",
+        "Paid subscription setup",
+        "Cloud service deployment"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["release", "signing", "store-compliance", "secrets"],
+      "risk_tags": [
+        "release",
+        "signing",
+        "store-compliance",
+        "secrets"
+      ],
       "handoff_notes": "After this task is accepted, MVP implementation proof exists; public release still requires a separately approved post-MVP decision."
     }
   ]

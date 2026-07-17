@@ -7,7 +7,7 @@
       "id": "UI-001",
       "title": "Build the album browsing experience",
       "summary": "Implement the default album screen with empty, loading, populated, filtered, and recoverable-error states.",
-      "objective": "Give casual users a clear home for browsing and finding saved car sightings.",
+      "objective": "Give casual users a clear home for browsing and finding saved Lepidoptera specimen sightings.",
       "context": "The accepted MVP requires local entries, favorites, notes, search, and filtering; the album is the default destination.",
       "owner_role": "Application Builder",
       "lane": "shared-ui",
@@ -15,18 +15,65 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP experience",
-      "allowed_areas": ["shared/ui/**", "shared/application/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["APP-002", "CONTRACT-004"],
-      "inputs": ["Observable AlbumRepository use cases", "AlbumEntry domain type", "Deterministic album fixtures"],
-      "outputs": ["Album list/grid presentation", "Search and favorite/identity filters", "Empty/loading/error states", "Navigation entry points for capture/import and detail"],
-      "implementation_notes": ["Keep search/filter state explicit and testable.", "Use stable entry IDs for list identity and avoid loading full-resolution images into list cells.", "Make empty states distinguish no collection from no filter matches."],
-      "acceptance_criteria": ["The screen renders empty, populated, filtered, and recoverable-error states from deterministic fixtures.", "Search and filters update results predictably without mutating stored entries.", "Favorite state and edited labels/notes reflect repository updates.", "Large collections use bounded image loading and stable list identity."],
-      "verification": ["Run presentation-state unit tests.", "Run Compose UI tests for empty, search, filter, and navigation states.", "Exercise a synthetic large album and inspect scrolling memory behavior."],
-      "proof_required": ["Unit/UI test output", "Screenshots for empty, populated, and filtered states"],
-      "edge_cases": ["No matches", "Unicode notes and labels", "Missing thumbnail", "Entry deleted while visible", "Rapid query changes"],
-      "non_goals": ["Cloud gallery", "Social feed", "Statistics or badges"],
+      "allowed_areas": [
+        "shared/ui/**",
+        "shared/application/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-002",
+        "CONTRACT-004"
+      ],
+      "inputs": [
+        "Observable AlbumRepository use cases",
+        "AlbumEntry domain type",
+        "Deterministic album fixtures"
+      ],
+      "outputs": [
+        "Album list/grid presentation",
+        "Search and favorite/identity filters",
+        "Empty/loading/error states",
+        "Navigation entry points for capture/import and detail"
+      ],
+      "implementation_notes": [
+        "Keep search/filter state explicit and testable.",
+        "Use stable entry IDs for list identity and avoid loading full-resolution images into list cells.",
+        "Make empty states distinguish no collection from no filter matches."
+      ],
+      "acceptance_criteria": [
+        "The screen renders empty, populated, filtered, and recoverable-error states from deterministic fixtures.",
+        "Search and filters update results predictably without mutating stored entries.",
+        "Favorite state and edited labels/notes reflect repository updates.",
+        "Large collections use bounded image loading and stable list identity."
+      ],
+      "verification": [
+        "Run presentation-state unit tests.",
+        "Run Compose UI tests for empty, search, filter, and navigation states.",
+        "Exercise a synthetic large album and inspect scrolling memory behavior."
+      ],
+      "proof_required": [
+        "Unit/UI test output",
+        "Screenshots for empty, populated, and filtered states"
+      ],
+      "edge_cases": [
+        "No matches",
+        "Unicode notes and labels",
+        "Missing thumbnail",
+        "Entry deleted while visible",
+        "Rapid query changes"
+      ],
+      "non_goals": [
+        "Cloud gallery",
+        "Social feed",
+        "Statistics or badges"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["ui-state", "image-memory", "search"]
+      "risk_tags": [
+        "ui-state",
+        "image-memory",
+        "search"
+      ]
     },
     {
       "id": "UI-002",
@@ -40,18 +87,66 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP experience",
-      "allowed_areas": ["shared/ui/**", "shared/application/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["APP-003", "APP-004"],
-      "inputs": ["Camera adapter", "System gallery picker adapter", "Recognition orchestration entry point"],
-      "outputs": ["Image-source chooser", "Camera and gallery launch/result handling", "Progress, cancel, permission, and recoverable-error states", "Navigation to recognition review"],
-      "implementation_notes": ["Request only the permissions actually required by the selected system contracts.", "Prevent duplicate launches and stale results after process or navigation changes.", "Never create an album entry before recognition is explicitly confirmed."],
-      "acceptance_criteria": ["Camera and gallery each reach recognition review with the correct managed image.", "Cancel, denied permission, unreadable input, low storage, and process recreation are recoverable.", "Repeated taps do not create duplicate acquisitions or recognition jobs.", "No broad media permission is requested when the system picker makes it unnecessary."],
-      "verification": ["Run Compose and Android instrumentation tests for both sources.", "Test permission denial, cancel, malformed input, and saved-state restoration.", "Inspect the manifest and runtime permission requests."],
-      "proof_required": ["Instrumentation logs", "Screenshots of chooser and recoverable errors", "Permission inspection"],
-      "edge_cases": ["Process death after camera launch", "Picker URI revoked", "No camera application", "Low storage", "Double tap"],
-      "non_goals": ["Live camera classification", "Batch gallery import", "Photo editing"],
+      "allowed_areas": [
+        "shared/ui/**",
+        "shared/application/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-003",
+        "APP-004"
+      ],
+      "inputs": [
+        "Camera adapter",
+        "System gallery picker adapter",
+        "Recognition orchestration entry point"
+      ],
+      "outputs": [
+        "Image-source chooser",
+        "Camera and gallery launch/result handling",
+        "Progress, cancel, permission, and recoverable-error states",
+        "Navigation to recognition review"
+      ],
+      "implementation_notes": [
+        "Request only the permissions actually required by the selected system contracts.",
+        "Prevent duplicate launches and stale results after process or navigation changes.",
+        "Never create an album entry before recognition is explicitly confirmed."
+      ],
+      "acceptance_criteria": [
+        "Camera and gallery each reach recognition review with the correct managed image.",
+        "Cancel, denied permission, unreadable input, low storage, and process recreation are recoverable.",
+        "Repeated taps do not create duplicate acquisitions or recognition jobs.",
+        "No broad media permission is requested when the system picker makes it unnecessary."
+      ],
+      "verification": [
+        "Run Compose and Android instrumentation tests for both sources.",
+        "Test permission denial, cancel, malformed input, and saved-state restoration.",
+        "Inspect the manifest and runtime permission requests."
+      ],
+      "proof_required": [
+        "Instrumentation logs",
+        "Screenshots of chooser and recoverable errors",
+        "Permission inspection"
+      ],
+      "edge_cases": [
+        "Process death after camera launch",
+        "Picker URI revoked",
+        "No camera application",
+        "Low storage",
+        "Double tap"
+      ],
+      "non_goals": [
+        "Live camera classification",
+        "Batch gallery import",
+        "Photo editing"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["android-lifecycle", "permissions", "navigation"]
+      "risk_tags": [
+        "android-lifecycle",
+        "permissions",
+        "navigation"
+      ]
     },
     {
       "id": "UI-003",
@@ -65,18 +160,66 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP experience",
-      "allowed_areas": ["shared/ui/**", "shared/application/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["APP-004", "APP-002"],
-      "inputs": ["Recognition presentation states", "Ranked candidates", "Album save use case", "CarIdentity contract"],
-      "outputs": ["Recognition progress and review UI", "Ranked candidate selection", "Manual make/model and optional generation/year correction", "Explicit confirm/save, retry, and cancel actions"],
-      "implementation_notes": ["Do not translate raw scores into misleading percentages unless the model contract defines calibrated confidence.", "Preserve manual identities as user-confirmed metadata and label them distinctly where useful.", "Guard saving against stale or duplicate confirmation events."],
-      "acceptance_criteria": ["Ordered candidates display the correct identity information and remain selectable.", "Uncertain, unsupported, empty, and engine-error states use honest language and offer valid next actions.", "Manual correction validates required make/model fields and optional generation/year fields.", "Exactly one album entry is created only after explicit confirmation."],
-      "verification": ["Run UI tests for every fake recognition fixture.", "Run duplicate-confirmation and stale-result tests.", "Manually review wording for unsupported and uncertain states."],
-      "proof_required": ["UI test output", "Screenshots of ranked, uncertain, unsupported, and manual-correction states"],
-      "edge_cases": ["Empty candidates", "Tied scores", "Very long display labels", "Blank manual fields", "Inference completes after cancel"],
-      "non_goals": ["Automatic web search for corrections", "Uploading corrections", "Trim-level editing requirement"],
+      "allowed_areas": [
+        "shared/ui/**",
+        "shared/application/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-004",
+        "APP-002"
+      ],
+      "inputs": [
+        "Recognition presentation states",
+        "Ranked candidates",
+        "Album save use case",
+        "CategoryIdentity contract"
+      ],
+      "outputs": [
+        "Recognition progress and review UI",
+        "Ranked candidate selection",
+        "Manual make/model and optional generation/year correction",
+        "Explicit confirm/save, retry, and cancel actions"
+      ],
+      "implementation_notes": [
+        "Do not translate raw scores into misleading percentages unless the model contract defines calibrated confidence.",
+        "Preserve manual identities as user-confirmed metadata and label them distinctly where useful.",
+        "Guard saving against stale or duplicate confirmation events."
+      ],
+      "acceptance_criteria": [
+        "Ordered candidates display the correct identity information and remain selectable.",
+        "Uncertain, unsupported, empty, and engine-error states use honest language and offer valid next actions.",
+        "Manual correction validates required make/model fields and optional generation/year fields.",
+        "Exactly one album entry is created only after explicit confirmation."
+      ],
+      "verification": [
+        "Run UI tests for every fake recognition fixture.",
+        "Run duplicate-confirmation and stale-result tests.",
+        "Manually review wording for unsupported and uncertain states."
+      ],
+      "proof_required": [
+        "UI test output",
+        "Screenshots of ranked, uncertain, unsupported, and manual-correction states"
+      ],
+      "edge_cases": [
+        "Empty candidates",
+        "Tied scores",
+        "Very long display labels",
+        "Blank manual fields",
+        "Inference completes after cancel"
+      ],
+      "non_goals": [
+        "Automatic web search for corrections",
+        "Uploading corrections",
+        "Trim-level editing requirement"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["trust", "duplicate-data", "validation"]
+      "risk_tags": [
+        "trust",
+        "duplicate-data",
+        "validation"
+      ]
     },
     {
       "id": "UI-004",
@@ -90,18 +233,64 @@
       "status": "ready",
       "priority": "P1",
       "milestone": "MVP experience",
-      "allowed_areas": ["shared/ui/**", "shared/application/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["APP-002", "UI-001"],
-      "inputs": ["Album entry read/update/delete use cases", "Managed image renderer"],
-      "outputs": ["Entry detail screen", "Favorite and notes editing", "Manual identity editing", "Deletion confirmation and result handling"],
-      "implementation_notes": ["Make unsaved edits and save failures visible.", "Deletion confirmation must explain that the managed photo copy is removed according to repository policy.", "Do not expose internal paths or database identifiers."],
-      "acceptance_criteria": ["Saved edits persist across restart and update album search/filter results.", "Canceling edits leaves stored data unchanged.", "Deletion requires confirmation and returns safely to the album.", "Missing images and concurrent deletion produce recoverable states."],
-      "verification": ["Run presentation and UI tests for edit/save/cancel/delete flows.", "Run restart persistence verification after editing.", "Inject repository failures and verify user-visible recovery."],
-      "proof_required": ["Unit/UI test output", "Screenshots of detail, editing, and delete confirmation"],
-      "edge_cases": ["Entry deleted concurrently", "Missing managed photo", "Very long notes", "Save failure", "Back navigation with unsaved changes"],
-      "non_goals": ["Location editing", "Public sharing", "Advanced collection statistics"],
+      "allowed_areas": [
+        "shared/ui/**",
+        "shared/application/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-002",
+        "UI-001"
+      ],
+      "inputs": [
+        "Album entry read/update/delete use cases",
+        "Managed image renderer"
+      ],
+      "outputs": [
+        "Entry detail screen",
+        "Favorite and notes editing",
+        "Manual identity editing",
+        "Deletion confirmation and result handling"
+      ],
+      "implementation_notes": [
+        "Make unsaved edits and save failures visible.",
+        "Deletion confirmation must explain that the managed photo copy is removed according to repository policy.",
+        "Do not expose internal paths or database identifiers."
+      ],
+      "acceptance_criteria": [
+        "Saved edits persist across restart and update album search/filter results.",
+        "Canceling edits leaves stored data unchanged.",
+        "Deletion requires confirmation and returns safely to the album.",
+        "Missing images and concurrent deletion produce recoverable states."
+      ],
+      "verification": [
+        "Run presentation and UI tests for edit/save/cancel/delete flows.",
+        "Run restart persistence verification after editing.",
+        "Inject repository failures and verify user-visible recovery."
+      ],
+      "proof_required": [
+        "Unit/UI test output",
+        "Screenshots of detail, editing, and delete confirmation"
+      ],
+      "edge_cases": [
+        "Entry deleted concurrently",
+        "Missing managed photo",
+        "Very long notes",
+        "Save failure",
+        "Back navigation with unsaved changes"
+      ],
+      "non_goals": [
+        "Location editing",
+        "Public sharing",
+        "Advanced collection statistics"
+      ],
       "estimated_size": "S",
-      "risk_tags": ["data-loss", "editing", "navigation"]
+      "risk_tags": [
+        "data-loss",
+        "editing",
+        "navigation"
+      ]
     },
     {
       "id": "UI-005",
@@ -115,18 +304,66 @@
       "status": "ready",
       "priority": "P1",
       "milestone": "MVP experience",
-      "allowed_areas": ["shared/ui/**", "shared/application/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["APP-005", "CONTRACT-003"],
-      "inputs": ["Archive export use case", "Non-mutating import preview", "Atomic import result types"],
-      "outputs": ["Export flow with success/failure status", "Import file selection and validation progress", "Archive summary/conflict preview", "Explicit import confirmation and result reporting"],
-      "implementation_notes": ["Use system document APIs without requesting broad filesystem permissions.", "Display archive version, entry/image counts, conflicts, and validation errors before confirmation.", "Never offer confirmation for an invalid archive."],
-      "acceptance_criteria": ["A valid export can be saved through the system document flow.", "A valid import is previewed without mutation and requires explicit confirmation.", "Invalid, incompatible, corrupt, canceled, and low-storage cases are clear and recoverable.", "The screen reports completion only after the atomic import succeeds."],
-      "verification": ["Run UI/instrumentation tests using all archive contract fixtures.", "Test canceled document flows and permission revocation.", "Verify no mutation occurs during preview or failed import."],
-      "proof_required": ["Instrumentation output", "Screenshots of valid preview and invalid archive states", "No-mutation verification"],
-      "edge_cases": ["Large archive", "Low storage", "Canceled destination", "Duplicate conflicts", "Newer archive version"],
-      "non_goals": ["Automatic backups", "Cloud drives beyond system document-provider behavior", "Archive sharing UX"],
+      "allowed_areas": [
+        "shared/ui/**",
+        "shared/application/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "APP-005",
+        "CONTRACT-003"
+      ],
+      "inputs": [
+        "Archive export use case",
+        "Non-mutating import preview",
+        "Atomic import result types"
+      ],
+      "outputs": [
+        "Export flow with success/failure status",
+        "Import file selection and validation progress",
+        "Archive summary/conflict preview",
+        "Explicit import confirmation and result reporting"
+      ],
+      "implementation_notes": [
+        "Use system document APIs without requesting broad filesystem permissions.",
+        "Display archive version, entry/image counts, conflicts, and validation errors before confirmation.",
+        "Never offer confirmation for an invalid archive."
+      ],
+      "acceptance_criteria": [
+        "A valid export can be saved through the system document flow.",
+        "A valid import is previewed without mutation and requires explicit confirmation.",
+        "Invalid, incompatible, corrupt, canceled, and low-storage cases are clear and recoverable.",
+        "The screen reports completion only after the atomic import succeeds."
+      ],
+      "verification": [
+        "Run UI/instrumentation tests using all archive contract fixtures.",
+        "Test canceled document flows and permission revocation.",
+        "Verify no mutation occurs during preview or failed import."
+      ],
+      "proof_required": [
+        "Instrumentation output",
+        "Screenshots of valid preview and invalid archive states",
+        "No-mutation verification"
+      ],
+      "edge_cases": [
+        "Large archive",
+        "Low storage",
+        "Canceled destination",
+        "Duplicate conflicts",
+        "Newer archive version"
+      ],
+      "non_goals": [
+        "Automatic backups",
+        "Cloud drives beyond system document-provider behavior",
+        "Archive sharing UX"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["data-transfer", "atomicity", "android-documents"]
+      "risk_tags": [
+        "data-transfer",
+        "atomicity",
+        "android-documents"
+      ]
     },
     {
       "id": "UI-006",
@@ -140,18 +377,66 @@
       "status": "ready",
       "priority": "P1",
       "milestone": "MVP experience",
-      "allowed_areas": ["shared/ui/**", "shared/application/**", "apps/androidApp/**", "docs/app/**"],
-      "depends_on": ["DEC-001", "CONTRACT-002", "APP-001"],
-      "inputs": ["Model manifest and class map", "Accepted license/attribution matrix", "Merged privacy boundaries"],
-      "outputs": ["About Model screen", "Supported-catalog summary", "Offline/privacy and limitation copy", "License and attribution rendering"],
-      "implementation_notes": ["Read version and catalog data from the bundled manifest instead of duplicating constants.", "Avoid promises of exact identification and explain ranked confirmation.", "Keep required notices accessible offline."],
-      "acceptance_criteria": ["The displayed model/catalog version matches the bundled manifest.", "Required notices and source acknowledgements are available offline.", "The screen states that inference and album data remain local and that unsupported/uncertain results may occur.", "No telemetry, account, subscription, or remote-service wording is implied."],
-      "verification": ["Run UI tests with valid and missing/invalid manifest fixtures.", "Compare rendered version/classes/notices with fixture data.", "Review disclosure copy against merged requirements and license obligations."],
-      "proof_required": ["UI test output", "Disclosure screenshots", "Notice-to-license-matrix review"],
-      "edge_cases": ["Long notice text", "Large class list", "Missing optional generation labels", "Invalid manifest detected at startup"],
-      "non_goals": ["Downloadable model management", "Remote privacy policy fetching", "Public release store listing"],
+      "allowed_areas": [
+        "shared/ui/**",
+        "shared/application/**",
+        "apps/androidApp/**",
+        "docs/app/**"
+      ],
+      "depends_on": [
+        "DEC-001",
+        "CONTRACT-002",
+        "APP-001"
+      ],
+      "inputs": [
+        "Model manifest and class map",
+        "Accepted license/attribution matrix",
+        "Merged privacy boundaries"
+      ],
+      "outputs": [
+        "About Model screen",
+        "Supported-catalog summary",
+        "Offline/privacy and limitation copy",
+        "License and attribution rendering"
+      ],
+      "implementation_notes": [
+        "Read version and catalog data from the bundled manifest instead of duplicating constants.",
+        "Avoid promises of exact identification and explain ranked confirmation.",
+        "Keep required notices accessible offline."
+      ],
+      "acceptance_criteria": [
+        "The displayed model/catalog version matches the bundled manifest.",
+        "Required notices and source acknowledgements are available offline.",
+        "The screen states that inference and album data remain local and that unsupported/uncertain results may occur.",
+        "No telemetry, account, subscription, or remote-service wording is implied."
+      ],
+      "verification": [
+        "Run UI tests with valid and missing/invalid manifest fixtures.",
+        "Compare rendered version/classes/notices with fixture data.",
+        "Review disclosure copy against merged requirements and license obligations."
+      ],
+      "proof_required": [
+        "UI test output",
+        "Disclosure screenshots",
+        "Notice-to-license-matrix review"
+      ],
+      "edge_cases": [
+        "Long notice text",
+        "Large class list",
+        "Missing optional generation labels",
+        "Invalid manifest detected at startup"
+      ],
+      "non_goals": [
+        "Downloadable model management",
+        "Remote privacy policy fetching",
+        "Public release store listing"
+      ],
       "estimated_size": "S",
-      "risk_tags": ["transparency", "licensing", "manifest-consistency"]
+      "risk_tags": [
+        "transparency",
+        "licensing",
+        "manifest-consistency"
+      ]
     }
   ]
 }

@@ -5,29 +5,74 @@
   "tasks": [
     {
       "id": "DEC-001",
-      "title": "Select the licensed MVP car catalog and source assets",
-      "summary": "Research and document a distribution-compatible dataset, pretrained-weight baseline, and exact 100–200-class MVP catalog without downloading or committing unapproved assets.",
-      "objective": "Resolve the accepted catalog and licensing gate before dataset preparation or model distribution begins.",
-      "context": "The merged requirements require approximately 100–200 common car models and compatible licenses, but intentionally leave the exact classes and source assets open.",
+      "title": "Accept the licensed Lepidoptera catalog, dataset, and checkpoint candidate",
+      "summary": "Pin the CC BY 4.0 Figshare dataset record, define the 162-class MVP boundary, and admit the exact MaxViT-T checkpoint only for provenance and mobile qualification.",
+      "objective": "Provide an auditable category and artifact boundary without downloading the full 315 GiB image collection.",
+      "context": "The accepted MVP amendment replaces cars with Austrian butterflies and moths while preserving car artifacts for post-MVP work.",
       "owner_role": "Contract Steward",
       "lane": "decisions",
       "repo_target": "categorizer",
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["docs/ml/**", "ml/catalog/**", "models/*.json"],
+      "allowed_areas": [
+        "docs/ml/**",
+        "ml/catalog/**",
+        "models/*.json"
+      ],
       "depends_on": [],
-      "blocks": ["CONTRACT-002"],
-      "inputs": ["assembly/intake/project_intake.json", "assembly/requirements/REQUIREMENTS.md", "assembly/generated/project_spec.json"],
-      "outputs": ["A reviewed catalog manifest with stable class IDs and display labels", "A dataset and pretrained-weight license matrix with source links and redistribution conclusions", "A decision record identifying accepted sources, exclusions, and unresolved acquisition risks"],
-      "implementation_notes": ["Treat dataset images, annotations, pretrained weights, and generated model weights as separately licensed artifacts.", "Do not equate public download access with permission to redistribute.", "Include generation or approximate-year distinctions only where the accepted product scope requires them."],
-      "acceptance_criteria": ["The proposed catalog contains between 100 and 200 unique stable class IDs.", "Every proposed dataset and pretrained weight has a recorded license, source, attribution requirement, and application-distribution conclusion.", "Any incompatible or unclear source is excluded or explicitly marked blocking rather than treated as accepted.", "The human owner records acceptance of the catalog and asset-source decision."],
-      "verification": ["Validate catalog uniqueness and required fields with a deterministic script or schema.", "Manually review source license pages and preserve direct references and access dates.", "Confirm no raw dataset, credentials, or unapproved model binary is added to Git."],
-      "proof_required": ["Catalog validation output", "License matrix", "Human acceptance recorded in the decision document"],
-      "edge_cases": ["Multiple names for the same generation", "Classes with insufficient licensed examples", "Dataset labels that collapse generations required by the MVP"],
-      "non_goals": ["Downloading the full training dataset", "Training or exporting a model", "Expanding beyond the accepted 100–200 car scope"],
+      "blocks": [
+        "CONTRACT-002"
+      ],
+      "inputs": [
+        "Merged Lepidoptera requirements amendment",
+        "Figshare article 29135618 metadata",
+        "Scientific Data validation paper",
+        "Published training repository"
+      ],
+      "outputs": [
+        "Accepted 162-class scientific-name catalog",
+        "Dataset/checkpoint license and attribution record",
+        "Pinned checkpoint identity and acquisition policy"
+      ],
+      "implementation_notes": [
+        "Treat dataset images, annotations, pretrained weights, and generated model weights as separately licensed artifacts.",
+        "Do not equate public download access with permission to redistribute.",
+        "Include generation or approximate-year distinctions only where the accepted product scope requires them."
+      ],
+      "acceptance_criteria": [
+        "The catalog contains exactly the source classes with at least 50 expert-validated images.",
+        "The dataset record, article, scripts, and checkpoint licenses are treated as distinct artifacts.",
+        "The checkpoint file ID, size, source URL, and published MD5 are pinned before download.",
+        "Full dataset acquisition remains conditional on checkpoint qualification or approved distillation."
+      ],
+      "verification": [
+        "Validate catalog uniqueness and exact source-count threshold.",
+        "Re-fetch Figshare metadata and compare immutable artifact fields.",
+        "Confirm CC BY 4.0 attribution requirements are represented in model/application notices.",
+        "Confirm no raw dataset or model binary is committed."
+      ],
+      "proof_required": [
+        "Catalog validation output",
+        "Figshare metadata snapshot and hashes",
+        "License/provenance decision"
+      ],
+      "edge_cases": [
+        "Multiple names for the same generation",
+        "Classes with insufficient licensed examples",
+        "Dataset labels that collapse generations required by the MVP"
+      ],
+      "non_goals": [
+        "Downloading all species archives",
+        "Approving the checkpoint as a release model",
+        "Deleting or rewriting post-MVP car assets"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["licensing", "dataset", "product-scope"],
+      "risk_tags": [
+        "licensing",
+        "dataset",
+        "product-scope"
+      ],
       "handoff_notes": "ML work must consume the accepted stable class IDs and license conclusions without renaming classes silently."
     },
     {
@@ -42,18 +87,52 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["docs/verification/**", "verification/device/**"],
+      "allowed_areas": [
+        "docs/verification/**",
+        "verification/device/**"
+      ],
       "depends_on": [],
-      "inputs": ["Accepted Android 10+, recent mid-range, approximately 4 GB RAM device boundary", "Accepted median inference below two seconds signal"],
-      "outputs": ["Benchmark-device decision record", "Measurement protocol covering setup, warmup, sample count, timings, and result format"],
-      "implementation_notes": ["Record model name, chipset, RAM, Android version, ABI, and relevant power/performance settings.", "Separate image decoding/preprocessing, session initialization, and inference timing so results are interpretable."],
-      "acceptance_criteria": ["A physically available or otherwise guaranteed-access benchmark device is named with reproducible specifications.", "The protocol defines cold and warm paths, warmup, minimum sample count, percentile/median reporting, and failure handling.", "The human owner confirms access to the selected device."],
-      "verification": ["Review the protocol against the project acceptance signal.", "Run a no-model dry run or fixture timing harness if device access is already available."],
-      "proof_required": ["Accepted device record", "Versioned benchmark protocol"],
-      "edge_cases": ["Thermal throttling", "Battery saver", "First-run model extraction", "Background applications affecting measurements"],
-      "non_goals": ["Selecting every supported test device", "Meeting the latency gate before a candidate model exists"],
+      "inputs": [
+        "Accepted Android 10+, recent mid-range, approximately 4 GB RAM device boundary",
+        "Accepted median inference below two seconds signal"
+      ],
+      "outputs": [
+        "Benchmark-device decision record",
+        "Measurement protocol covering setup, warmup, sample count, timings, and result format"
+      ],
+      "implementation_notes": [
+        "Record model name, chipset, RAM, Android version, ABI, and relevant power/performance settings.",
+        "Separate image decoding/preprocessing, session initialization, and inference timing so results are interpretable."
+      ],
+      "acceptance_criteria": [
+        "A physically available or otherwise guaranteed-access benchmark device is named with reproducible specifications.",
+        "The protocol defines cold and warm paths, warmup, minimum sample count, percentile/median reporting, and failure handling.",
+        "The human owner confirms access to the selected device."
+      ],
+      "verification": [
+        "Review the protocol against the project acceptance signal.",
+        "Run a no-model dry run or fixture timing harness if device access is already available."
+      ],
+      "proof_required": [
+        "Accepted device record",
+        "Versioned benchmark protocol"
+      ],
+      "edge_cases": [
+        "Thermal throttling",
+        "Battery saver",
+        "First-run model extraction",
+        "Background applications affecting measurements"
+      ],
+      "non_goals": [
+        "Selecting every supported test device",
+        "Meeting the latency gate before a candidate model exists"
+      ],
       "estimated_size": "S",
-      "risk_tags": ["hardware", "performance", "acceptance-gate"]
+      "risk_tags": [
+        "hardware",
+        "performance",
+        "acceptance-gate"
+      ]
     },
     {
       "id": "DEC-003",
@@ -67,43 +146,119 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["docs/architecture/**", "docs/verification/**", "verification/release/**"],
+      "allowed_areas": [
+        "docs/architecture/**",
+        "docs/verification/**",
+        "verification/release/**"
+      ],
       "depends_on": [],
-      "inputs": ["Google Play closed-testing target", "Bundled offline model requirement", "Supported approximately 4 GB RAM device boundary"],
-      "outputs": ["Accepted size and memory budget decision record", "A measurement checklist for release artifacts and runtime memory"],
-      "implementation_notes": ["Keep compressed download size, installed size, ONNX file size, peak resident memory, and inference working memory distinct.", "Document which metric is a hard gate and which is an optimization target."],
-      "acceptance_criteria": ["Numeric budgets are recorded for model file, download package, installed footprint, and peak runtime memory.", "The measurement method and responsible evidence location are defined.", "The human owner accepts the budgets or explicitly records a blocking exception."],
-      "verification": ["Check the decision record contains every required metric and unit.", "Validate the proposed measurement commands or Android tooling on a placeholder build when available."],
-      "proof_required": ["Accepted budget decision", "Release-size measurement checklist"],
-      "edge_cases": ["ABI-specific native libraries", "Store-delivered compression", "First-run extraction duplicating model storage"],
-      "non_goals": ["Optimizing a model before a baseline exists", "Changing the accepted offline bundled-model requirement"],
+      "inputs": [
+        "Google Play closed-testing target",
+        "Bundled offline model requirement",
+        "Supported approximately 4 GB RAM device boundary"
+      ],
+      "outputs": [
+        "Accepted size and memory budget decision record",
+        "A measurement checklist for release artifacts and runtime memory"
+      ],
+      "implementation_notes": [
+        "Keep compressed download size, installed size, ONNX file size, peak resident memory, and inference working memory distinct.",
+        "Document which metric is a hard gate and which is an optimization target."
+      ],
+      "acceptance_criteria": [
+        "Numeric budgets are recorded for model file, download package, installed footprint, and peak runtime memory.",
+        "The measurement method and responsible evidence location are defined.",
+        "The human owner accepts the budgets or explicitly records a blocking exception."
+      ],
+      "verification": [
+        "Check the decision record contains every required metric and unit.",
+        "Validate the proposed measurement commands or Android tooling on a placeholder build when available."
+      ],
+      "proof_required": [
+        "Accepted budget decision",
+        "Release-size measurement checklist"
+      ],
+      "edge_cases": [
+        "ABI-specific native libraries",
+        "Store-delivered compression",
+        "First-run extraction duplicating model storage"
+      ],
+      "non_goals": [
+        "Optimizing a model before a baseline exists",
+        "Changing the accepted offline bundled-model requirement"
+      ],
       "estimated_size": "S",
-      "risk_tags": ["package-size", "memory", "release-gate"]
+      "risk_tags": [
+        "package-size",
+        "memory",
+        "release-gate"
+      ]
     },
     {
       "id": "CONTRACT-001",
-      "title": "Define shared car recognition and album domain contracts",
-      "summary": "Create versioned Kotlin domain types and interfaces for car identities, ranked recognition results, uncertainty, album entries, and repository use cases.",
-      "objective": "Give application and ML lanes a stable shared boundary before implementation starts.",
-      "context": "The accepted plan defines CarIdentity, RecognitionCandidate, RecognitionResult, AlbumEntry, RecognitionEngine, and AlbumRepository responsibilities.",
+      "title": "Migrate recognition and album identity contracts to category-neutral identities",
+      "summary": "Replace car-specific identity fields with a versioned category identity that supports scientific names while preserving album/archive compatibility.",
+      "objective": "Let the existing application foundation consume Lepidoptera labels without hardcoding one recognition category.",
+      "context": "The original contract uses make/model fields; the accepted plan requires CategoryIdentity with category ID, stable class ID, scientific name, display name, and optional alternate names.",
       "owner_role": "Contract Steward",
       "lane": "shared-contracts",
       "repo_target": "categorizer",
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["shared/domain/**", "docs/architecture/**", "verification/contracts/**"],
+      "allowed_areas": [
+        "shared/domain/**",
+        "docs/architecture/**",
+        "verification/contracts/**"
+      ],
       "depends_on": [],
-      "inputs": ["assembly/generated/project_spec.json", "assembly/generated/repo_plan.json", "assembly/generated/agent_prompts.json"],
-      "outputs": ["Versioned Kotlin domain types", "RecognitionEngine and AlbumRepository interfaces", "Documented invariants, error states, and ownership boundaries", "Contract unit tests"],
-      "implementation_notes": ["Represent uncertain and unsupported results explicitly.", "Keep platform types, database entities, ONNX tensors, and UI state out of shared domain contracts.", "Use stable class IDs rather than display names as identity keys."],
-      "acceptance_criteria": ["Every planned domain entity and required field has a typed representation or documented intentional derivation.", "Recognition results preserve ordered candidates, model version, and inference duration.", "Album mutations and queries cover create, update, delete, search, favorite filter, and restart-safe observation.", "Contracts compile independently of Android platform and ONNX Runtime APIs."],
-      "verification": ["Run shared contract unit tests.", "Compile the shared domain module for configured targets.", "Review public interfaces for accidental platform or persistence coupling."],
-      "proof_required": ["Test output", "API documentation or architecture decision"],
-      "edge_cases": ["Empty candidate list", "Duplicate class IDs", "Manual identity outside the model catalog", "Clock and date normalization"],
-      "non_goals": ["Database implementation", "UI state implementation", "ONNX inference implementation"],
+      "inputs": [
+        "assembly/generated/project_spec.json",
+        "assembly/generated/repo_plan.json",
+        "assembly/generated/agent_prompts.json"
+      ],
+      "outputs": [
+        "Versioned Kotlin domain types",
+        "RecognitionEngine and AlbumRepository interfaces",
+        "Documented invariants, error states, and ownership boundaries",
+        "Contract unit tests"
+      ],
+      "implementation_notes": [
+        "Represent uncertain and unsupported results explicitly.",
+        "Keep platform types, database entities, ONNX tensors, and UI state out of shared domain contracts.",
+        "Use stable class IDs rather than display names as identity keys."
+      ],
+      "acceptance_criteria": [
+        "Recognition candidates and album entries use CategoryIdentity without car-only required fields.",
+        "Existing stored car identities have a documented backward-compatible decoding or migration rule.",
+        "The fake engine and contract fixtures include Lepidoptera identities and reject unknown category/class combinations.",
+        "Serialization and archive versions change only where required and are documented."
+      ],
+      "verification": [
+        "Run shared serialization and contract fixture tests.",
+        "Run archive backward-compatibility tests using existing car fixtures.",
+        "Validate category/class identity uniqueness and required scientific-name fields."
+      ],
+      "proof_required": [
+        "Test output",
+        "API documentation or architecture decision"
+      ],
+      "edge_cases": [
+        "Empty candidate list",
+        "Duplicate class IDs",
+        "Manual identity outside the model catalog",
+        "Clock and date normalization"
+      ],
+      "non_goals": [
+        "Database implementation",
+        "UI state implementation",
+        "ONNX inference implementation"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["shared-contract", "parallelization"]
+      "risk_tags": [
+        "shared-contract",
+        "parallelization"
+      ]
     },
     {
       "id": "CONTRACT-002",
@@ -117,18 +272,60 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["models/*.json", "docs/architecture/**", "verification/contracts/**"],
-      "depends_on": ["DEC-001"],
-      "inputs": ["Accepted catalog and source decision", "ModelManifest fields from assembly/generated/project_spec.json"],
-      "outputs": ["Machine-readable model manifest schema", "Versioned class-map format", "Example manifest and validation fixtures", "Compatibility and migration policy"],
-      "implementation_notes": ["Include model and class-map hashes, input tensor name/shape/type, color order, resize/crop, normalization, output tensor semantics, opset, runtime minimums, and notices.", "Do not commit a real model binary as part of this contract task."],
-      "acceptance_criteria": ["A validator rejects missing, duplicate, reordered, or hash-inconsistent class metadata.", "Preprocessing and postprocessing are unambiguous enough for independent Python and Kotlin implementations.", "License and attribution references are mandatory fields for release-ready manifests.", "Manifest version compatibility behavior is documented."],
-      "verification": ["Validate positive and negative manifest fixtures.", "Round-trip the example manifest through Kotlin and Python JSON tooling when those harnesses exist.", "Review the contract against ONNX Runtime input/output metadata needs."],
-      "proof_required": ["Schema validation logs", "Positive and negative fixtures", "Compatibility decision record"],
-      "edge_cases": ["Class-map reordering", "Model and manifest version mismatch", "Multiple output tensors", "Quantized input/output types"],
-      "non_goals": ["Choosing the final neural architecture", "Training, quantizing, or benchmarking the model"],
+      "allowed_areas": [
+        "models/*.json",
+        "docs/architecture/**",
+        "verification/contracts/**"
+      ],
+      "depends_on": [
+        "DEC-001"
+      ],
+      "inputs": [
+        "Accepted catalog and source decision",
+        "ModelManifest fields from assembly/generated/project_spec.json"
+      ],
+      "outputs": [
+        "Machine-readable model manifest schema",
+        "Versioned class-map format",
+        "Example manifest and validation fixtures",
+        "Compatibility and migration policy"
+      ],
+      "implementation_notes": [
+        "Include model and class-map hashes, input tensor name/shape/type, color order, resize/crop, normalization, output tensor semantics, opset, runtime minimums, and notices.",
+        "Do not commit a real model binary as part of this contract task."
+      ],
+      "acceptance_criteria": [
+        "A validator rejects missing, duplicate, reordered, or hash-inconsistent class metadata.",
+        "Preprocessing and postprocessing are unambiguous enough for independent Python and Kotlin implementations.",
+        "License and attribution references are mandatory fields for release-ready manifests.",
+        "Manifest version compatibility behavior is documented."
+      ],
+      "verification": [
+        "Validate positive and negative manifest fixtures.",
+        "Round-trip the example manifest through Kotlin and Python JSON tooling when those harnesses exist.",
+        "Review the contract against ONNX Runtime input/output metadata needs."
+      ],
+      "proof_required": [
+        "Schema validation logs",
+        "Positive and negative fixtures",
+        "Compatibility decision record"
+      ],
+      "edge_cases": [
+        "Class-map reordering",
+        "Model and manifest version mismatch",
+        "Multiple output tensors",
+        "Quantized input/output types"
+      ],
+      "non_goals": [
+        "Choosing the final neural architecture",
+        "Training, quantizing, or benchmarking the model"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["model-contract", "cross-runtime", "licensing"]
+      "risk_tags": [
+        "model-contract",
+        "cross-runtime",
+        "licensing"
+      ]
     },
     {
       "id": "CONTRACT-003",
@@ -142,18 +339,62 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["shared/domain/**", "docs/architecture/**", "verification/contracts/**"],
-      "depends_on": ["CONTRACT-001"],
-      "inputs": ["AlbumEntry domain contract", "Privacy and local-only requirements"],
-      "outputs": ["Archive manifest/schema", "Versioning and compatibility policy", "Duplicate/conflict and atomic-import rules", "Valid and invalid archive fixtures"],
-      "implementation_notes": ["Use logical entry IDs and relative archive paths; never persist device-absolute file paths.", "Validate all metadata, paths, sizes, and checksums before mutating local state.", "Exclude unnecessary original image metadata from exported managed copies."],
-      "acceptance_criteria": ["The contract contains archive version, timestamps, entries, relative image references, and checksums.", "Path traversal, missing files, checksum mismatch, incompatible versions, duplicates, and partial archives have defined outcomes.", "Import validation is separable from commit so invalid archives cause no partial mutation.", "The format does not expose internal database implementation details."],
-      "verification": ["Validate good, corrupted, missing-file, duplicate-ID, incompatible-version, and path-traversal fixtures.", "Review fixtures for absence of location and unnecessary device metadata."],
-      "proof_required": ["Archive fixtures", "Validation test results", "Compatibility policy"],
-      "edge_cases": ["Duplicate entry IDs", "Duplicate image hashes", "Interrupted import", "Unsupported future archive version", "Malicious relative paths"],
-      "non_goals": ["Cloud synchronization protocol", "Incremental backup", "Social sharing format"],
+      "allowed_areas": [
+        "shared/domain/**",
+        "docs/architecture/**",
+        "verification/contracts/**"
+      ],
+      "depends_on": [
+        "CONTRACT-001"
+      ],
+      "inputs": [
+        "AlbumEntry domain contract",
+        "Privacy and local-only requirements"
+      ],
+      "outputs": [
+        "Archive manifest/schema",
+        "Versioning and compatibility policy",
+        "Duplicate/conflict and atomic-import rules",
+        "Valid and invalid archive fixtures"
+      ],
+      "implementation_notes": [
+        "Use logical entry IDs and relative archive paths; never persist device-absolute file paths.",
+        "Validate all metadata, paths, sizes, and checksums before mutating local state.",
+        "Exclude unnecessary original image metadata from exported managed copies."
+      ],
+      "acceptance_criteria": [
+        "The contract contains archive version, timestamps, entries, relative image references, and checksums.",
+        "Path traversal, missing files, checksum mismatch, incompatible versions, duplicates, and partial archives have defined outcomes.",
+        "Import validation is separable from commit so invalid archives cause no partial mutation.",
+        "The format does not expose internal database implementation details."
+      ],
+      "verification": [
+        "Validate good, corrupted, missing-file, duplicate-ID, incompatible-version, and path-traversal fixtures.",
+        "Review fixtures for absence of location and unnecessary device metadata."
+      ],
+      "proof_required": [
+        "Archive fixtures",
+        "Validation test results",
+        "Compatibility policy"
+      ],
+      "edge_cases": [
+        "Duplicate entry IDs",
+        "Duplicate image hashes",
+        "Interrupted import",
+        "Unsupported future archive version",
+        "Malicious relative paths"
+      ],
+      "non_goals": [
+        "Cloud synchronization protocol",
+        "Incremental backup",
+        "Social sharing format"
+      ],
       "estimated_size": "M",
-      "risk_tags": ["data-integrity", "privacy", "migration"]
+      "risk_tags": [
+        "data-integrity",
+        "privacy",
+        "migration"
+      ]
     },
     {
       "id": "CONTRACT-004",
@@ -167,18 +408,64 @@
       "status": "ready",
       "priority": "P0",
       "milestone": "MVP foundation",
-      "allowed_areas": ["verification/contracts/**", "shared/domain/**", "models/*.json", "docs/architecture/**"],
-      "depends_on": ["CONTRACT-001", "CONTRACT-002", "CONTRACT-003"],
-      "inputs": ["Accepted domain contract", "Accepted model manifest contract", "Accepted archive contract"],
-      "outputs": ["Deterministic fake RecognitionEngine", "In-memory fake AlbumRepository", "Shared positive and negative fixtures", "Consumer handoff documentation"],
-      "implementation_notes": ["Fixtures must cover successful, uncertain, unsupported, corrupt, and incompatible cases.", "Keep fixtures small and free of third-party images or unclear licenses."],
-      "acceptance_criteria": ["Application tests can drive all recognition result states without ONNX Runtime.", "Archive and manifest consumers share identical checked-in fixtures.", "Fake adapters implement the accepted interfaces without production-only behavior.", "Fixture ownership and change-review rules are documented."],
-      "verification": ["Run contract and fake-adapter tests.", "Validate every JSON fixture against its schema.", "Compile fake implementations with the shared domain module."],
-      "proof_required": ["Test and schema-validation output", "Consumer handoff note"],
-      "edge_cases": ["No candidates", "Equal candidate scores", "Unsupported manual label", "Corrupt archive fixture"],
-      "non_goals": ["Production database", "Production ONNX inference", "Full UI screenshots"],
+      "allowed_areas": [
+        "verification/contracts/**",
+        "shared/domain/**",
+        "models/*.json",
+        "docs/architecture/**"
+      ],
+      "depends_on": [
+        "CONTRACT-001",
+        "CONTRACT-002",
+        "CONTRACT-003"
+      ],
+      "inputs": [
+        "Accepted domain contract",
+        "Accepted model manifest contract",
+        "Accepted archive contract"
+      ],
+      "outputs": [
+        "Deterministic fake RecognitionEngine",
+        "In-memory fake AlbumRepository",
+        "Shared positive and negative fixtures",
+        "Consumer handoff documentation"
+      ],
+      "implementation_notes": [
+        "Fixtures must cover successful, uncertain, unsupported, corrupt, and incompatible cases.",
+        "Keep fixtures small and free of third-party images or unclear licenses."
+      ],
+      "acceptance_criteria": [
+        "Application tests can drive all recognition result states without ONNX Runtime.",
+        "Archive and manifest consumers share identical checked-in fixtures.",
+        "Fake adapters implement the accepted interfaces without production-only behavior.",
+        "Fixture ownership and change-review rules are documented."
+      ],
+      "verification": [
+        "Run contract and fake-adapter tests.",
+        "Validate every JSON fixture against its schema.",
+        "Compile fake implementations with the shared domain module."
+      ],
+      "proof_required": [
+        "Test and schema-validation output",
+        "Consumer handoff note"
+      ],
+      "edge_cases": [
+        "No candidates",
+        "Equal candidate scores",
+        "Unsupported manual label",
+        "Corrupt archive fixture"
+      ],
+      "non_goals": [
+        "Production database",
+        "Production ONNX inference",
+        "Full UI screenshots"
+      ],
       "estimated_size": "S",
-      "risk_tags": ["fixtures", "parallelization", "contract-testing"]
+      "risk_tags": [
+        "fixtures",
+        "parallelization",
+        "contract-testing"
+      ]
     }
   ]
 }
