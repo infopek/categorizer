@@ -1,10 +1,10 @@
 [
   {
     "id": "CONTRACT-001",
-    "title": "Define shared car recognition and album domain contracts",
-    "summary": "Create versioned Kotlin domain types and interfaces for car identities, ranked recognition results, uncertainty, album entries, and repository use cases.",
-    "objective": "Give application and ML lanes a stable shared boundary before implementation starts.",
-    "context": "The accepted plan defines CarIdentity, RecognitionCandidate, RecognitionResult, AlbumEntry, RecognitionEngine, and AlbumRepository responsibilities.",
+    "title": "Migrate recognition and album identity contracts to category-neutral identities",
+    "summary": "Replace car-specific identity fields with a versioned category identity that supports scientific names while preserving album/archive compatibility.",
+    "objective": "Let the existing application foundation consume Lepidoptera labels without hardcoding one recognition category.",
+    "context": "The original contract uses make/model fields; the accepted plan requires CategoryIdentity with category ID, stable class ID, scientific name, display name, and optional alternate names.",
     "owner_role": "Contract Steward",
     "lane": "shared-contracts",
     "repo_target": "categorizer",
@@ -34,15 +34,15 @@
       "Use stable class IDs rather than display names as identity keys."
     ],
     "acceptance_criteria": [
-      "Every planned domain entity and required field has a typed representation or documented intentional derivation.",
-      "Recognition results preserve ordered candidates, model version, and inference duration.",
-      "Album mutations and queries cover create, update, delete, search, favorite filter, and restart-safe observation.",
-      "Contracts compile independently of Android platform and ONNX Runtime APIs."
+      "Recognition candidates and album entries use CategoryIdentity without car-only required fields.",
+      "Existing stored car identities have a documented backward-compatible decoding or migration rule.",
+      "The fake engine and contract fixtures include Lepidoptera identities and reject unknown category/class combinations.",
+      "Serialization and archive versions change only where required and are documented."
     ],
     "verification": [
-      "Run shared contract unit tests.",
-      "Compile the shared domain module for configured targets.",
-      "Review public interfaces for accidental platform or persistence coupling."
+      "Run shared serialization and contract fixture tests.",
+      "Run archive backward-compatibility tests using existing car fixtures.",
+      "Validate category/class identity uniqueness and required scientific-name fields."
     ],
     "proof_required": [
       "Test output",
@@ -67,10 +67,10 @@
   },
   {
     "id": "DEC-001",
-    "title": "Select the licensed MVP car catalog and source assets",
-    "summary": "Research and document a distribution-compatible dataset, pretrained-weight baseline, and exact 100\u2013200-class MVP catalog without downloading or committing unapproved assets.",
-    "objective": "Resolve the accepted catalog and licensing gate before dataset preparation or model distribution begins.",
-    "context": "The merged requirements require approximately 100\u2013200 common car models and compatible licenses, but intentionally leave the exact classes and source assets open.",
+    "title": "Accept the licensed Lepidoptera catalog, dataset, and checkpoint candidate",
+    "summary": "Pin the CC BY 4.0 Figshare dataset record, define the 162-class MVP boundary, and admit the exact MaxViT-T checkpoint only for provenance and mobile qualification.",
+    "objective": "Provide an auditable category and artifact boundary without downloading the full 315 GiB image collection.",
+    "context": "The accepted MVP amendment replaces cars with Austrian butterflies and moths while preserving car artifacts for post-MVP work.",
     "owner_role": "Contract Steward",
     "lane": "decisions",
     "repo_target": "categorizer",
@@ -87,14 +87,15 @@
       "CONTRACT-002"
     ],
     "inputs": [
-      "assembly/intake/project_intake.json",
-      "assembly/requirements/REQUIREMENTS.md",
-      "assembly/generated/project_spec.json"
+      "Merged Lepidoptera requirements amendment",
+      "Figshare article 29135618 metadata",
+      "Scientific Data validation paper",
+      "Published training repository"
     ],
     "outputs": [
-      "A reviewed catalog manifest with stable class IDs and display labels",
-      "A dataset and pretrained-weight license matrix with source links and redistribution conclusions",
-      "A decision record identifying accepted sources, exclusions, and unresolved acquisition risks"
+      "Accepted 162-class scientific-name catalog",
+      "Dataset/checkpoint license and attribution record",
+      "Pinned checkpoint identity and acquisition policy"
     ],
     "implementation_notes": [
       "Treat dataset images, annotations, pretrained weights, and generated model weights as separately licensed artifacts.",
@@ -102,20 +103,21 @@
       "Include generation or approximate-year distinctions only where the accepted product scope requires them."
     ],
     "acceptance_criteria": [
-      "The proposed catalog contains between 100 and 200 unique stable class IDs.",
-      "Every proposed dataset and pretrained weight has a recorded license, source, attribution requirement, and application-distribution conclusion.",
-      "Any incompatible or unclear source is excluded or explicitly marked blocking rather than treated as accepted.",
-      "The human owner records acceptance of the catalog and asset-source decision."
+      "The catalog contains exactly the source classes with at least 50 expert-validated images.",
+      "The dataset record, article, scripts, and checkpoint licenses are treated as distinct artifacts.",
+      "The checkpoint file ID, size, source URL, and published MD5 are pinned before download.",
+      "Full dataset acquisition remains conditional on checkpoint qualification or approved distillation."
     ],
     "verification": [
-      "Validate catalog uniqueness and required fields with a deterministic script or schema.",
-      "Manually review source license pages and preserve direct references and access dates.",
-      "Confirm no raw dataset, credentials, or unapproved model binary is added to Git."
+      "Validate catalog uniqueness and exact source-count threshold.",
+      "Re-fetch Figshare metadata and compare immutable artifact fields.",
+      "Confirm CC BY 4.0 attribution requirements are represented in model/application notices.",
+      "Confirm no raw dataset or model binary is committed."
     ],
     "proof_required": [
       "Catalog validation output",
-      "License matrix",
-      "Human acceptance recorded in the decision document"
+      "Figshare metadata snapshot and hashes",
+      "License/provenance decision"
     ],
     "edge_cases": [
       "Multiple names for the same generation",
@@ -123,9 +125,9 @@
       "Dataset labels that collapse generations required by the MVP"
     ],
     "non_goals": [
-      "Downloading the full training dataset",
-      "Training or exporting a model",
-      "Expanding beyond the accepted 100\u2013200 car scope"
+      "Downloading all species archives",
+      "Approving the checkpoint as a release model",
+      "Deleting or rewriting post-MVP car assets"
     ],
     "estimated_size": "M",
     "risk_tags": [
@@ -754,10 +756,10 @@
   },
   {
     "id": "ML-002",
-    "title": "Implement licensed dataset and split manifests",
-    "summary": "Build deterministic tooling that materializes the accepted catalog from approved sources and records provenance, licenses, labels, and leakage-resistant train/validation/test splits.",
-    "objective": "Provide a reproducible, auditable dataset boundary for 100\u2013200 accepted car classes.",
-    "context": "Dataset and pretrained-weight selection is gated by DEC-001 and the model manifest requires stable class IDs.",
+    "title": "Materialize the licensed Lepidoptera catalog and deterministic evaluation sample",
+    "summary": "Build acquisition tooling for Figshare metadata, the 162 eligible classes, and a small deterministic evaluation sample without fetching every species archive.",
+    "objective": "Create a reproducible and auditable dataset boundary suitable for checkpoint verification and later balanced distillation.",
+    "context": "The source contains 541,677 images and roughly 315 GiB of archives; checkpoint-first evaluation avoids unnecessary acquisition.",
     "owner_role": "ML Engine Builder",
     "lane": "data-governance",
     "repo_target": "categorizer",
@@ -776,15 +778,15 @@
       "CONTRACT-002"
     ],
     "inputs": [
-      "Accepted catalog manifest",
-      "Approved data/weight license matrix",
-      "Model manifest and class-map contract"
+      "Accepted DEC-001 Lepidoptera source decision",
+      "Figshare images-per-species CSV",
+      "Dataset manifest and class-map contracts"
     ],
     "outputs": [
-      "Dataset manifest schema and validator",
-      "Source acquisition/preparation adapters that require explicit local source configuration",
-      "Deterministic class-balanced split generator",
-      "Provenance and data-quality report"
+      "162-class catalog and class-order candidate",
+      "Pinned Figshare metadata manifest",
+      "Deterministic evaluation-sample acquisition plan",
+      "Per-class counts and attribution records"
     ],
     "implementation_notes": [
       "Do not commit raw images, private URLs, access tokens, or credentials.",
@@ -792,16 +794,16 @@
       "Record missing, corrupt, ambiguous, and duplicate samples rather than silently dropping them."
     ],
     "acceptance_criteria": [
-      "Every usable sample maps to one accepted stable class ID and an approved source/license record.",
-      "The same seed and manifest inputs reproduce identical split membership.",
-      "Near-duplicate and source leakage checks run before a split is accepted.",
-      "Per-class counts and excluded-sample reasons are reported."
+      "Exactly 162 classes satisfy the accepted minimum-count rule.",
+      "Acquisition is resumable, hash-checked, and scoped to selected files or samples.",
+      "Every acquired artifact records Figshare file ID, URL, size, checksum, license, and attribution.",
+      "Raw archives, samples, and credentials remain outside Git."
     ],
     "verification": [
-      "Run manifest schema and catalog consistency checks.",
-      "Run split reproducibility twice and compare hashes.",
-      "Run duplicate/leakage detection on a representative fixture dataset.",
-      "Confirm raw data remains outside Git."
+      "Re-fetch and validate class counts.",
+      "Run catalog/schema consistency tests.",
+      "Repeat sample selection and compare hashes.",
+      "Confirm generated/raw data is ignored by Git."
     ],
     "proof_required": [
       "Manifest and split hashes",
@@ -816,9 +818,9 @@
       "Classes below minimum sample count"
     ],
     "non_goals": [
-      "Scraping unapproved sources",
-      "Using user album photos",
-      "Expanding the accepted catalog"
+      "Downloading all 315 GiB",
+      "Training a new release model",
+      "Using the postponed car dataset"
     ],
     "estimated_size": "M",
     "risk_tags": [
@@ -1055,7 +1057,7 @@
     "id": "UI-001",
     "title": "Build the album browsing experience",
     "summary": "Implement the default album screen with empty, loading, populated, filtered, and recoverable-error states.",
-    "objective": "Give casual users a clear home for browsing and finding saved car sightings.",
+    "objective": "Give casual users a clear home for browsing and finding saved Lepidoptera specimen sightings.",
     "context": "The accepted MVP requires local entries, favorites, notes, search, and filtering; the album is the default destination.",
     "owner_role": "Application Builder",
     "lane": "shared-ui",
@@ -1198,10 +1200,10 @@
   },
   {
     "id": "ML-003",
-    "title": "Implement transfer-learning baseline training",
-    "summary": "Create a seeded PyTorch/TorchVision training pipeline for mobile-suitable image classifiers using the accepted catalog and dataset splits.",
-    "objective": "Produce comparable baseline checkpoints and metrics without prematurely selecting a release model.",
-    "context": "The data strategy starts from licensed pretrained/open assets and adds curated examples for missing distinctions.",
+    "title": "Inspect and reproduce the pinned MaxViT-T checkpoint",
+    "summary": "Download the exact Figshare checkpoint, verify hashes and state-dict structure, recover its authoritative class order, and reproduce source-model inference.",
+    "objective": "Determine whether the published checkpoint is a technically and legally usable starting point before training or distillation.",
+    "context": "The candidate is 122,783,842 bytes with published MD5 040fea4abf59a631d41e3878f51d073c and reported 97.87% source test accuracy.",
     "owner_role": "ML Engine Builder",
     "lane": "training",
     "repo_target": "categorizer",
@@ -1218,15 +1220,15 @@
       "ML-002"
     ],
     "inputs": [
-      "Validated dataset/split manifests",
-      "Accepted pretrained-weight sources",
-      "Model input contract"
+      "DEC-001 pinned checkpoint record",
+      "ML-002 catalog and evaluation sample",
+      "Published training scripts"
     ],
     "outputs": [
-      "Config-driven seeded training command",
-      "Mobile-suitable baseline configurations",
-      "Checkpoint/run metadata outside normal Git history",
-      "Training and validation metric reports"
+      "Locally computed SHA-256 and verified MD5",
+      "Checkpoint architecture/state-dict report",
+      "Authoritative class-index mapping",
+      "Reproducible PyTorch inference command and metrics"
     ],
     "implementation_notes": [
       "Record code revision, environment lock hash, dataset/split hashes, seed, transforms, hyperparameters, and weight source for each run.",
@@ -1234,15 +1236,16 @@
       "Keep selection metrics separate from the held-out test set."
     ],
     "acceptance_criteria": [
-      "A documented command trains and resumes a baseline deterministically within documented platform limitations.",
-      "Each run records all provenance needed to reproduce it.",
-      "Training never reads the held-out test split for tuning or selection.",
-      "At least one mobile-suitable baseline completes on a reduced fixture and on the accepted dataset when resources permit."
+      "Downloaded bytes match the pinned size and MD5 and receive a recorded SHA-256.",
+      "The architecture and output dimension match the supported class map exactly.",
+      "Inference preprocessing is reconstructed from primary source code and documented.",
+      "Evaluation distinguishes source-reproduction evidence from independent release claims."
     ],
     "verification": [
-      "Run a small deterministic fixture training twice and compare metrics/checkpoint hashes within documented tolerance.",
-      "Validate run metadata completeness.",
-      "Confirm held-out test access is absent from training code paths."
+      "Verify size, MD5, and SHA-256.",
+      "Load the checkpoint strictly into the documented architecture.",
+      "Run deterministic inference twice on the frozen sample.",
+      "Compare observed behavior with published preprocessing and metrics."
     ],
     "proof_required": [
       "Fixture training logs",
@@ -1257,9 +1260,9 @@
       "Nondeterministic accelerator operations"
     ],
     "non_goals": [
-      "Claiming the 80% test gate",
-      "Committing checkpoints",
-      "Automated architecture search"
+      "Claiming Android readiness",
+      "Downloading the full dataset",
+      "Tuning on the held-out sample"
     ],
     "estimated_size": "M",
     "risk_tags": [
@@ -1367,7 +1370,7 @@
       "Recognition presentation states",
       "Ranked candidates",
       "Album save use case",
-      "CarIdentity contract"
+      "CategoryIdentity contract"
     ],
     "outputs": [
       "Recognition progress and review UI",
@@ -1560,10 +1563,10 @@
   },
   {
     "id": "ML-004",
-    "title": "Implement held-out and per-class model evaluation",
+    "title": "Independently evaluate the Lepidoptera checkpoint",
     "summary": "Evaluate candidate checkpoints with top-one/top-five, per-class, confusion, calibration-oriented, and unsupported-input evidence using frozen splits.",
     "objective": "Measure the accepted top-five gate without allowing frequent classes to conceal weak supported classes.",
-    "context": "The MVP acceptance signal requires at least 80% held-out top-five accuracy plus per-class reporting.",
+    "context": "Published source metrics are encouraging but do not replace an independently frozen, per-class evaluation with explicit imbalance and unsupported-input reporting.",
     "owner_role": "ML Engine Builder",
     "lane": "training",
     "repo_target": "categorizer",
@@ -1798,7 +1801,7 @@
     "title": "Export and verify ONNX model bundles",
     "summary": "Export selected PyTorch candidates to ONNX with a matching manifest/class map and verify numeric and ranked-output equivalence in ONNX Runtime.",
     "objective": "Produce portable candidate bundles whose runtime behavior matches the evaluated PyTorch model.",
-    "context": "The application runtime is ONNX Runtime and every export must be validated for compatibility and equivalence.",
+    "context": "Export the qualified 162-class MaxViT-T candidate first; if unsupported operators, size, or equivalence fail, hand off to ML-008.",
     "owner_role": "ML Engine Builder",
     "lane": "onnx-export",
     "repo_target": "categorizer",
@@ -1957,7 +1960,7 @@
     "title": "Optimize and qualify the bundled model on the benchmark device",
     "summary": "Measure baseline candidates, apply compatible optimization or quantization, and select a bundle that satisfies accepted accuracy, latency, size, and memory gates.",
     "objective": "Produce the release-candidate bundled model with traceable tradeoffs and no silent weakening of acceptance thresholds.",
-    "context": "The model must reach at least 80% top-five accuracy and median inference below two seconds within accepted package/model/memory budgets.",
+    "context": "Qualify the checkpoint-derived ONNX bundle on the Samsung Galaxy S20 FE before approving any full-data retraining or distillation.",
     "owner_role": "ML Engine Builder",
     "lane": "android-inference",
     "repo_target": "categorizer",
@@ -2035,6 +2038,81 @@
       "release-gate"
     ],
     "handoff_notes": "Verification and Release must independently reproduce the final reports before closed testing."
+  },
+  {
+    "id": "ML-008",
+    "title": "Distill a mobile Lepidoptera model when the checkpoint fails device gates",
+    "summary": "Conditionally acquire a balanced source subset and distill or fine-tune a mobile-suitable classifier only when MaxViT-T fails accepted ONNX, size, memory, or latency gates.",
+    "objective": "Produce a smaller 162-class model without downloading the full source collection unnecessarily.",
+    "context": "This fallback is activated by documented ML-005 or ML-007 failure evidence, not by preference.",
+    "owner_role": "ML Engine Builder",
+    "lane": "training",
+    "repo_target": "categorizer",
+    "status": "blocked",
+    "priority": "P0",
+    "milestone": "MVP model",
+    "allowed_areas": [
+      "ml/**",
+      "docs/ml/**",
+      "verification/ml/**"
+    ],
+    "depends_on": [
+      "ML-004",
+      "ML-007"
+    ],
+    "blocks": [
+      "VER-003"
+    ],
+    "inputs": [
+      "Checkpoint qualification report",
+      "Accepted balanced-subset acquisition policy",
+      "162-class catalog and splits"
+    ],
+    "outputs": [
+      "Balanced subset manifest",
+      "Seeded distillation/fine-tuning run",
+      "Mobile checkpoint and metrics",
+      "Updated model provenance"
+    ],
+    "implementation_notes": [
+      "Cap abundant classes deterministically while retaining all eligible minority samples.",
+      "Keep teacher outputs and source images outside Git.",
+      "Do not activate unless checkpoint device qualification fails."
+    ],
+    "acceptance_criteria": [
+      "The activation reason references a failed accepted gate.",
+      "Subset acquisition is reproducible, licensed, attributed, and leakage-resistant.",
+      "The student preserves all 162 outputs and meets held-out/per-class accuracy gates.",
+      "Run metadata records teacher, data, environment, seed, transforms, and hashes."
+    ],
+    "verification": [
+      "Validate subset manifests and hashes.",
+      "Run deterministic fixture training.",
+      "Evaluate held-out and per-class metrics.",
+      "Hand the candidate back through ONNX equivalence and device qualification."
+    ],
+    "proof_required": [
+      "Failed checkpoint gate",
+      "Subset and run hashes",
+      "Student metrics and provenance"
+    ],
+    "edge_cases": [
+      "Severe class imbalance",
+      "Teacher errors",
+      "Minority classes near the 50-image threshold"
+    ],
+    "non_goals": [
+      "Full 315 GiB download",
+      "Changing the supported class catalog"
+    ],
+    "estimated_size": "M",
+    "risk_tags": [
+      "training",
+      "distillation",
+      "licensing",
+      "class-imbalance"
+    ],
+    "notes": "Blocked until MaxViT-T qualification produces a concrete failing gate."
   },
   {
     "id": "VER-003",
