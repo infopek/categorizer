@@ -1,0 +1,27 @@
+{
+  "project_name": "Categorizer",
+  "repos": [
+    {
+      "name": "categorizer",
+      "purpose": "Product monorepo with explicit module ownership for parallel application, ML, and verification work.",
+      "contains": [
+        "apps/androidApp: Android entry point, packaging, permissions, camera/gallery, filesystem, database, and ONNX adapters",
+        "shared/domain: entities, repository contracts, recognition contracts, and use cases",
+        "shared/ui: Compose screens, navigation, presentation state, and reusable UI components",
+        "ml: dataset manifests, license records, training, evaluation, export, and model-card tooling",
+        "models: approved model manifest, class map, notices, and release-ready bundled artifact",
+        "verification: cross-runtime fixtures, device benchmarks, archive fixtures, and release evidence",
+        "docs: architecture decisions, data/model governance, privacy behavior, and developer setup",
+        "assembly: lifecycle source of truth and generated planning artifacts"
+      ],
+      "depends_on": [],
+      "excludes": [
+        "Remote backend, authentication, cloud synchronization, telemetry, and remote inference",
+        "iOS or desktop application deliverables in the MVP",
+        "Task backlog and task batches until this planning package is merged",
+        "Unlicensed datasets, weights, or images",
+        "Generated training datasets, caches, checkpoints, and experimental model binaries in normal Git history"
+      ]
+    }
+  ]
+}
