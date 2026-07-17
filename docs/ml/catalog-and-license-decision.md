@@ -16,6 +16,15 @@ Use `ml/catalog/mvp-car-catalog.json` as the stable MVP class map:
 
 Catalog changes after acceptance require a reviewed version change because class order and IDs become part of the model/application contract.
 
+### Accepted luxury and performance amendment
+
+On 2026-07-17 the repository owner accepted the 50-class extension recorded in
+`docs/ml/luxury-performance-catalog-proposal.md` and
+`ml/catalog/luxury-performance-catalog-proposal.json`. The combined catalog is
+`cars-mvp-200-v2`: the original 150 classes retain their IDs and positions, and the
+new classes are appended. This amendment approves no new image or weight source;
+all existing per-asset license and review requirements remain in force.
+
 ## Source decision
 
 | Source | Published terms | Decision |
