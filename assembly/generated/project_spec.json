@@ -130,7 +130,7 @@
     "Run shared unit tests for ranking, uncertainty, album mutations, search/filter, and archive version handling.",
     "Run Android instrumentation tests for camera/gallery handoff, metadata removal, private storage, process restart persistence, and import/export.",
     "Compare PyTorch and ONNX Runtime outputs on a frozen fixture set within documented numeric and ranking tolerances.",
-    "Report held-out top-five accuracy and per-class metrics for all 162 supported Lepidoptera classes; the aggregate gate is at least 80 percent and class imbalance must be visible.",
+    "Report held-out top-five accuracy and per-class metrics for all 163 supported Lepidoptera classes; the aggregate gate is at least 80 percent and class imbalance must be visible.",
     "Benchmark warm and cold inference, memory, and package size on the selected mid-range Android device; median inference must remain below two seconds.",
     "Exercise corrupted, incompatible, duplicate, and partial archives and prove import is validated before mutation.",
     "Verify airplane-mode capture/import, inference, correction, album use, export, and import.",

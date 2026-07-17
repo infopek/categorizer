@@ -6,7 +6,7 @@
     {
       "id": "DEC-001",
       "title": "Accept the licensed Lepidoptera catalog, dataset, and checkpoint candidate",
-      "summary": "Pin the CC BY 4.0 Figshare dataset record, define the 162-class MVP boundary, and admit the exact MaxViT-T checkpoint only for provenance and mobile qualification.",
+      "summary": "Pin the CC BY 4.0 Figshare dataset record, define the 163-class MVP boundary, and admit the exact MaxViT-T checkpoint only for provenance and mobile qualification.",
       "objective": "Provide an auditable category and artifact boundary without downloading the full 315 GiB image collection.",
       "context": "The accepted MVP amendment replaces cars with Austrian butterflies and moths while preserving car artifacts for post-MVP work.",
       "owner_role": "Contract Steward",
@@ -31,7 +31,7 @@
         "Published training repository"
       ],
       "outputs": [
-        "Accepted 162-class scientific-name catalog",
+        "Accepted 163-class scientific-name catalog",
         "Dataset/checkpoint license and attribution record",
         "Pinned checkpoint identity and acquisition policy"
       ],

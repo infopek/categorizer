@@ -24,7 +24,7 @@ checkpoint evaluation path.
 - Android-first offline butterfly and moth recognition for casual users and nature enthusiasts.
 - Local-only personal album with camera and gallery input.
 - Kotlin Multiplatform, Compose Multiplatform, ONNX Runtime, and a PyTorch-to-ONNX model pipeline.
-- The 162 sufficiently represented Austrian Lepidoptera classes from the accepted Figshare source, evaluated against top-five accuracy and device-latency gates.
+- The 163 sufficiently represented Austrian Lepidoptera classes from the accepted Figshare source, evaluated against top-five accuracy and device-latency gates.
 - The prepared 200-class car catalog and local car dataset are preserved for post-MVP work.
 
 ## Non-blocking planning inputs

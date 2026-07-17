@@ -27,7 +27,7 @@
     "outputs": ["Reproducible ML pipeline", "Evaluated ONNX model bundle", "Android inference adapter", "Model card and performance evidence"],
     "allowed_actions": ["Edit ML, model, inference-adapter, and ML-verification areas"],
     "verification_requirements": ["License gate passes", "Top-five and per-class evaluation passes", "PyTorch/ONNX equivalence passes", "Selected-device latency and size gates pass"],
-    "notes": "The Figshare dataset and 162-class boundary are selected. Release approval remains blocked on checkpoint provenance/class-order inspection, independent evaluation, ONNX compatibility, and accepted size/device gates."
+    "notes": "The Figshare dataset and 163-class boundary are selected. Release approval remains blocked on checkpoint provenance/class-order inspection, independent evaluation, ONNX compatibility, and accepted size/device gates."
   },
   {
     "slot_id": "verification-release",

@@ -68,7 +68,7 @@
   {
     "id": "DEC-001",
     "title": "Accept the licensed Lepidoptera catalog, dataset, and checkpoint candidate",
-    "summary": "Pin the CC BY 4.0 Figshare dataset record, define the 162-class MVP boundary, and admit the exact MaxViT-T checkpoint only for provenance and mobile qualification.",
+    "summary": "Pin the CC BY 4.0 Figshare dataset record, define the 163-class MVP boundary, and admit the exact MaxViT-T checkpoint only for provenance and mobile qualification.",
     "objective": "Provide an auditable category and artifact boundary without downloading the full 315 GiB image collection.",
     "context": "The accepted MVP amendment replaces cars with Austrian butterflies and moths while preserving car artifacts for post-MVP work.",
     "owner_role": "Contract Steward",
@@ -93,7 +93,7 @@
       "Published training repository"
     ],
     "outputs": [
-      "Accepted 162-class scientific-name catalog",
+      "Accepted 163-class scientific-name catalog",
       "Dataset/checkpoint license and attribution record",
       "Pinned checkpoint identity and acquisition policy"
     ],
@@ -757,7 +757,7 @@
   {
     "id": "ML-002",
     "title": "Materialize the licensed Lepidoptera catalog and deterministic evaluation sample",
-    "summary": "Build acquisition tooling for Figshare metadata, the 162 eligible classes, and a small deterministic evaluation sample without fetching every species archive.",
+    "summary": "Build acquisition tooling for Figshare metadata, the 163 eligible classes, and a small deterministic evaluation sample without fetching every species archive.",
     "objective": "Create a reproducible and auditable dataset boundary suitable for checkpoint verification and later balanced distillation.",
     "context": "The source contains 541,677 images and roughly 315 GiB of archives; checkpoint-first evaluation avoids unnecessary acquisition.",
     "owner_role": "ML Engine Builder",
@@ -783,7 +783,7 @@
       "Dataset manifest and class-map contracts"
     ],
     "outputs": [
-      "162-class catalog and class-order candidate",
+      "163-class catalog and class-order candidate",
       "Pinned Figshare metadata manifest",
       "Deterministic evaluation-sample acquisition plan",
       "Per-class counts and attribution records"
@@ -794,7 +794,7 @@
       "Record missing, corrupt, ambiguous, and duplicate samples rather than silently dropping them."
     ],
     "acceptance_criteria": [
-      "Exactly 162 classes satisfy the accepted minimum-count rule.",
+      "Exactly 163 classes satisfy the accepted minimum-count rule.",
       "Acquisition is resumable, hash-checked, and scoped to selected files or samples.",
       "Every acquired artifact records Figshare file ID, URL, size, checksum, license, and attribution.",
       "Raw archives, samples, and credentials remain outside Git."
@@ -1801,7 +1801,7 @@
     "title": "Export and verify ONNX model bundles",
     "summary": "Export selected PyTorch candidates to ONNX with a matching manifest/class map and verify numeric and ranked-output equivalence in ONNX Runtime.",
     "objective": "Produce portable candidate bundles whose runtime behavior matches the evaluated PyTorch model.",
-    "context": "Export the qualified 162-class MaxViT-T candidate first; if unsupported operators, size, or equivalence fail, hand off to ML-008.",
+    "context": "Export the qualified 163-class MaxViT-T candidate first; if unsupported operators, size, or equivalence fail, hand off to ML-008.",
     "owner_role": "ML Engine Builder",
     "lane": "onnx-export",
     "repo_target": "categorizer",
@@ -2043,7 +2043,7 @@
     "id": "ML-008",
     "title": "Distill a mobile Lepidoptera model when the checkpoint fails device gates",
     "summary": "Conditionally acquire a balanced source subset and distill or fine-tune a mobile-suitable classifier only when MaxViT-T fails accepted ONNX, size, memory, or latency gates.",
-    "objective": "Produce a smaller 162-class model without downloading the full source collection unnecessarily.",
+    "objective": "Produce a smaller 163-class model without downloading the full source collection unnecessarily.",
     "context": "This fallback is activated by documented ML-005 or ML-007 failure evidence, not by preference.",
     "owner_role": "ML Engine Builder",
     "lane": "training",
@@ -2066,7 +2066,7 @@
     "inputs": [
       "Checkpoint qualification report",
       "Accepted balanced-subset acquisition policy",
-      "162-class catalog and splits"
+      "163-class catalog and splits"
     ],
     "outputs": [
       "Balanced subset manifest",
@@ -2082,7 +2082,7 @@
     "acceptance_criteria": [
       "The activation reason references a failed accepted gate.",
       "Subset acquisition is reproducible, licensed, attributed, and leakage-resistant.",
-      "The student preserves all 162 outputs and meets held-out/per-class accuracy gates.",
+      "The student preserves all 163 outputs and meets held-out/per-class accuracy gates.",
       "Run metadata records teacher, data, environment, seed, transforms, and hashes."
     ],
     "verification": [
