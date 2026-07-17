@@ -13,12 +13,12 @@ def main() -> int:
     value = json.loads(CATALOG.read_text(encoding="utf-8"))
     classes = value.get("classes", [])
     errors: list[str] = []
-    if value.get("catalog_id") != "lepidoptera-at-162-v1":
+    if value.get("catalog_id") != "lepidoptera-at-163-v1":
         errors.append("unexpected catalog_id")
     if value.get("category_id") != "lepidoptera":
         errors.append("unexpected category_id")
-    if value.get("class_count") != 162 or len(classes) != 162:
-        errors.append(f"expected 162 classes, got declared={value.get('class_count')} actual={len(classes)}")
+    if value.get("class_count") != 163 or len(classes) != 163:
+        errors.append(f"expected 163 classes, got declared={value.get('class_count')} actual={len(classes)}")
     ids = [item.get("class_id", "") for item in classes]
     names = [item.get("scientific_name", "") for item in classes]
     if len(set(ids)) != len(ids) or any(not ID.fullmatch(item) for item in ids):
@@ -35,7 +35,7 @@ def main() -> int:
         print(f"RESULT FAIL errors={len(errors)}")
         return 1
     print(
-        "RESULT OK catalog=lepidoptera-at-162-v1 classes=162 "
+        "RESULT OK catalog=lepidoptera-at-163-v1 classes=163 "
         f"source_images={sum(item['source_image_count'] for item in classes)}"
     )
     return 0

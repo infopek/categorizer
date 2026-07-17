@@ -14,6 +14,16 @@
   },
   "files": [
     {
+      "figshare_file_id": 55171640,
+      "name": "Polyommatus_eros.ZIP",
+      "bytes": 41695755,
+      "image_count": 63,
+      "md5": "44668c424a1e0f764d633a78c52f8396",
+      "sha256": "0c802e22ef422e637d934c95d342576838c36d2ac42b278dc47769f52b830248",
+      "download_url": "https://ndownloader.figshare.com/files/55171640",
+      "reason": "Source archive missing from Images_per_species.csv; count resolves the checkpoint's 163rd output."
+    },
+    {
       "figshare_file_id": 56259125,
       "name": "Images_per_species.csv",
       "bytes": 4217,

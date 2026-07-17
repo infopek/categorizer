@@ -30,7 +30,7 @@
       "allowed_files": ["ml/**", "models/**", "apps/androidApp/src/**/inference/**", "verification/ml/**", "docs/ml/**"],
       "forbidden_files": ["shared/ui/**", "shared/data/**", "assembly/generated/task_batches/**"],
       "input_context_required": ["Merged Lepidoptera intake and requirements amendment", "Merged planning package", "Accepted category-neutral model manifest and recognition contracts", "Pinned Figshare dataset and checkpoint provenance"],
-      "task_boundaries": ["Evaluate the provided 162-class MaxViT-T checkpoint before acquiring the full dataset", "Build reproducible dataset sampling, fallback training or distillation, evaluation, ONNX export, and runtime integration", "Do not use user photos or corrections as training data", "Do not approve a model without licensing, equivalence, accuracy, size, and latency evidence"],
+      "task_boundaries": ["Evaluate the provided 163-class MaxViT-T checkpoint before acquiring the full dataset", "Build reproducible dataset sampling, fallback training or distillation, evaluation, ONNX export, and runtime integration", "Do not use user photos or corrections as training data", "Do not approve a model without licensing, equivalence, accuracy, size, and latency evidence"],
       "output_required": ["Pinned Python environment", "Dataset and split manifests", "Training/evaluation/export tooling", "Model card and class map", "Android ONNX inference adapter"],
       "verification_required": ["At least 80 percent held-out top-five accuracy", "Per-class evaluation", "PyTorch/ONNX ranked-output equivalence", "Median inference below two seconds on the selected device", "Memory and package-size evidence"]
     },

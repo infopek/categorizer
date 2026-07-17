@@ -7,13 +7,13 @@
     "Casual users and nature enthusiasts who are curious about butterflies and moths they encounter and want to collect identified sightings"
   ],
   "mvp": {
-    "summary": "An Android-first offline butterfly and moth categorizer and personal album initially covering the 162 Austrian species or inseparable species pairs in the accepted dataset that have at least 50 expert-validated images.",
+    "summary": "An Android-first offline butterfly and moth categorizer and personal album initially covering the 163 Austrian species or inseparable species pairs in the accepted dataset that have at least 50 expert-validated images.",
     "must_have": [
       "Accept both camera captures and gallery imports.",
       "Run recognition fully on-device with a model bundled in the application.",
       "Identify the supported butterfly or moth species, using a combined label for species pairs that cannot be distinguished reliably from photographs.",
       "Present ranked recognition candidates and allow manual correction when none is correct.",
-      "Support the 162 dataset classes with at least 50 expert-validated images, subject to independent license, class-map, mobile-runtime, and held-out evaluation gates.",
+      "Support the 163 dataset classes with at least 50 expert-validated images, subject to independent license, class-map, mobile-runtime, and held-out evaluation gates.",
       "Store app-managed photo copies with unnecessary metadata removed.",
       "Maintain a local-only album containing the photo, confirmed identity, date, favorite state, and personal notes.",
       "Provide album search and filtering.",
@@ -114,7 +114,7 @@
     "The bundled model and application must operate within the storage, memory, and performance limits of supported Android devices.",
     "Training datasets, pretrained weights, and other assets must have licenses compatible with the intended application and distribution.",
     "The Figshare dataset record and every consumed artifact must retain its CC BY 4.0 attribution and provenance record.",
-    "The supported MVP catalog is limited to the 162 sufficiently represented Austrian Lepidoptera classes used by the published baseline.",
+    "The supported MVP catalog is limited to the 163 sufficiently represented Austrian Lepidoptera classes used by the published baseline.",
     "The architecture should preserve practical portability to iOS and desktop without adding those deliverables to the MVP."
   ],
   "safety_boundaries": [

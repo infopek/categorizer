@@ -17,7 +17,7 @@ Create a mobile-first application that identifies butterflies and moths from cam
 - Android 10 or newer on recent mid-range devices with approximately 4 GB RAM or more.
 - Camera capture and gallery import.
 - Fully on-device recognition using a model bundled with the application.
-- The 162 Austrian Lepidoptera dataset classes with at least 50 expert-validated images, subject to model and evaluation gates.
+- The 163 Austrian Lepidoptera dataset classes with at least 50 expert-validated images, subject to model and evaluation gates.
 - Species-level identification, retaining combined labels for source-defined species pairs that cannot be distinguished reliably from photographs.
 - Ranked recognition candidates with manual correction when none is correct.
 - Private app-managed photo copies with unnecessary metadata removed.
@@ -64,7 +64,7 @@ Create a mobile-first application that identifies butterflies and moths from cam
 - Do not collect accounts, credentials, or cloud data in the MVP.
 - Use only datasets, model weights, and images with verified compatible licenses.
 - Preserve CC BY 4.0 attribution and artifact provenance for every consumed Figshare dataset or checkpoint file.
-- Keep the MVP catalog to the 162 sufficiently represented source classes unless a reviewed amendment changes that boundary.
+- Keep the MVP catalog to the 163 sufficiently represented source classes unless a reviewed amendment changes that boundary.
 
 ## Assumptions
 

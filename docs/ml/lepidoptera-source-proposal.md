@@ -22,8 +22,8 @@ as the dataset artifact license or copy article content into derived materials.
 
 ## MVP class boundary
 
-Use the 162 classes with at least 50 source images, matching the published baseline's
-eligibility rule. Preserve the four source-defined combined species-pair labels where
+Use the 163 classes with at least 50 source images, matching the supplied checkpoint's
+output dimension and the published baseline's eligibility rule. Preserve the four source-defined combined species-pair labels where
 photographs cannot distinguish the members reliably. Scientific names are stable
 class IDs; common names are optional presentation metadata.
 
@@ -49,9 +49,13 @@ distillation.
 | `Scripts_model_training.zip` | `55170923` | 12,591 | `c19df4d03583c0b8992f36b09b72d303` | `021feab78d26450a5fd6e41a2c1596ce3c8b49bd4afb87abaae8169120909ca0` |
 | `pytorch_model.bin` | `55170962` | 122,783,842 | `040fea4abf59a631d41e3878f51d073c` | `ac3cf138930a8b6f52dcb064ff44ace39b701d3412812e457930463073e5eca0` |
 
-The source CSV contains 184 rows. Exactly 162 meet the accepted minimum of 50
-images; their stable, alphabetically ordered scientific-name mapping is recorded in
-`ml/catalog/mvp-lepidoptera-catalog.json`. The local downloads remain ignored under
+The source CSV contains 184 rows and 162 entries meeting the accepted minimum. Figshare
+also publishes a `Polyommatus_eros.ZIP` species archive that is absent from that CSV;
+direct inspection found 63 images. This resolves the otherwise unexplained 163-output
+classifier and `n_classes = 163` in the supplied evaluation script. The accepted catalog
+therefore contains 163 classes and records `Polyommatus eros` with the directly observed
+count. Its stable, alphabetically ordered mapping is recorded in
+`ml/catalog/mvp-lepidoptera-catalog.json`. Local downloads remain ignored under
 `ml/artifacts/` and are not distribution artifacts.
 
 The checkpoint is only a candidate. Before use it requires a locally computed SHA-256,

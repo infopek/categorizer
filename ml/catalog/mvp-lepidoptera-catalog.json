@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0.0",
   "status": "accepted",
-  "catalog_id": "lepidoptera-at-162-v1",
+  "catalog_id": "lepidoptera-at-163-v1",
   "category_id": "lepidoptera",
   "geographic_scope": "Austria",
-  "class_count": 162,
+  "class_count": 163,
   "minimum_source_images": 50,
   "classes": [
     {
@@ -822,6 +822,12 @@
       "scientific_name": "Polyommatus dorylas",
       "display_name": "Polyommatus dorylas",
       "source_image_count": 296
+    },
+    {
+      "class_id": "polyommatus-eros",
+      "scientific_name": "Polyommatus eros",
+      "display_name": "Polyommatus eros",
+      "source_image_count": 63
     },
     {
       "class_id": "polyommatus-icarus",
