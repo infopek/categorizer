@@ -1,14 +1,14 @@
 # Categorizer Requirements
 
-Status: accepted intake; pending requirements/bootstrap pull-request review and merge.
+Status: accepted intake; Lepidoptera MVP amendment accepted by the repository owner on 2026-07-17 and pending pull-request review and merge.
 
 ## Goal
 
-Create a mobile-first application that identifies cars from camera or gallery photos entirely on-device and lets casual users build a private personal collection. The product should preserve a practical path to later platforms and recognition categories without adding them to the first release.
+Create a mobile-first application that identifies butterflies and moths from camera or gallery photos entirely on-device and lets casual users build a private personal collection. Preserve the completed car-category foundations for later use without shipping car recognition in the MVP.
 
 ## Target users
 
-- Casual users who are curious about cars they encounter and want to collect identified sightings.
+- Casual users and nature enthusiasts who are curious about butterflies and moths they encounter and want to collect identified sightings.
 
 ## MVP
 
@@ -17,8 +17,8 @@ Create a mobile-first application that identifies cars from camera or gallery ph
 - Android 10 or newer on recent mid-range devices with approximately 4 GB RAM or more.
 - Camera capture and gallery import.
 - Fully on-device recognition using a model bundled with the application.
-- A catalog of approximately 100 to 200 commonly encountered car models.
-- Make-and-model identification, adding generation or approximate year where visually necessary; trim recognition is not required.
+- The 162 Austrian Lepidoptera dataset classes with at least 50 expert-validated images, subject to model and evaluation gates.
+- Species-level identification, retaining combined labels for source-defined species pairs that cannot be distinguished reliably from photographs.
 - Ranked recognition candidates with manual correction when none is correct.
 - Private app-managed photo copies with unnecessary metadata removed.
 - A local-only album containing the photo, confirmed identity, date, favorite state, and personal notes.
@@ -29,7 +29,8 @@ Create a mobile-first application that identifies cars from camera or gallery ph
 ### Explicitly postponed
 
 - iOS and desktop applications.
-- Recognition categories beyond cars, including animals.
+- Car recognition and the prepared 200-class car catalog.
+- Butterfly and moth species outside the accepted Austrian dataset.
 - Downloadable model or category packs.
 - Accounts, cloud backup, and synchronization.
 - Social features, sharing, location tracking, statistics, badges, and gamification.
@@ -62,11 +63,13 @@ Create a mobile-first application that identifies cars from camera or gallery ph
 - Do not upload photos, corrections, or collection data for training or analytics.
 - Do not collect accounts, credentials, or cloud data in the MVP.
 - Use only datasets, model weights, and images with verified compatible licenses.
-- Keep the catalog at approximately 100 to 200 car models for the MVP.
+- Preserve CC BY 4.0 attribution and artifact provenance for every consumed Figshare dataset or checkpoint file.
+- Keep the MVP catalog to the 162 sufficiently represented source classes unless a reviewed amendment changes that boundary.
 
 ## Assumptions
 
-- Generation or approximate year is included only where it creates a useful visual distinction.
+- Scientific species names are canonical; common names are optional display metadata.
+- Source-defined visually inseparable species pairs remain combined.
 - Manual corrections become album metadata and do not trigger automatic retraining.
 - The app may report unsupported or uncertain input instead of forcing a confident result.
 - Export and import use a documented, versioned format suitable for future migration.
@@ -74,16 +77,16 @@ Create a mobile-first application that identifies cars from camera or gallery ph
 
 ## Open questions
 
-- Which licensed datasets, pretrained weights, and exact car classes will form the initial catalog?
+- Can the provided MaxViT-T checkpoint pass provenance, ONNX compatibility, application-size, memory, and Galaxy S20 FE latency gates, or must it be distilled?
 - Which specific mid-range Android device will anchor the latency benchmark?
 - What maximum bundled application and model size is acceptable for closed testing?
 
 ## Acceptance signals
 
-- On a held-out representative test set, the correct supported car appears within the top five candidates at least 80% of the time.
+- On a held-out representative test set, the correct supported Lepidoptera class appears within the top five candidates at least 80% of the time.
 - Per-class results are reported so frequent classes cannot conceal weak supported classes.
 - Median on-device inference is below two seconds on the selected benchmark device.
-- Camera and gallery photos can be classified offline, confirmed or corrected, and saved.
+- Camera and gallery photos of supported butterflies and moths can be classified offline, confirmed or corrected, and saved.
 - Album entries survive restarts and can be searched, filtered, favorited, annotated, exported, and imported.
 - Stored app-managed photos omit unnecessary metadata.
 - A signed build containing the bundled model installs through Google Play closed testing.
