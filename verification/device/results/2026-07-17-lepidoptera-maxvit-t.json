@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "status": "warm_inference_gate_passed",
+  "source_base_revision": "e324d13a671387f1ae50934be77c432f14ec32c3",
+  "device": {
+    "manufacturer": "Samsung",
+    "model": "SM-G780G",
+    "product_device": "r8q",
+    "soc_manufacturer": "QTI",
+    "soc_model": "SM8250",
+    "abis": ["arm64-v8a", "armeabi-v7a", "armeabi"],
+    "android_version": "13",
+    "security_patch": "2025-10-01",
+    "build_fingerprint": "samsung/r8qeea/r8q:13/TP1A.220624.014/G780GXXSHEYJ1:user/release-keys"
+  },
+  "build": {
+    "type": "debug instrumentation",
+    "application_apk_sha256": "de24b60330ee6fd74900a5aefbfab7c243c08f2e07355d5674ac40efe03b2817",
+    "application_apk_bytes": 144729723,
+    "test_apk_sha256": "435de6475723b31af63349a78a5afa826a49e9c6668b2fcbe4a44cd79428b10a",
+    "test_apk_bytes": 156792222,
+    "onnx_runtime_version": "1.27.0",
+    "execution_provider": "CPUExecutionProvider"
+  },
+  "model": {
+    "architecture": "torchvision.maxvit_t",
+    "classes": 163,
+    "onnx_sha256": "f5baea42f3c0708566116359716c0e4e745071f1660c53b83af3812a98870ef1",
+    "onnx_bytes": 126581357,
+    "input_shape": [1, 3, 224, 224]
+  },
+  "fixtures": {
+    "archive": "Polyommatus_eros.ZIP",
+    "archive_sha256": "0c802e22ef422e637d934c95d342576838c36d2ac42b278dc47769f52b830248",
+    "distinct_valid_images": 63,
+    "selection": "all decodable JPEG entries in lexicographic archive order",
+    "preprocessing": "resize shorter side to 224, center crop 224, RGB ImageNet normalization"
+  },
+  "conditions": {
+    "battery_percent_before": 50,
+    "usb_powered": true,
+    "thermal_status_before": 0,
+    "thermal_status_after": 1,
+    "thermal_status_after_label": "light",
+    "ap_temperature_c_after": 48.9,
+    "skin_temperature_c_after": 38.4,
+    "severe_thermal_throttling": false
+  },
+  "protocol": {
+    "warmup_runs": 10,
+    "measured_runs": 100,
+    "fixture_cycle": "sequence modulo 63",
+    "timing_boundary": "OrtSession.run only",
+    "gate_median_ms_exclusive": 2000.0
+  },
+  "summary_ms": {
+    "median": 202.675052,
+    "p90": 207.531094,
+    "p95": 209.243489,
+    "minimum": 197.451823,
+    "maximum": 214.892031,
+    "mean": 203.15584525
+  },
+  "other_observations": {
+    "model_asset_copy_ms": 813.740885,
+    "session_creation_ms": 392.246875,
+    "end_of_run_total_pss_kib": 373888,
+    "memory_gate_status": "incomplete",
+    "memory_gate_note": "End-of-run total PSS was observed, but idle baseline, peak sampling, and three repeated sequences remain required for the full memory gate."
+  },
+  "samples_ns": [
+    199310573, 200039896, 199354896, 199518907, 199271406, 199112343, 199687812, 199628854, 199647812, 199534791,
+    200087135, 200043489, 199656146, 199542188, 200220052, 200074011, 203083021, 203521094, 203420573, 202892552,
+    204644531, 204192187, 214892031, 203311510, 200615157, 199204011, 199251249, 201814479, 200014948, 200557031,
+    200255729, 199870730, 199263281, 199193333, 199203854, 199547813, 202389427, 206540468, 201987136, 203157031,
+    201378698, 201121667, 201586615, 201538593, 201604062, 202606198, 202547969, 202106198, 204252969, 204259687,
+    204572291, 205055364, 204916667, 205334219, 203978021, 202849167, 203820677, 205067500, 203700782, 204143281,
+    209102604, 203962136, 205065573, 210439375, 209659792, 205108386, 206070573, 206242761, 205938438, 206268020,
+    206234219, 207046354, 207451511, 207531094, 206119427, 207287708, 210990365, 208522500, 209243489, 207788072,
+    206143906, 207568594, 207386041, 210158072, 197451823, 198383281, 199861718, 201360990, 200255312, 200597291,
+    200700729, 200875052, 201079687, 202053750, 203457760, 201766771, 202675052, 205733281, 204149896, 203859010
+  ],
+  "gate": {
+    "metric": "median warm inference-only latency",
+    "result_ms": 202.675052,
+    "maximum_ms_exclusive": 2000.0,
+    "passed": true
+  },
+  "remaining_release_evidence": [
+    "ten independent cold trials",
+    "idle/session/peak PSS and working-memory delta",
+    "three consecutive 100-request memory-stability sequences",
+    "release-signed APK or AAB package-size measurement"
+  ]
+}
