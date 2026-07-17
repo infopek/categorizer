@@ -2,7 +2,9 @@
 
 ## Current lifecycle phase
 
-Requirements and planning are merged. Task decomposition is drafted on `ai/task-split-planning-20260712` and pending task-backlog pull-request review.
+An accepted product-scope amendment moves the MVP category from cars to Austrian
+butterflies and moths. The requirements amendment is pending pull-request review;
+the merged car-oriented planning package and task backlog must be amended afterward.
 
 ## Source of truth
 
@@ -12,19 +14,23 @@ Requirements and planning are merged. Task decomposition is drafted on `ai/task-
 
 ## Next action
 
-Validate and review the task batches, canonical backlog, collaboration state, and slot readiness; then commit, push, open, and merge the task-decomposition pull request. After merge, open Dispatch from the merged repository files.
+Review and merge the Lepidoptera requirements amendment. Then create a fresh planning
+run that preserves category-neutral application foundations, moves car recognition to
+post-MVP, and replaces the ML/catalog tasks with the accepted Lepidoptera source and
+checkpoint evaluation path.
 
 ## Accepted direction
 
-- Android-first offline car recognition for casual users.
+- Android-first offline butterfly and moth recognition for casual users and nature enthusiasts.
 - Local-only personal album with camera and gallery input.
 - Kotlin Multiplatform, Compose Multiplatform, ONNX Runtime, and a PyTorch-to-ONNX model pipeline.
-- Approximately 100 to 200 supported car models, evaluated against top-five accuracy and device-latency gates.
+- The 162 sufficiently represented Austrian Lepidoptera classes from the accepted Figshare source, evaluated against top-five accuracy and device-latency gates.
+- The prepared 200-class car catalog and local car dataset are preserved for post-MVP work.
 
 ## Non-blocking planning inputs
 
-- Select the licensed datasets, pretrained weights, and exact initial catalog.
-- Select the representative mid-range Android benchmark device.
+- Verify the pinned Figshare checkpoint's artifact provenance and exact class order.
+- Evaluate whether MaxViT-T can satisfy ONNX, size, memory, and Galaxy S20 FE latency gates or requires distillation.
 - Establish the bundled application and model size budget.
 
 ## Draft planning package

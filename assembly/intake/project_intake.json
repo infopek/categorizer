@@ -2,18 +2,18 @@
   "schema_version": "0.1.0",
   "project_slug": "categorizer",
   "intake_mode": "guided",
-  "project_goal": "Create a mobile-first application that identifies cars from camera or gallery photos entirely on-device and lets casual users build a private personal collection, while preserving a path to later platforms and recognition categories.",
+  "project_goal": "Create a mobile-first application that identifies butterflies and moths from camera or gallery photos entirely on-device and lets casual users build a private personal collection, while preserving the completed car-category foundations for a later category pack.",
   "target_users": [
-    "Casual users who are curious about cars they encounter and want to collect identified sightings"
+    "Casual users and nature enthusiasts who are curious about butterflies and moths they encounter and want to collect identified sightings"
   ],
   "mvp": {
-    "summary": "An Android-first offline car categorizer and personal album covering approximately 100 to 200 commonly encountered car models.",
+    "summary": "An Android-first offline butterfly and moth categorizer and personal album initially covering the 162 Austrian species or inseparable species pairs in the accepted dataset that have at least 50 expert-validated images.",
     "must_have": [
       "Accept both camera captures and gallery imports.",
       "Run recognition fully on-device with a model bundled in the application.",
-      "Identify make and model, adding generation or approximate year where visually necessary; trim recognition is not required.",
+      "Identify the supported butterfly or moth species, using a combined label for species pairs that cannot be distinguished reliably from photographs.",
       "Present ranked recognition candidates and allow manual correction when none is correct.",
-      "Support approximately 100 to 200 commonly encountered car models.",
+      "Support the 162 dataset classes with at least 50 expert-validated images, subject to independent license, class-map, mobile-runtime, and held-out evaluation gates.",
       "Store app-managed photo copies with unnecessary metadata removed.",
       "Maintain a local-only album containing the photo, confirmed identity, date, favorite state, and personal notes.",
       "Provide album search and filtering.",
@@ -22,7 +22,8 @@
     ],
     "postponed": [
       "iOS and desktop applications",
-      "Recognition categories beyond cars, including animals",
+      "Car recognition and the already prepared 200-class car catalog",
+      "Butterfly and moth species outside the accepted Austrian dataset",
       "Downloadable model or category packs",
       "Accounts, cloud backup, and synchronization",
       "Social features and sharing",
@@ -112,7 +113,8 @@
     "Recognition must not require an LLM, subscription, remote inference service, or network connection.",
     "The bundled model and application must operate within the storage, memory, and performance limits of supported Android devices.",
     "Training datasets, pretrained weights, and other assets must have licenses compatible with the intended application and distribution.",
-    "The supported catalog must remain approximately 100 to 200 car models for the MVP.",
+    "The Figshare dataset record and every consumed artifact must retain its CC BY 4.0 attribution and provenance record.",
+    "The supported MVP catalog is limited to the 162 sufficiently represented Austrian Lepidoptera classes used by the published baseline.",
     "The architecture should preserve practical portability to iOS and desktop without adding those deliverables to the MVP."
   ],
   "safety_boundaries": [
@@ -123,7 +125,8 @@
     "Do not use datasets, model weights, or images without verified compatible licensing."
   ],
   "assumptions": [
-    "A make-and-model result may include generation or approximate year only where needed for a useful distinction.",
+    "Scientific species names are canonical labels; common names may be added as display metadata without changing class identity.",
+    "Four visually inseparable species pairs remain combined exactly as defined by the source dataset.",
     "Manual correction is stored as album metadata and is not used for automatic retraining in the MVP.",
     "The app may report that a car is unsupported or uncertain instead of forcing a confident identification.",
     "Manual export and import use a documented, versioned format suitable for later migration or synchronization.",
@@ -131,8 +134,8 @@
   ],
   "open_questions": [
     {
-      "question": "Which licensed datasets, pretrained weights, and exact 100 to 200 car classes will form the initial catalog?",
-      "risk_if_unanswered": "Planning can proceed, but model feasibility, class balance, and licensing cannot be finalized."
+      "question": "Does the provided MaxViT-T checkpoint satisfy artifact-specific provenance, ONNX compatibility, size, memory, and latency gates, or must it be distilled into a smaller mobile model?",
+      "risk_if_unanswered": "The accepted dataset is usable, but the release model and amount of source-image acquisition remain unresolved."
     },
     {
       "question": "Which specific mid-range Android device will be the latency benchmark target?",
@@ -144,10 +147,10 @@
     }
   ],
   "acceptance_signals": [
-    "A held-out representative test set shows the correct supported car within the top five candidates at least 80 percent of the time.",
+    "A held-out representative test set shows the correct supported Lepidoptera class within the top five candidates at least 80 percent of the time.",
     "Per-class evaluation is reported so common classes cannot conceal weak supported classes.",
     "Median on-device inference is below two seconds on the selected mid-range Android benchmark device.",
-    "Camera and gallery photos can be classified without network access, confirmed or corrected, and saved to the album.",
+    "Camera and gallery photos of supported butterflies and moths can be classified without network access, confirmed or corrected, and saved to the album.",
     "Album entries survive application restarts and can be searched, filtered, favorited, annotated, exported, and imported.",
     "Stored app-managed photos omit unnecessary metadata.",
     "A signed build containing the bundled model is installable through Google Play closed testing."
