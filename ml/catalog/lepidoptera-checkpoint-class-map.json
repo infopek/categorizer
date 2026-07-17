@@ -1,0 +1,1151 @@
+{
+  "schema_version": "1.0.0",
+  "status": "candidate",
+  "catalog_id": "lepidoptera-at-163-v1",
+  "checkpoint_sha256": "ac3cf138930a8b6f52dcb064ff44ace39b701d3412812e457930463073e5eca0",
+  "ordering_rule": "torchvision.datasets.ImageFolder lexicographic source-folder order; inferred because the source checkpoint does not embed labels",
+  "class_count": 163,
+  "classes": [
+    {
+      "index": 0,
+      "class_id": "acherontia-atropos",
+      "scientific_name": "Acherontia atropos",
+      "display_name": "Acherontia atropos",
+      "source_folder": "Acherontia_atropos"
+    },
+    {
+      "index": 1,
+      "class_id": "acronicta-rumicis",
+      "scientific_name": "Acronicta rumicis",
+      "display_name": "Acronicta rumicis",
+      "source_folder": "Acronicta_rumicis"
+    },
+    {
+      "index": 2,
+      "class_id": "aglais-io",
+      "scientific_name": "Aglais io",
+      "display_name": "Aglais io",
+      "source_folder": "Aglais_io"
+    },
+    {
+      "index": 3,
+      "class_id": "aglais-urticae",
+      "scientific_name": "Aglais urticae",
+      "display_name": "Aglais urticae",
+      "source_folder": "Aglais_urticae"
+    },
+    {
+      "index": 4,
+      "class_id": "agriades-optilete",
+      "scientific_name": "Agriades optilete",
+      "display_name": "Agriades optilete",
+      "source_folder": "Agriades_optilete"
+    },
+    {
+      "index": 5,
+      "class_id": "agriades-orbitulus",
+      "scientific_name": "Agriades orbitulus",
+      "display_name": "Agriades orbitulus",
+      "source_folder": "Agriades_orbitulus"
+    },
+    {
+      "index": 6,
+      "class_id": "agrius-convolvuli",
+      "scientific_name": "Agrius convolvuli",
+      "display_name": "Agrius convolvuli",
+      "source_folder": "Agrius_convolvuli"
+    },
+    {
+      "index": 7,
+      "class_id": "amata-phegea",
+      "scientific_name": "Amata phegea",
+      "display_name": "Amata phegea",
+      "source_folder": "Amata_phegea"
+    },
+    {
+      "index": 8,
+      "class_id": "antheraea-yamamai",
+      "scientific_name": "Antheraea yamamai",
+      "display_name": "Antheraea yamamai",
+      "source_folder": "Antheraea_yamamai"
+    },
+    {
+      "index": 9,
+      "class_id": "anthocharis-cardamines",
+      "scientific_name": "Anthocharis cardamines",
+      "display_name": "Anthocharis cardamines",
+      "source_folder": "Anthocharis_cardamines"
+    },
+    {
+      "index": 10,
+      "class_id": "apatura-ilia",
+      "scientific_name": "Apatura ilia",
+      "display_name": "Apatura ilia",
+      "source_folder": "Apatura_ilia"
+    },
+    {
+      "index": 11,
+      "class_id": "apatura-iris",
+      "scientific_name": "Apatura iris",
+      "display_name": "Apatura iris",
+      "source_folder": "Apatura_iris"
+    },
+    {
+      "index": 12,
+      "class_id": "aphantopus-hyperantus",
+      "scientific_name": "Aphantopus hyperantus",
+      "display_name": "Aphantopus hyperantus",
+      "source_folder": "Aphantopus_hyperantus"
+    },
+    {
+      "index": 13,
+      "class_id": "aporia-crataegi",
+      "scientific_name": "Aporia crataegi",
+      "display_name": "Aporia crataegi",
+      "source_folder": "Aporia_crataegi"
+    },
+    {
+      "index": 14,
+      "class_id": "araschnia-levana",
+      "scientific_name": "Araschnia levana",
+      "display_name": "Araschnia levana",
+      "source_folder": "Araschnia_levana"
+    },
+    {
+      "index": 15,
+      "class_id": "arctia-caja",
+      "scientific_name": "Arctia caja",
+      "display_name": "Arctia caja",
+      "source_folder": "Arctia_caja"
+    },
+    {
+      "index": 16,
+      "class_id": "arethusana-arethusa",
+      "scientific_name": "Arethusana arethusa",
+      "display_name": "Arethusana arethusa",
+      "source_folder": "Arethusana_arethusa"
+    },
+    {
+      "index": 17,
+      "class_id": "argynnis-paphia",
+      "scientific_name": "Argynnis paphia",
+      "display_name": "Argynnis paphia",
+      "source_folder": "Argynnis_paphia"
+    },
+    {
+      "index": 18,
+      "class_id": "aricia-agestis-a-artaxerxes",
+      "scientific_name": "Aricia agestis/A. artaxerxes",
+      "display_name": "Aricia agestis/A. artaxerxes",
+      "source_folder": "Aricia_agestis_artaxerxes"
+    },
+    {
+      "index": 19,
+      "class_id": "autographa-gamma",
+      "scientific_name": "Autographa gamma",
+      "display_name": "Autographa gamma",
+      "source_folder": "Autographa_gamma"
+    },
+    {
+      "index": 20,
+      "class_id": "boloria-aquilonaris",
+      "scientific_name": "Boloria aquilonaris",
+      "display_name": "Boloria aquilonaris",
+      "source_folder": "Boloria_aquilonaris"
+    },
+    {
+      "index": 21,
+      "class_id": "boloria-dia",
+      "scientific_name": "Boloria dia",
+      "display_name": "Boloria dia",
+      "source_folder": "Boloria_dia"
+    },
+    {
+      "index": 22,
+      "class_id": "boloria-eunomia",
+      "scientific_name": "Boloria eunomia",
+      "display_name": "Boloria eunomia",
+      "source_folder": "Boloria_eunomia"
+    },
+    {
+      "index": 23,
+      "class_id": "boloria-euphrosyne",
+      "scientific_name": "Boloria euphrosyne",
+      "display_name": "Boloria euphrosyne",
+      "source_folder": "Boloria_euphrosyne"
+    },
+    {
+      "index": 24,
+      "class_id": "boloria-selene",
+      "scientific_name": "Boloria selene",
+      "display_name": "Boloria selene",
+      "source_folder": "Boloria_selene"
+    },
+    {
+      "index": 25,
+      "class_id": "boloria-thore",
+      "scientific_name": "Boloria thore",
+      "display_name": "Boloria thore",
+      "source_folder": "Boloria_thore"
+    },
+    {
+      "index": 26,
+      "class_id": "boloria-titania",
+      "scientific_name": "Boloria titania",
+      "display_name": "Boloria titania",
+      "source_folder": "Boloria_titania"
+    },
+    {
+      "index": 27,
+      "class_id": "brenthis-daphne",
+      "scientific_name": "Brenthis daphne",
+      "display_name": "Brenthis daphne",
+      "source_folder": "Brenthis_daphne"
+    },
+    {
+      "index": 28,
+      "class_id": "brenthis-ino",
+      "scientific_name": "Brenthis ino",
+      "display_name": "Brenthis ino",
+      "source_folder": "Brenthis_ino"
+    },
+    {
+      "index": 29,
+      "class_id": "brintesia-circe",
+      "scientific_name": "Brintesia circe",
+      "display_name": "Brintesia circe",
+      "source_folder": "Brintesia_circe"
+    },
+    {
+      "index": 30,
+      "class_id": "callimorpha-dominula",
+      "scientific_name": "Callimorpha dominula",
+      "display_name": "Callimorpha dominula",
+      "source_folder": "Callimorpha_dominula"
+    },
+    {
+      "index": 31,
+      "class_id": "calliteara-pudibunda",
+      "scientific_name": "Calliteara pudibunda",
+      "display_name": "Calliteara pudibunda",
+      "source_folder": "Calliteara_pudibunda"
+    },
+    {
+      "index": 32,
+      "class_id": "callophrys-rubi",
+      "scientific_name": "Callophrys rubi",
+      "display_name": "Callophrys rubi",
+      "source_folder": "Callophrys_rubi"
+    },
+    {
+      "index": 33,
+      "class_id": "carcharodus-alceae",
+      "scientific_name": "Carcharodus alceae",
+      "display_name": "Carcharodus alceae",
+      "source_folder": "Carcharodus_alceae"
+    },
+    {
+      "index": 34,
+      "class_id": "carterocephalus-palaemon",
+      "scientific_name": "Carterocephalus palaemon",
+      "display_name": "Carterocephalus palaemon",
+      "source_folder": "Carterocephalus_palaemon"
+    },
+    {
+      "index": 35,
+      "class_id": "celastrina-argiolus",
+      "scientific_name": "Celastrina argiolus",
+      "display_name": "Celastrina argiolus",
+      "source_folder": "Celastrina_argiolus"
+    },
+    {
+      "index": 36,
+      "class_id": "chazara-briseis",
+      "scientific_name": "Chazara briseis",
+      "display_name": "Chazara briseis",
+      "source_folder": "Chazara_briseis"
+    },
+    {
+      "index": 37,
+      "class_id": "chiasmia-clathrata",
+      "scientific_name": "Chiasmia clathrata",
+      "display_name": "Chiasmia clathrata",
+      "source_folder": "Chiasmia_clathrata"
+    },
+    {
+      "index": 38,
+      "class_id": "coenonympha-arcania",
+      "scientific_name": "Coenonympha arcania",
+      "display_name": "Coenonympha arcania",
+      "source_folder": "Coenonympha_arcania"
+    },
+    {
+      "index": 39,
+      "class_id": "coenonympha-gardetta",
+      "scientific_name": "Coenonympha gardetta",
+      "display_name": "Coenonympha gardetta",
+      "source_folder": "Coenonympha_gardetta"
+    },
+    {
+      "index": 40,
+      "class_id": "coenonympha-glycerion",
+      "scientific_name": "Coenonympha glycerion",
+      "display_name": "Coenonympha glycerion",
+      "source_folder": "Coenonympha_glycerion"
+    },
+    {
+      "index": 41,
+      "class_id": "coenonympha-pamphilus",
+      "scientific_name": "Coenonympha pamphilus",
+      "display_name": "Coenonympha pamphilus",
+      "source_folder": "Coenonympha_pamphilus"
+    },
+    {
+      "index": 42,
+      "class_id": "colias-croceus",
+      "scientific_name": "Colias croceus",
+      "display_name": "Colias croceus",
+      "source_folder": "Colias_croceus"
+    },
+    {
+      "index": 43,
+      "class_id": "colias-palaeno",
+      "scientific_name": "Colias palaeno",
+      "display_name": "Colias palaeno",
+      "source_folder": "Colias_palaeno"
+    },
+    {
+      "index": 44,
+      "class_id": "colias-phicomone",
+      "scientific_name": "Colias phicomone",
+      "display_name": "Colias phicomone",
+      "source_folder": "Colias_phicomone"
+    },
+    {
+      "index": 45,
+      "class_id": "cossus-cossus",
+      "scientific_name": "Cossus cossus",
+      "display_name": "Cossus cossus",
+      "source_folder": "Cossus_cossus"
+    },
+    {
+      "index": 46,
+      "class_id": "cupido-argiades",
+      "scientific_name": "Cupido argiades",
+      "display_name": "Cupido argiades",
+      "source_folder": "Cupido_argiades"
+    },
+    {
+      "index": 47,
+      "class_id": "cupido-decolorata",
+      "scientific_name": "Cupido decolorata",
+      "display_name": "Cupido decolorata",
+      "source_folder": "Cupido_decolorata"
+    },
+    {
+      "index": 48,
+      "class_id": "cupido-minimus",
+      "scientific_name": "Cupido minimus",
+      "display_name": "Cupido minimus",
+      "source_folder": "Cupido_minimus"
+    },
+    {
+      "index": 49,
+      "class_id": "cyaniris-semiargus",
+      "scientific_name": "Cyaniris semiargus",
+      "display_name": "Cyaniris semiargus",
+      "source_folder": "Cyaniris_semiargus"
+    },
+    {
+      "index": 50,
+      "class_id": "cydalima-perspectalis",
+      "scientific_name": "Cydalima perspectalis",
+      "display_name": "Cydalima perspectalis",
+      "source_folder": "Cydalima_perspectalis"
+    },
+    {
+      "index": 51,
+      "class_id": "deilephila-elpenor",
+      "scientific_name": "Deilephila elpenor",
+      "display_name": "Deilephila elpenor",
+      "source_folder": "Deilephila_elpenor"
+    },
+    {
+      "index": 52,
+      "class_id": "diacrisia-sannio",
+      "scientific_name": "Diacrisia sannio",
+      "display_name": "Diacrisia sannio",
+      "source_folder": "Diacrisia_sannio"
+    },
+    {
+      "index": 53,
+      "class_id": "ematurga-atomaria",
+      "scientific_name": "Ematurga atomaria",
+      "display_name": "Ematurga atomaria",
+      "source_folder": "Ematurga_atomaria"
+    },
+    {
+      "index": 54,
+      "class_id": "erebia-aethiops",
+      "scientific_name": "Erebia aethiops",
+      "display_name": "Erebia aethiops",
+      "source_folder": "Erebia_aethiops"
+    },
+    {
+      "index": 55,
+      "class_id": "erebia-euryale",
+      "scientific_name": "Erebia euryale",
+      "display_name": "Erebia euryale",
+      "source_folder": "Erebia_euryale"
+    },
+    {
+      "index": 56,
+      "class_id": "erebia-ligea",
+      "scientific_name": "Erebia ligea",
+      "display_name": "Erebia ligea",
+      "source_folder": "Erebia_ligea"
+    },
+    {
+      "index": 57,
+      "class_id": "erebia-manto",
+      "scientific_name": "Erebia manto",
+      "display_name": "Erebia manto",
+      "source_folder": "Erebia_manto"
+    },
+    {
+      "index": 58,
+      "class_id": "erebia-medusa",
+      "scientific_name": "Erebia medusa",
+      "display_name": "Erebia medusa",
+      "source_folder": "Erebia_medusa"
+    },
+    {
+      "index": 59,
+      "class_id": "erebia-pronoe",
+      "scientific_name": "Erebia pronoe",
+      "display_name": "Erebia pronoe",
+      "source_folder": "Erebia_pronoe"
+    },
+    {
+      "index": 60,
+      "class_id": "erynnis-tages",
+      "scientific_name": "Erynnis tages",
+      "display_name": "Erynnis tages",
+      "source_folder": "Erynnis_tages"
+    },
+    {
+      "index": 61,
+      "class_id": "euclidia-glyphica",
+      "scientific_name": "Euclidia glyphica",
+      "display_name": "Euclidia glyphica",
+      "source_folder": "Euclidia_glyphica"
+    },
+    {
+      "index": 62,
+      "class_id": "eumedonia-eumedon",
+      "scientific_name": "Eumedonia eumedon",
+      "display_name": "Eumedonia eumedon",
+      "source_folder": "Eumedonia_eumedon"
+    },
+    {
+      "index": 63,
+      "class_id": "euphydryas-aurinia",
+      "scientific_name": "Euphydryas aurinia",
+      "display_name": "Euphydryas aurinia",
+      "source_folder": "Euphydryas_aurinia"
+    },
+    {
+      "index": 64,
+      "class_id": "euphydryas-cynthia",
+      "scientific_name": "Euphydryas cynthia",
+      "display_name": "Euphydryas cynthia",
+      "source_folder": "Euphydryas_cynthia"
+    },
+    {
+      "index": 65,
+      "class_id": "euphydryas-maturna",
+      "scientific_name": "Euphydryas maturna",
+      "display_name": "Euphydryas maturna",
+      "source_folder": "Euphydryas_maturna"
+    },
+    {
+      "index": 66,
+      "class_id": "euplagia-quadripunctaria",
+      "scientific_name": "Euplagia quadripunctaria",
+      "display_name": "Euplagia quadripunctaria",
+      "source_folder": "Euplagia_quadripunctaria"
+    },
+    {
+      "index": 67,
+      "class_id": "fabriciana-adippe",
+      "scientific_name": "Fabriciana adippe",
+      "display_name": "Fabriciana adippe",
+      "source_folder": "Fabriciana_adippe"
+    },
+    {
+      "index": 68,
+      "class_id": "fabriciana-niobe",
+      "scientific_name": "Fabriciana niobe",
+      "display_name": "Fabriciana niobe",
+      "source_folder": "Fabriciana_niobe"
+    },
+    {
+      "index": 69,
+      "class_id": "favonius-quercus",
+      "scientific_name": "Favonius quercus",
+      "display_name": "Favonius quercus",
+      "source_folder": "Favonius_quercus"
+    },
+    {
+      "index": 70,
+      "class_id": "glaucopsyche-alexis",
+      "scientific_name": "Glaucopsyche alexis",
+      "display_name": "Glaucopsyche alexis",
+      "source_folder": "Glaucopsyche_alexis"
+    },
+    {
+      "index": 71,
+      "class_id": "gonepteryx-rhamni",
+      "scientific_name": "Gonepteryx rhamni",
+      "display_name": "Gonepteryx rhamni",
+      "source_folder": "Gonepteryx_rhamni"
+    },
+    {
+      "index": 72,
+      "class_id": "hamearis-lucina",
+      "scientific_name": "Hamearis lucina",
+      "display_name": "Hamearis lucina",
+      "source_folder": "Hamearis_lucina"
+    },
+    {
+      "index": 73,
+      "class_id": "hemaris-fuciformis",
+      "scientific_name": "Hemaris fuciformis",
+      "display_name": "Hemaris fuciformis",
+      "source_folder": "Hemaris_fuciformis"
+    },
+    {
+      "index": 74,
+      "class_id": "hesperia-comma",
+      "scientific_name": "Hesperia comma",
+      "display_name": "Hesperia comma",
+      "source_folder": "Hesperia_comma"
+    },
+    {
+      "index": 75,
+      "class_id": "heteropterus-morpheus",
+      "scientific_name": "Heteropterus morpheus",
+      "display_name": "Heteropterus morpheus",
+      "source_folder": "Heteropterus_morpheus"
+    },
+    {
+      "index": 76,
+      "class_id": "hipparchia-alcyone",
+      "scientific_name": "Hipparchia alcyone",
+      "display_name": "Hipparchia alcyone",
+      "source_folder": "Hipparchia_alcyone"
+    },
+    {
+      "index": 77,
+      "class_id": "hipparchia-fagi",
+      "scientific_name": "Hipparchia fagi",
+      "display_name": "Hipparchia fagi",
+      "source_folder": "Hipparchia_fagi"
+    },
+    {
+      "index": 78,
+      "class_id": "hipparchia-semele",
+      "scientific_name": "Hipparchia semele",
+      "display_name": "Hipparchia semele",
+      "source_folder": "Hipparchia_semele"
+    },
+    {
+      "index": 79,
+      "class_id": "iphiclides-podalirius",
+      "scientific_name": "Iphiclides podalirius",
+      "display_name": "Iphiclides podalirius",
+      "source_folder": "Iphiclides_podalirius"
+    },
+    {
+      "index": 80,
+      "class_id": "issoria-lathonia",
+      "scientific_name": "Issoria lathonia",
+      "display_name": "Issoria lathonia",
+      "source_folder": "Issoria_lathonia"
+    },
+    {
+      "index": 81,
+      "class_id": "laothoe-populi",
+      "scientific_name": "Laothoe populi",
+      "display_name": "Laothoe populi",
+      "source_folder": "Laothoe_populi"
+    },
+    {
+      "index": 82,
+      "class_id": "lasiommata-maera",
+      "scientific_name": "Lasiommata maera",
+      "display_name": "Lasiommata maera",
+      "source_folder": "Lasiommata_maera"
+    },
+    {
+      "index": 83,
+      "class_id": "lasiommata-megera",
+      "scientific_name": "Lasiommata megera",
+      "display_name": "Lasiommata megera",
+      "source_folder": "Lasiommata_megera"
+    },
+    {
+      "index": 84,
+      "class_id": "lasiommata-petropolitana",
+      "scientific_name": "Lasiommata petropolitana",
+      "display_name": "Lasiommata petropolitana",
+      "source_folder": "Lasiommata_petropolitana"
+    },
+    {
+      "index": 85,
+      "class_id": "leptidea-sinapis-juvernica",
+      "scientific_name": "Leptidea sinapis/juvernica",
+      "display_name": "Leptidea sinapis/juvernica",
+      "source_folder": "Leptidea_sinapis_juvernica"
+    },
+    {
+      "index": 86,
+      "class_id": "libythea-celtis",
+      "scientific_name": "Libythea celtis",
+      "display_name": "Libythea celtis",
+      "source_folder": "Libythea_celtis"
+    },
+    {
+      "index": 87,
+      "class_id": "limenitis-camilla",
+      "scientific_name": "Limenitis camilla",
+      "display_name": "Limenitis camilla",
+      "source_folder": "Limenitis_camilla"
+    },
+    {
+      "index": 88,
+      "class_id": "limenitis-populi",
+      "scientific_name": "Limenitis populi",
+      "display_name": "Limenitis populi",
+      "source_folder": "Limenitis_populi"
+    },
+    {
+      "index": 89,
+      "class_id": "limenitis-reducta",
+      "scientific_name": "Limenitis reducta",
+      "display_name": "Limenitis reducta",
+      "source_folder": "Limenitis_reducta"
+    },
+    {
+      "index": 90,
+      "class_id": "lopinga-achine",
+      "scientific_name": "Lopinga achine",
+      "display_name": "Lopinga achine",
+      "source_folder": "Lopinga_achine"
+    },
+    {
+      "index": 91,
+      "class_id": "lycaena-dispar",
+      "scientific_name": "Lycaena dispar",
+      "display_name": "Lycaena dispar",
+      "source_folder": "Lycaena_dispar"
+    },
+    {
+      "index": 92,
+      "class_id": "lycaena-helle",
+      "scientific_name": "Lycaena helle",
+      "display_name": "Lycaena helle",
+      "source_folder": "Lycaena_helle"
+    },
+    {
+      "index": 93,
+      "class_id": "lycaena-hippothoe",
+      "scientific_name": "Lycaena hippothoe",
+      "display_name": "Lycaena hippothoe",
+      "source_folder": "Lycaena_hippothoe"
+    },
+    {
+      "index": 94,
+      "class_id": "lycaena-phlaeas",
+      "scientific_name": "Lycaena phlaeas",
+      "display_name": "Lycaena phlaeas",
+      "source_folder": "Lycaena_phlaeas"
+    },
+    {
+      "index": 95,
+      "class_id": "lycaena-tityrus",
+      "scientific_name": "Lycaena tityrus",
+      "display_name": "Lycaena tityrus",
+      "source_folder": "Lycaena_tityrus"
+    },
+    {
+      "index": 96,
+      "class_id": "lycaena-virgaureae",
+      "scientific_name": "Lycaena virgaureae",
+      "display_name": "Lycaena virgaureae",
+      "source_folder": "Lycaena_virgaureae"
+    },
+    {
+      "index": 97,
+      "class_id": "lysandra-bellargus",
+      "scientific_name": "Lysandra bellargus",
+      "display_name": "Lysandra bellargus",
+      "source_folder": "Lysandra_bellargus"
+    },
+    {
+      "index": 98,
+      "class_id": "lysandra-coridon",
+      "scientific_name": "Lysandra coridon",
+      "display_name": "Lysandra coridon",
+      "source_folder": "Lysandra_coridon"
+    },
+    {
+      "index": 99,
+      "class_id": "macroglossum-stellatarum",
+      "scientific_name": "Macroglossum stellatarum",
+      "display_name": "Macroglossum stellatarum",
+      "source_folder": "Macroglossum_stellatarum"
+    },
+    {
+      "index": 100,
+      "class_id": "macrothylacia-rubi",
+      "scientific_name": "Macrothylacia rubi",
+      "display_name": "Macrothylacia rubi",
+      "source_folder": "Macrothylacia_rubi"
+    },
+    {
+      "index": 101,
+      "class_id": "maniola-jurtina",
+      "scientific_name": "Maniola jurtina",
+      "display_name": "Maniola jurtina",
+      "source_folder": "Maniola_jurtina"
+    },
+    {
+      "index": 102,
+      "class_id": "melanargia-galathea",
+      "scientific_name": "Melanargia galathea",
+      "display_name": "Melanargia galathea",
+      "source_folder": "Melanargia_galathea"
+    },
+    {
+      "index": 103,
+      "class_id": "melitaea-athalia",
+      "scientific_name": "Melitaea athalia",
+      "display_name": "Melitaea athalia",
+      "source_folder": "Melitaea_athalia"
+    },
+    {
+      "index": 104,
+      "class_id": "melitaea-cinxia",
+      "scientific_name": "Melitaea cinxia",
+      "display_name": "Melitaea cinxia",
+      "source_folder": "Melitaea_cinxia"
+    },
+    {
+      "index": 105,
+      "class_id": "melitaea-diamina",
+      "scientific_name": "Melitaea diamina",
+      "display_name": "Melitaea diamina",
+      "source_folder": "Melitaea_diamina"
+    },
+    {
+      "index": 106,
+      "class_id": "melitaea-didyma",
+      "scientific_name": "Melitaea didyma",
+      "display_name": "Melitaea didyma",
+      "source_folder": "Melitaea_didyma"
+    },
+    {
+      "index": 107,
+      "class_id": "melitaea-phoebe",
+      "scientific_name": "Melitaea phoebe",
+      "display_name": "Melitaea phoebe",
+      "source_folder": "Melitaea_phoebe"
+    },
+    {
+      "index": 108,
+      "class_id": "mimas-tiliae",
+      "scientific_name": "Mimas tiliae",
+      "display_name": "Mimas tiliae",
+      "source_folder": "Mimas_tiliae"
+    },
+    {
+      "index": 109,
+      "class_id": "minois-dryas",
+      "scientific_name": "Minois dryas",
+      "display_name": "Minois dryas",
+      "source_folder": "Minois_dryas"
+    },
+    {
+      "index": 110,
+      "class_id": "muschampia-floccifera",
+      "scientific_name": "Muschampia floccifera",
+      "display_name": "Muschampia floccifera",
+      "source_folder": "Muschampia_floccifera"
+    },
+    {
+      "index": 111,
+      "class_id": "neptis-rivularis",
+      "scientific_name": "Neptis rivularis",
+      "display_name": "Neptis rivularis",
+      "source_folder": "Neptis_rivularis"
+    },
+    {
+      "index": 112,
+      "class_id": "neptis-sappho",
+      "scientific_name": "Neptis sappho",
+      "display_name": "Neptis sappho",
+      "source_folder": "Neptis_sappho"
+    },
+    {
+      "index": 113,
+      "class_id": "nymphalis-antiopa",
+      "scientific_name": "Nymphalis antiopa",
+      "display_name": "Nymphalis antiopa",
+      "source_folder": "Nymphalis_antiopa"
+    },
+    {
+      "index": 114,
+      "class_id": "nymphalis-polychloros",
+      "scientific_name": "Nymphalis polychloros",
+      "display_name": "Nymphalis polychloros",
+      "source_folder": "Nymphalis_polychloros"
+    },
+    {
+      "index": 115,
+      "class_id": "ochlodes-sylvanus",
+      "scientific_name": "Ochlodes sylvanus",
+      "display_name": "Ochlodes sylvanus",
+      "source_folder": "Ochlodes_sylvanus"
+    },
+    {
+      "index": 116,
+      "class_id": "papilio-machaon",
+      "scientific_name": "Papilio machaon",
+      "display_name": "Papilio machaon",
+      "source_folder": "Papilio_machaon"
+    },
+    {
+      "index": 117,
+      "class_id": "pararge-aegeria",
+      "scientific_name": "Pararge aegeria",
+      "display_name": "Pararge aegeria",
+      "source_folder": "Pararge_aegeria"
+    },
+    {
+      "index": 118,
+      "class_id": "parnassius-apollo",
+      "scientific_name": "Parnassius apollo",
+      "display_name": "Parnassius apollo",
+      "source_folder": "Parnassius_apollo"
+    },
+    {
+      "index": 119,
+      "class_id": "parnassius-mnemosyne",
+      "scientific_name": "Parnassius mnemosyne",
+      "display_name": "Parnassius mnemosyne",
+      "source_folder": "Parnassius_mneomsyne"
+    },
+    {
+      "index": 120,
+      "class_id": "parnassius-phoebus",
+      "scientific_name": "Parnassius phoebus",
+      "display_name": "Parnassius phoebus",
+      "source_folder": "Parnassius_phoebus"
+    },
+    {
+      "index": 121,
+      "class_id": "phalera-bucephala",
+      "scientific_name": "Phalera bucephala",
+      "display_name": "Phalera bucephala",
+      "source_folder": "Phalera_bucephala"
+    },
+    {
+      "index": 122,
+      "class_id": "phengaris-alcon-rebeli",
+      "scientific_name": "Phengaris alcon/rebeli",
+      "display_name": "Phengaris alcon/rebeli",
+      "source_folder": "Phengaris_alcon_rebeli"
+    },
+    {
+      "index": 123,
+      "class_id": "phengaris-arion",
+      "scientific_name": "Phengaris arion",
+      "display_name": "Phengaris arion",
+      "source_folder": "Phengaris_arion"
+    },
+    {
+      "index": 124,
+      "class_id": "phengaris-nausithous",
+      "scientific_name": "Phengaris nausithous",
+      "display_name": "Phengaris nausithous",
+      "source_folder": "Phengaris_nausithous"
+    },
+    {
+      "index": 125,
+      "class_id": "phengaris-teleius",
+      "scientific_name": "Phengaris teleius",
+      "display_name": "Phengaris teleius",
+      "source_folder": "Phengaris_teleius"
+    },
+    {
+      "index": 126,
+      "class_id": "pieris-brassicae",
+      "scientific_name": "Pieris brassicae",
+      "display_name": "Pieris brassicae",
+      "source_folder": "Pieris_brassicae"
+    },
+    {
+      "index": 127,
+      "class_id": "pieris-bryoniae",
+      "scientific_name": "Pieris bryoniae",
+      "display_name": "Pieris bryoniae",
+      "source_folder": "Pieris_bryoniae"
+    },
+    {
+      "index": 128,
+      "class_id": "pieris-mannii",
+      "scientific_name": "Pieris mannii",
+      "display_name": "Pieris mannii",
+      "source_folder": "Pieris_manii"
+    },
+    {
+      "index": 129,
+      "class_id": "pieris-napi",
+      "scientific_name": "Pieris napi",
+      "display_name": "Pieris napi",
+      "source_folder": "Pieris_napi"
+    },
+    {
+      "index": 130,
+      "class_id": "pieris-rapae",
+      "scientific_name": "Pieris rapae",
+      "display_name": "Pieris rapae",
+      "source_folder": "Pieris_rapae"
+    },
+    {
+      "index": 131,
+      "class_id": "plebejus-argus",
+      "scientific_name": "Plebejus argus",
+      "display_name": "Plebejus argus",
+      "source_folder": "Plebejus_argus"
+    },
+    {
+      "index": 132,
+      "class_id": "polygonia-c-album",
+      "scientific_name": "Polygonia c-album",
+      "display_name": "Polygonia c-album",
+      "source_folder": "Polygonia_c_album"
+    },
+    {
+      "index": 133,
+      "class_id": "polyommatus-damon",
+      "scientific_name": "Polyommatus damon",
+      "display_name": "Polyommatus damon",
+      "source_folder": "Polyommatus_damon"
+    },
+    {
+      "index": 134,
+      "class_id": "polyommatus-daphnis",
+      "scientific_name": "Polyommatus daphnis",
+      "display_name": "Polyommatus daphnis",
+      "source_folder": "Polyommatus_daphnis"
+    },
+    {
+      "index": 135,
+      "class_id": "polyommatus-dorylas",
+      "scientific_name": "Polyommatus dorylas",
+      "display_name": "Polyommatus dorylas",
+      "source_folder": "Polyommatus_dorylas"
+    },
+    {
+      "index": 136,
+      "class_id": "polyommatus-eros",
+      "scientific_name": "Polyommatus eros",
+      "display_name": "Polyommatus eros",
+      "source_folder": "Polyommatus_eros"
+    },
+    {
+      "index": 137,
+      "class_id": "polyommatus-icarus",
+      "scientific_name": "Polyommatus icarus",
+      "display_name": "Polyommatus icarus",
+      "source_folder": "Polyommatus_icarus"
+    },
+    {
+      "index": 138,
+      "class_id": "polyommatus-thersites",
+      "scientific_name": "Polyommatus thersites",
+      "display_name": "Polyommatus thersites",
+      "source_folder": "Polyommatus_thersites"
+    },
+    {
+      "index": 139,
+      "class_id": "pontia-edusa",
+      "scientific_name": "Pontia edusa",
+      "display_name": "Pontia edusa",
+      "source_folder": "Pontia_edusa"
+    },
+    {
+      "index": 140,
+      "class_id": "pseudopanthera-macularia",
+      "scientific_name": "Pseudopanthera macularia",
+      "display_name": "Pseudopanthera macularia",
+      "source_folder": "Pseudopanthera_macularia"
+    },
+    {
+      "index": 141,
+      "class_id": "pyrgus-armoricanus",
+      "scientific_name": "Pyrgus armoricanus",
+      "display_name": "Pyrgus armoricanus",
+      "source_folder": "Pyrgus_amoricanus"
+    },
+    {
+      "index": 142,
+      "class_id": "pyrgus-carthami",
+      "scientific_name": "Pyrgus carthami",
+      "display_name": "Pyrgus carthami",
+      "source_folder": "Pyrgus_carthami"
+    },
+    {
+      "index": 143,
+      "class_id": "pyrgus-malvae",
+      "scientific_name": "Pyrgus malvae",
+      "display_name": "Pyrgus malvae",
+      "source_folder": "Pyrgus_malvae"
+    },
+    {
+      "index": 144,
+      "class_id": "saturnia-pyri",
+      "scientific_name": "Saturnia pyri",
+      "display_name": "Saturnia pyri",
+      "source_folder": "Saturnia_pyri"
+    },
+    {
+      "index": 145,
+      "class_id": "satyrium-acaciae",
+      "scientific_name": "Satyrium acaciae",
+      "display_name": "Satyrium acaciae",
+      "source_folder": "Satyrium_acaciae"
+    },
+    {
+      "index": 146,
+      "class_id": "satyrium-pruni",
+      "scientific_name": "Satyrium pruni",
+      "display_name": "Satyrium pruni",
+      "source_folder": "Satyrium_pruni"
+    },
+    {
+      "index": 147,
+      "class_id": "satyrium-spini",
+      "scientific_name": "Satyrium spini",
+      "display_name": "Satyrium spini",
+      "source_folder": "Satyrium_spini"
+    },
+    {
+      "index": 148,
+      "class_id": "satyrium-w-album",
+      "scientific_name": "Satyrium w-album",
+      "display_name": "Satyrium w-album",
+      "source_folder": "Satyrium_w_album"
+    },
+    {
+      "index": 149,
+      "class_id": "scolitanides-orion",
+      "scientific_name": "Scolitanides orion",
+      "display_name": "Scolitanides orion",
+      "source_folder": "Scolitanides_orion"
+    },
+    {
+      "index": 150,
+      "class_id": "siona-lineata",
+      "scientific_name": "Siona lineata",
+      "display_name": "Siona lineata",
+      "source_folder": "Siona_lineata"
+    },
+    {
+      "index": 151,
+      "class_id": "smerinthus-ocellata",
+      "scientific_name": "Smerinthus ocellata",
+      "display_name": "Smerinthus ocellata",
+      "source_folder": "Smerinthus_ocellata"
+    },
+    {
+      "index": 152,
+      "class_id": "speyeria-aglaja",
+      "scientific_name": "Speyeria aglaja",
+      "display_name": "Speyeria aglaja",
+      "source_folder": "Speyeria_aglaja"
+    },
+    {
+      "index": 153,
+      "class_id": "sphinx-ligustri",
+      "scientific_name": "Sphinx ligustri",
+      "display_name": "Sphinx ligustri",
+      "source_folder": "Sphinx_ligustri"
+    },
+    {
+      "index": 154,
+      "class_id": "sphinx-pinastri",
+      "scientific_name": "Sphinx pinastri",
+      "display_name": "Sphinx pinastri",
+      "source_folder": "Sphinx_pinastri"
+    },
+    {
+      "index": 155,
+      "class_id": "spialia-sertorius",
+      "scientific_name": "Spialia sertorius",
+      "display_name": "Spialia sertorius",
+      "source_folder": "Spialia_sertorius"
+    },
+    {
+      "index": 156,
+      "class_id": "thecla-betulae",
+      "scientific_name": "Thecla betulae",
+      "display_name": "Thecla betulae",
+      "source_folder": "Thecla_betulae"
+    },
+    {
+      "index": 157,
+      "class_id": "tymelicus-lineola",
+      "scientific_name": "Tymelicus lineola",
+      "display_name": "Tymelicus lineola",
+      "source_folder": "Thymelicus_lineola"
+    },
+    {
+      "index": 158,
+      "class_id": "thymelicus-sylvestris",
+      "scientific_name": "Thymelicus sylvestris",
+      "display_name": "Thymelicus sylvestris",
+      "source_folder": "Thymelicus_sylvestris"
+    },
+    {
+      "index": 159,
+      "class_id": "triodia-sylvina",
+      "scientific_name": "Triodia sylvina",
+      "display_name": "Triodia sylvina",
+      "source_folder": "Triodia_sylvina"
+    },
+    {
+      "index": 160,
+      "class_id": "vanessa-atalanta",
+      "scientific_name": "Vanessa atalanta",
+      "display_name": "Vanessa atalanta",
+      "source_folder": "Vanessa_atalanta"
+    },
+    {
+      "index": 161,
+      "class_id": "vanessa-cardui",
+      "scientific_name": "Vanessa cardui",
+      "display_name": "Vanessa cardui",
+      "source_folder": "Vanessa_cardui"
+    },
+    {
+      "index": 162,
+      "class_id": "zerynthia-polyxena",
+      "scientific_name": "Zerynthia polyxena",
+      "display_name": "Zerynthia polyxena",
+      "source_folder": "Zerynthia_polyxena"
+    }
+  ]
+}
