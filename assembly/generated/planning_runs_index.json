@@ -34,6 +34,28 @@
       },
       "missing_scaffold": [],
       "task_decomposition_deferred": true
+    },
+    {
+      "slug": "planning-20260717-lepidoptera",
+      "path": "planning_runs/planning-20260717-lepidoptera",
+      "status": "outputs_present",
+      "has_input_idea": true,
+      "has_planning_prompt": true,
+      "has_review_notes": true,
+      "has_outputs_dir": true,
+      "outputs": {
+        "project_spec.json": true,
+        "repo_plan.json": true,
+        "agent_prompts.json": true,
+        "slots_db.json": true
+      },
+      "missing_outputs": [],
+      "deferred_outputs": {
+        "task_batch_index.json": false,
+        "task_backlog.json": false
+      },
+      "missing_scaffold": [],
+      "task_decomposition_deferred": true
     }
   ]
 }
