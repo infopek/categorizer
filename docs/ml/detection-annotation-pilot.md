@@ -37,3 +37,13 @@ Figshare's object storage supports HTTP byte ranges. The sampler reads ZIP centr
 ```
 
 Class IDs and archive members are selected by a seeded SHA-256 rank. Every image is decoded, hashed, and recorded with its Figshare file/archive identity. The output is explicitly unreviewed and remains ignored until passed through box proposal and human review.
+
+Generate teacher proposals directly from that verified sample:
+
+```bash
+.venv/bin/python ml/detection/propose_boxes.py \
+  --sample-manifest ml/artifacts/lepidoptera/detection-balanced-sample/sample-manifest.json \
+  --output ml/artifacts/lepidoptera/detection-balanced-review
+```
+
+The proposal command rechecks every local byte count and SHA-256 hash and propagates its class, source archive, member, and Figshare file identities into the review manifest.

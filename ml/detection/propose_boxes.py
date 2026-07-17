@@ -34,6 +34,68 @@ def identifier(name: str, content: bytes) -> str:
     return hashlib.sha256(name.encode() + b"\0" + content).hexdigest()[:20]
 
 
+def source_items(
+    archive_path: Path | None,
+    sample_manifest_path: Path | None,
+    sample_root: Path | None,
+    limit: int | None,
+) -> tuple[dict[str, object], list[tuple[str, bytes, dict[str, object]]]]:
+    if archive_path is not None:
+        with zipfile.ZipFile(archive_path) as archive:
+            names = sorted(
+                name
+                for name in archive.namelist()
+                if name.lower().endswith((".jpg", ".jpeg", ".png"))
+            )
+            if limit is not None:
+                names = names[:limit]
+            items = [(name, archive.read(name), {}) for name in names]
+        return (
+            {"kind": "archive", "filename": archive_path.name, "sha256": digest(archive_path)},
+            items,
+        )
+    if sample_manifest_path is None:
+        raise ValueError("one source is required")
+    sample = json.loads(sample_manifest_path.read_text(encoding="utf-8"))
+    if sample.get("status") != "unreviewed_detection_pilot_sample":
+        raise SystemExit("sample manifest has an unexpected status")
+    root = sample_root or sample_manifest_path.parent
+    assets = sorted(sample.get("assets", []), key=lambda item: (item["class_id"], item["local_path"]))
+    if limit is not None:
+        assets = assets[:limit]
+    items = []
+    for asset in assets:
+        path = (root / asset["local_path"]).resolve()
+        if not path.is_relative_to(root.resolve()) or not path.is_file():
+            raise SystemExit(f"sample asset path is invalid: {asset['local_path']}")
+        content = path.read_bytes()
+        if hashlib.sha256(content).hexdigest() != asset["sha256"] or len(content) != asset["bytes"]:
+            raise SystemExit(f"sample asset identity mismatch: {asset['asset_id']}")
+        items.append(
+            (
+                asset["local_path"],
+                content,
+                {
+                    "sample_asset_id": asset["asset_id"],
+                    "class_id": asset["class_id"],
+                    "figshare_file_id": asset["figshare_file_id"],
+                    "archive_name": asset["archive_name"],
+                    "archive_member": asset["member"],
+                },
+            )
+        )
+    return (
+        {
+            "kind": "sample_manifest",
+            "filename": sample_manifest_path.name,
+            "sha256": digest(sample_manifest_path),
+            "source": sample["source"],
+            "selection": sample["selection"],
+        },
+        items,
+    )
+
+
 def review_page(annotations: list[dict[str, object]]) -> str:
     cards = []
     for item in annotations:
@@ -67,7 +129,10 @@ def review_page(annotations: list[dict[str, object]]) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--archive", type=Path, required=True)
+    sources = parser.add_mutually_exclusive_group(required=True)
+    sources.add_argument("--archive", type=Path)
+    sources.add_argument("--sample-manifest", type=Path)
+    parser.add_argument("--sample-root", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--threshold", type=float, default=0.25)
     parser.add_argument("--text-threshold", type=float, default=0.20)
@@ -83,6 +148,7 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     rendered = args.output / "rendered"
     rendered.mkdir(exist_ok=True)
+    source, items = source_items(args.archive, args.sample_manifest, args.sample_root, args.limit)
     processor = AutoProcessor.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
     model = AutoModelForZeroShotObjectDetection.from_pretrained(
         MODEL_ID,
@@ -90,16 +156,7 @@ def main() -> int:
         use_safetensors=True,
     ).eval()
     annotations: list[dict[str, object]] = []
-    with zipfile.ZipFile(args.archive) as archive:
-        names = sorted(
-            name
-            for name in archive.namelist()
-            if name.lower().endswith((".jpg", ".jpeg", ".png"))
-        )
-        if args.limit is not None:
-            names = names[: args.limit]
-        for position, name in enumerate(names, 1):
-            content = archive.read(name)
+    for position, (name, content, provenance) in enumerate(items, 1):
             image = Image.open(BytesIO(content)).convert("RGB")
             original_width, original_height = image.size
             inputs = processor(images=image, text=[PROMPT], return_tensors="pt")
@@ -140,18 +197,19 @@ def main() -> int:
                     "asset_id": asset_id,
                     "source_name": name,
                     "source_sha256": hashlib.sha256(content).hexdigest(),
+                    **provenance,
                     "width": original_width,
                     "height": original_height,
                     "proposals": proposals,
                     "inference_seconds": round(elapsed, 3),
                 }
             )
-            print(f"PROGRESS {position}/{len(names)} proposals={len(proposals)} seconds={elapsed:.2f}", flush=True)
+            print(f"PROGRESS {position}/{len(items)} proposals={len(proposals)} seconds={elapsed:.2f}", flush=True)
 
     manifest = {
         "schema_version": "0.1.0",
         "status": "teacher_proposals_pending_human_review",
-        "archive": {"filename": args.archive.name, "sha256": digest(args.archive)},
+        "source": source,
         "teacher": {
             "model_id": MODEL_ID,
             "revision": MODEL_REVISION,
