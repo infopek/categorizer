@@ -100,12 +100,13 @@
         "data-governance",
         "training",
         "onnx-export",
-        "android-inference"
+        "android-inference",
+        "detection"
       ],
       "milestones": [
         "MVP model"
       ],
-      "expected_task_count": 8,
+      "expected_task_count": 9,
       "expected_task_ids": [
         "ML-001",
         "ML-002",
@@ -114,14 +115,15 @@
         "ML-005",
         "ML-006",
         "ML-007",
-        "ML-008"
+        "ML-008",
+        "ML-009"
       ],
       "depends_on_batches": [
         "contract-foundations"
       ],
       "output_path": "assembly/generated/task_batches/ml-engine.json",
       "status": "validated",
-      "notes": "Checkpoint-first Lepidoptera evaluation with conditional mobile distillation fallback."
+      "notes": "Checkpoint-first Lepidoptera evaluation, a reviewed subject-detection pilot, and conditional mobile distillation fallback."
     },
     {
       "batch_id": "verification-release",

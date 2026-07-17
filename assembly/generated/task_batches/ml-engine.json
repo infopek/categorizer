@@ -535,6 +535,98 @@
       "handoff_notes": "Verification and Release must independently reproduce the final reports before closed testing."
     },
     {
+      "id": "ML-009",
+      "title": "Pilot Lepidoptera subject detection and classifier cropping",
+      "summary": "Create and evaluate a lightweight one-class detector that localizes butterflies and moths in cluttered photos before species classification.",
+      "objective": "Improve real-photo classification inputs without changing the accepted 163-class species catalog or requiring remote inference.",
+      "context": "The qualified MaxViT-T classifier passes device latency but assumes a useful subject crop; casual photos may contain small or off-center subjects in clutter.",
+      "owner_role": "ML Engine Builder",
+      "lane": "detection",
+      "repo_target": "categorizer",
+      "status": "ready",
+      "priority": "P0",
+      "milestone": "MVP model",
+      "allowed_areas": [
+        "ml/**",
+        "models/**",
+        "verification/ml/**",
+        "verification/device/**",
+        "docs/ml/**",
+        "apps/androidApp/src/**/inference/**"
+      ],
+      "depends_on": [
+        "DEC-001",
+        "ML-005"
+      ],
+      "inputs": [
+        "Accepted CC BY 4.0 Figshare image source",
+        "Qualified 163-class classifier and preprocessing contract",
+        "Accepted Android device and resource budgets",
+        "Reviewed detection proposal"
+      ],
+      "outputs": [
+        "Deterministic pilot subset and annotation manifests",
+        "Reviewable teacher-generated bounding boxes",
+        "Frozen manually reviewed localization test set",
+        "Fine-tuned one-class mobile detector",
+        "ONNX equivalence and localization report",
+        "Combined detector/classifier device and resource report",
+        "Manual-crop fallback contract"
+      ],
+      "implementation_notes": [
+        "Pilot TorchVision SSDLite320 MobileNetV3 Large before considering another production architecture.",
+        "Use Apache-2.0 Grounding DINO and optional SAM 2 only as offline annotation teachers; do not bundle them.",
+        "Review generated boxes before training and keep source images and generated annotations outside Git.",
+        "Preserve classifier behavior by falling back to a user-adjustable crop when detection is absent or ambiguous.",
+        "Measure the combined pipeline against existing size, memory, and latency gates."
+      ],
+      "acceptance_criteria": [
+        "The reviewed pilot reports localization recall at IoU 0.5, false positives, misses, subject-size slices, and multi-subject behavior.",
+        "The detector reaches the proposed 90% localization-recall pilot target or records a reviewed rejection decision.",
+        "PyTorch and ONNX Runtime boxes, scores, and ordering satisfy a documented equivalence policy.",
+        "Crop-based classification is compared with whole-image classification on a frozen end-to-end set.",
+        "The detector-plus-classifier pipeline remains below the two-second median device gate and satisfies accepted hard resource budgets.",
+        "No teacher model, remote service, or user photo is required at application runtime."
+      ],
+      "verification": [
+        "Validate subset, annotation, split, checkpoint, and model hashes.",
+        "Review a deterministic sample and every frozen test annotation.",
+        "Run localization and crop-versus-whole-image evaluation.",
+        "Export the detector to ONNX and compare raw outputs and postprocessed boxes.",
+        "Benchmark detector-only and combined inference on the Galaxy S20 FE.",
+        "Measure combined model, package, installed, and memory footprints."
+      ],
+      "proof_required": [
+        "Source and teacher license/provenance record",
+        "Reviewed annotation and frozen-test manifests",
+        "Localization and end-to-end accuracy reports",
+        "ONNX equivalence report",
+        "Physical-device latency and resource report"
+      ],
+      "edge_cases": [
+        "Tiny or partially occluded subject",
+        "Camouflage and clutter",
+        "Multiple butterflies or moths",
+        "Non-Lepidoptera insect",
+        "Pinned specimen or illustration",
+        "No visible subject",
+        "Bounding box crop removes diagnostic wing features"
+      ],
+      "non_goals": [
+        "Detecting arbitrary animals or insects",
+        "Changing species labels",
+        "Bundling annotation-teacher models",
+        "Cloud inference or uploaded user photos"
+      ],
+      "estimated_size": "L",
+      "risk_tags": [
+        "object-detection",
+        "weak-labels",
+        "mobile-size",
+        "end-to-end-accuracy"
+      ]
+    },
+    {
       "id": "ML-008",
       "title": "Distill a mobile Lepidoptera model when the checkpoint fails device gates",
       "summary": "Conditionally acquire a balanced source subset and distill or fine-tune a mobile-suitable classifier only when MaxViT-T fails accepted ONNX, size, memory, or latency gates.",
