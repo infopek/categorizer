@@ -24,3 +24,16 @@ Apply a complete export with strict asset/index validation:
 ```
 
 Only `accepted` decisions with at least one explicitly selected proposal become training-eligible. Adjustment, multiple-subject, rejected, and no-visible-subject decisions remain in the reviewed manifest but are excluded until resolved.
+
+## Range-based multi-species sampling
+
+Figshare's object storage supports HTTP byte ranges. The sampler reads ZIP central directories and selected compressed members without transferring complete species archives:
+
+```bash
+.venv/bin/python ml/detection/sample_remote_archives.py \
+  --output ml/artifacts/lepidoptera/detection-balanced-sample \
+  --class-count 12 \
+  --images-per-class 5
+```
+
+Class IDs and archive members are selected by a seeded SHA-256 rank. Every image is decoded, hashed, and recorded with its Figshare file/archive identity. The output is explicitly unreviewed and remains ignored until passed through box proposal and human review.
