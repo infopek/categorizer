@@ -6,20 +6,21 @@ class ContractChecks {
     @Test
     fun domainInvariants() {
     val image = ManagedImageRef("image-1", "images/image-1.jpg")
-    val identity = CarIdentity(
-        "porsche-911-992", "Porsche", "911", "992", "2019-present", "Porsche 911 (992)"
+    val identity = CategoryIdentity(
+        "lepidoptera", "vanessa-cardui", "Vanessa cardui", "Painted Lady",
+        alternateNames = listOf("Cosmopolitan")
     )
-    val candidate = RecognitionCandidate(identity, 1, 0.72f, "cars-1")
+    val candidate = RecognitionCandidate(identity, 1, 0.72f, "lepidoptera-1")
     val result = RecognitionResult(
-        "result-1", image, listOf(candidate), RecognitionStatus.CANDIDATES, 250, "cars-1"
+        "result-1", image, listOf(candidate), RecognitionStatus.CANDIDATES, 250, "lepidoptera-1"
     )
-    check(result.candidates.first().carIdentity.classId == "porsche-911-992")
+    check(result.candidates.first().identity.scientificName == "Vanessa cardui")
 
     val manual = identity.copy(
-        classId = "user:porsche-911",
-        generationLabel = null,
-        approximateYearRange = null,
-        displayName = "Porsche 911",
+        classId = "user:painted-lady",
+        scientificName = null,
+        displayName = "Painted lady",
+        alternateNames = emptyList(),
         source = IdentitySource.USER_CONFIRMED
     )
     val entry = AlbumEntry(
@@ -28,18 +29,21 @@ class ContractChecks {
     check(entry.confirmedIdentity.source == IdentitySource.USER_CONFIRMED)
 
     expectFailure("duplicate IDs") {
-        RecognitionResult("r2", image, listOf(candidate, candidate.copy(rank = 2)), RecognitionStatus.CANDIDATES, 1, "cars-1")
+        RecognitionResult("r2", image, listOf(candidate, candidate.copy(rank = 2)), RecognitionStatus.CANDIDATES, 1, "lepidoptera-1")
     }
     expectFailure("rank gap") {
-        RecognitionResult("r3", image, listOf(candidate.copy(rank = 2)), RecognitionStatus.CANDIDATES, 1, "cars-1")
+        RecognitionResult("r3", image, listOf(candidate.copy(rank = 2)), RecognitionStatus.CANDIDATES, 1, "lepidoptera-1")
     }
     expectFailure("unsupported candidates") {
-        RecognitionResult("r4", image, listOf(candidate), RecognitionStatus.UNSUPPORTED, 1, "cars-1")
+        RecognitionResult("r4", image, listOf(candidate), RecognitionStatus.UNSUPPORTED, 1, "lepidoptera-1")
     }
     expectFailure("absolute path") { ManagedImageRef("bad", "/tmp/photo.jpg") }
     expectFailure("path traversal") { ManagedImageRef("bad", "images/../photo.jpg") }
     expectFailure("invalid date") { entry.copy(albumDate = "12/07/2026") }
-        println("RESULT OK domain_contract_checks=9")
+    expectFailure("missing scientific name") {
+        CategoryIdentity("lepidoptera", "missing-name", null, "Missing", source = IdentitySource.MODEL_CATALOG)
+    }
+        println("RESULT OK domain_contract_checks=10")
     }
 }
 

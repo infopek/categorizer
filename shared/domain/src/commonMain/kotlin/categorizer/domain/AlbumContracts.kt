@@ -3,7 +3,7 @@ package categorizer.domain
 data class AlbumEntry(
     val entryId: String,
     val managedImage: ManagedImageRef,
-    val confirmedIdentity: CarIdentity,
+    val confirmedIdentity: CategoryIdentity,
     val albumDate: String,
     val isFavorite: Boolean,
     val notes: String,

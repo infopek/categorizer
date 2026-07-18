@@ -41,7 +41,7 @@ class FakeAdapterChecks {
     check(favoriteEvents.single().map { it.entryId } == listOf("entry-porsche"))
 
     val manualSearch = successValue<List<AlbumEntry>>(
-        runSuspend { repository.query(AlbumQuery(text = "classic coupe")) }
+        runSuspend { repository.query(AlbumQuery(text = "unknown moth")) }
     )
     check(manualSearch.single().confirmedIdentity.source == IdentitySource.USER_CONFIRMED)
 
