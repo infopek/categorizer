@@ -153,6 +153,52 @@ def main() -> int:
         "runtime": {"python": platform.python_version(), "torch": torch.__version__, "torchvision": torchvision.__version__},
     }
     (args.output / "equivalence-report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    runtime_classes = []
+    for item in classes:
+        words = item["scientific_name"].split(maxsplit=1)
+        runtime_classes.append(
+            {
+                "index": item["index"],
+                "class_id": item["class_id"],
+                "make": words[0],
+                "model": words[1] if len(words) > 1 else words[0],
+                "generation_label": "",
+                "approximate_year_range": "",
+                "display_name": item["display_name"],
+                "scientific_name": item["scientific_name"],
+            }
+        )
+    runtime_class_map = {
+        "schema_version": "1.0.0",
+        "catalog_id": class_map["catalog_id"],
+        "class_count": CLASS_COUNT,
+        "classes": runtime_classes,
+    }
+    runtime_class_path = args.output / "class-map.json"
+    runtime_class_path.write_text(json.dumps(runtime_class_map, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    notice = args.output / "NOTICE.candidate.txt"
+    notice.write_text(
+        "Experimental Lepidoptera classifier candidate; held-out qualification remains pending. "
+        "Source checkpoint and training dataset provenance are recorded in repository ML documentation.\n",
+        encoding="utf-8",
+    )
+    manifest = {
+        "schema_version": "1.0.0",
+        "bundle_id": f"lepidoptera-maxvit-t-{checkpoint_hash[:12]}",
+        "model_version": "lepidoptera-maxvit-t-163-pilot",
+        "artifact_status": "experimental_held_out_pending",
+        "model": {"filename": model_path.name, "format": "ONNX", "sha256": sha256(model_path), "size_bytes": model_path.stat().st_size},
+        "class_map": {"filename": runtime_class_path.name, "schema_version": "1.0.0", "catalog_id": class_map["catalog_id"], "class_count": CLASS_COUNT, "sha256": sha256(runtime_class_path)},
+        "input": {"tensor_name": "images", "element_type": "float32", "layout": "NCHW", "shape": [1, 3, INPUT_SIZE, INPUT_SIZE], "color_order": "RGB"},
+        "preprocessing": {
+            "resize": {"mode": "shorter_side", "shorter_side": INPUT_SIZE, "interpolation": "bilinear"},
+            "crop": {"mode": "center", "width": INPUT_SIZE, "height": INPUT_SIZE},
+            "normalization": {"mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]},
+        },
+        "output": {"tensor_name": "logits", "element_type": "float32", "shape": [1, CLASS_COUNT], "class_axis": 1, "semantics": "logits", "score_transform": "softmax", "ranking": "descending_score_then_ascending_class_index", "top_k": 5},
+        "licenses": {"model_spdx_expression": "LicenseRef-Experimental-Qualification-Pending", "notice_files": [notice.name]},
+    }
+    (args.output / "model-manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(f"RESULT OK fixtures={fixture_count} max_abs={maximum_absolute:.8g} size_mib={model_size_mib:.2f} hard_size_gate={model_size_mib <= 150}")
     return 0
 

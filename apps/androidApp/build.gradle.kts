@@ -69,6 +69,9 @@ android {
     providers.gradleProperty("benchmarkAssetDir").orNull?.let {
         sourceSets["androidTest"].assets.srcDir(it)
     }
+    providers.gradleProperty("recognitionAssetRoot").orNull?.let {
+        sourceSets["main"].assets.srcDir(it)
+    }
 
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
