@@ -42,3 +42,15 @@ The Android instrumentation benchmark now reads the same
 silently measuring a separately staged model.
 
 Raw samples, artifact hashes, device identity, and remaining evidence are recorded in `verification/device/results/2026-07-17-lepidoptera-maxvit-t.json`.
+
+## Three-sequence memory qualification
+
+The expanded debug instrumentation benchmark completed three consecutive 100-request sequences on
+2026-07-18. Peak PSS was 383.18 MiB and peak-minus-baseline working memory was 279.31 MiB, passing
+both optimization targets and hard gates. Sequence-end PSS was 362.12, 337.78, and 347.92 MiB, with
+no monotonic-growth signal. Median inference across all 300 requests remained below the accepted
+latency gate at 239.62 ms.
+
+The raw memory samples and exact build identity are recorded in
+`verification/device/results/2026-07-18-lepidoptera-memory-gate.json`. This is producer-side debug
+qualification; `VER-003` must still repeat it independently against the signed release candidate.
