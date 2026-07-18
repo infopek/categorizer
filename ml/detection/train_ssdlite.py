@@ -16,6 +16,7 @@ from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models import MobileNet_V3_Large_Weights
 from torchvision.models.detection import SSDLite320_MobileNet_V3_Large_Weights, ssdlite320_mobilenet_v3_large
+from torchvision.models.detection.anchor_utils import DefaultBoxGenerator
 from torchvision.transforms import ColorJitter
 from torchvision.transforms.functional import pil_to_tensor
 
@@ -152,6 +153,18 @@ def build_model(initialization: str):
     }
 
 
+def configure_detection_geometry(model, input_size: int, anchor_scales: list[float]):
+    if input_size < 320:
+        raise ValueError("input size must be at least 320")
+    if len(anchor_scales) != 7 or anchor_scales != sorted(anchor_scales) or anchor_scales[-1] != 1.0:
+        raise ValueError("anchor scales must contain seven ascending values ending at 1.0")
+    model.transform.fixed_size = (input_size, input_size)
+    model.transform.min_size = (input_size,)
+    model.transform.max_size = input_size
+    model.anchor_generator = DefaultBoxGenerator([[2, 3]] * 6, scales=anchor_scales, clip=True)
+    return model
+
+
 def select_threshold(candidates: list[dict[str, float | int]], recall_target: float) -> tuple[dict, str]:
     eligible = [item for item in candidates if float(item["recall"]) >= recall_target]
     if eligible:
@@ -172,7 +185,13 @@ def main() -> int:
     parser.add_argument("--initialization", choices=("imagenet-backbone", "coco-detector"), default="coco-detector")
     parser.add_argument("--validation-recall-target", type=float, default=0.97)
     parser.add_argument("--remediation-repeat", type=int, default=3)
+    parser.add_argument("--input-size", type=int, default=320)
+    parser.add_argument("--anchor-scales", default="0.2,0.35,0.5,0.65,0.8,0.95,1.0")
     args = parser.parse_args()
+    try:
+        anchor_scales = [float(value) for value in args.anchor_scales.split(",")]
+    except ValueError as error:
+        raise SystemExit("anchor scales must be comma-separated numbers") from error
     if not 0 < args.validation_recall_target <= 1:
         raise SystemExit("validation recall target must be in (0, 1]")
     if args.remediation_repeat < 1:
@@ -207,6 +226,10 @@ def main() -> int:
     }
     device = torch.device(args.device)
     model, initialization = build_model(args.initialization)
+    try:
+        configure_detection_geometry(model, args.input_size, anchor_scales)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     model = model.to(device)
     optimizer = torch.optim.SGD(
         [parameter for parameter in model.parameters() if parameter.requires_grad],
@@ -247,6 +270,7 @@ def main() -> int:
         "schema_version": "0.1.0",
         "status": "experimental_detection_training_run",
         "architecture": "ssdlite320_mobilenet_v3_large",
+        "detection_geometry": {"input_size": args.input_size, "anchor_scales": anchor_scales},
         "classes": {"background": 0, "Lepidoptera": 1},
         "initialization": {
             **initialization,
