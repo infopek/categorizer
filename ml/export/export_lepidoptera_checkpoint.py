@@ -14,6 +14,8 @@ import onnx
 import onnxruntime as ort
 import torch
 import torchvision
+from onnxruntime.quantization import QuantType, quantize_dynamic
+from onnxruntime.transformers.float16 import convert_float_to_float16
 from PIL import Image
 from torchvision.transforms import v2
 
@@ -35,6 +37,22 @@ def sha256(path: Path) -> str:
 
 def ranking(values: np.ndarray) -> list[int]:
     return np.lexsort((np.arange(values.size), -values)).tolist()
+
+
+def topologically_sort(graph: onnx.GraphProto) -> None:
+    available = {value.name for value in graph.input} | {value.name for value in graph.initializer}
+    pending = list(graph.node)
+    ordered = []
+    while pending:
+        ready = [node for node in pending if all(not name or name in available for name in node.input)]
+        if not ready:
+            raise SystemExit("optimized ONNX graph cannot be topologically sorted")
+        for node in ready:
+            ordered.append(node)
+            available.update(node.output)
+            pending.remove(node)
+    del graph.node[:]
+    graph.node.extend(ordered)
 
 
 def fixtures(sample_archive: Path | None) -> list[tuple[str, torch.Tensor]]:
@@ -70,6 +88,9 @@ def main() -> int:
     parser.add_argument("--class-map", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--sample-archive", type=Path)
+    optimization = parser.add_mutually_exclusive_group()
+    optimization.add_argument("--dynamic-int8", action="store_true")
+    optimization.add_argument("--float16", action="store_true")
     parser.add_argument("--common-names", type=Path, default=Path("ml/catalog/lepidoptera-common-names.json"))
     args = parser.parse_args()
 
@@ -92,16 +113,27 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     model_path = args.output / "model.onnx"
     sample = torch.zeros(1, 3, INPUT_SIZE, INPUT_SIZE)
-    program = torch.onnx.export(
-        model,
-        (sample,),
-        input_names=["images"],
-        output_names=["logits"],
-        opset_version=OPSET,
-        dynamo=True,
-        external_data=False,
-    )
-    program.save(model_path, external_data=False)
+    if args.dynamic_int8 or args.float16:
+        float_path = args.output / "model.float.onnx"
+        torch.onnx.export(
+            model, (sample,), float_path, input_names=["images"], output_names=["logits"],
+            opset_version=OPSET, dynamo=False, external_data=False,
+        )
+        if args.dynamic_int8:
+            quantize_dynamic(float_path, model_path, weight_type=QuantType.QInt8)
+        else:
+            float_graph = onnx.load(float_path)
+            half_graph = convert_float_to_float16(float_graph, keep_io_types=True)
+            topologically_sort(half_graph.graph)
+            onnx.save(half_graph, model_path)
+        float_session = ort.InferenceSession(str(float_path), providers=["CPUExecutionProvider"])
+    else:
+        program = torch.onnx.export(
+            model, (sample,), input_names=["images"], output_names=["logits"],
+            opset_version=OPSET, dynamo=True, external_data=False,
+        )
+        program.save(model_path, external_data=False)
+        float_session = None
     graph = onnx.load(model_path)
     onnx.checker.check_model(graph)
     session = ort.InferenceSession(str(model_path), providers=["CPUExecutionProvider"])
@@ -114,11 +146,15 @@ def main() -> int:
     maximum_relative = 0.0
     complete_rankings_equal = True
     top_five_equal = True
+    top_one_equal_count = 0
+    top_five_set_equal_count = 0
     fixture_count = 0
     with torch.inference_mode():
         for _, tensor in fixtures(args.sample_archive):
             batch = tensor.unsqueeze(0)
             expected = model(batch).numpy()[0]
+            if float_session is not None:
+                expected = float_session.run(["logits"], {"images": batch.numpy()})[0][0]
             actual = session.run(["logits"], {"images": batch.numpy()})[0][0]
             difference = np.abs(expected - actual)
             maximum_absolute = max(maximum_absolute, float(difference.max()))
@@ -130,15 +166,17 @@ def main() -> int:
             actual_ranking = ranking(actual)
             complete_rankings_equal &= expected_ranking == actual_ranking
             top_five_equal &= expected_ranking[:5] == actual_ranking[:5]
+            top_one_equal_count += expected_ranking[0] == actual_ranking[0]
+            top_five_set_equal_count += set(expected_ranking[:5]) == set(actual_ranking[:5])
             fixture_count += 1
-    if maximum_absolute > ATOL or not top_five_equal:
+    if not (args.dynamic_int8 or args.float16) and (maximum_absolute > ATOL or not top_five_equal):
         raise SystemExit("PyTorch/ONNX fixture equivalence failed")
 
     model_size_mib = model_path.stat().st_size / 1048576
     operators = sorted({(node.domain or "ai.onnx", node.op_type) for node in graph.graph.node})
     report = {
         "schema_version": "1.0.0",
-        "candidate_status": "fixture_equivalence_passed_held_out_pending",
+        "candidate_status": "optimized_fixture_comparison_held_out_pending" if (args.dynamic_int8 or args.float16) else "fixture_equivalence_passed_held_out_pending",
         "architecture": "torchvision.maxvit_t",
         "class_count": CLASS_COUNT,
         "checkpoint_sha256": checkpoint_hash,
@@ -150,7 +188,8 @@ def main() -> int:
         "input": {"name": "images", "shape": [1, 3, 224, 224], "type": "float32", "layout": "NCHW"},
         "preprocessing": {"resize_short_edge": 224, "center_crop": 224, "color": "RGB", "scale": "uint8_to_0_1", "mean": [0.485, 0.456, 0.406], "std": [0.229, 0.224, 0.225]},
         "output": {"name": "logits", "shape": [1, 163], "ranking": "descending_logit_then_ascending_index"},
-        "equivalence": {"fixture_count": fixture_count, "atol": ATOL, "rtol": RTOL, "maximum_absolute_difference": maximum_absolute, "maximum_relative_difference": maximum_relative, "top_five_rankings_equal": top_five_equal, "complete_rankings_equal": complete_rankings_equal},
+        "equivalence": {"reference": "legacy_float_onnx" if (args.dynamic_int8 or args.float16) else "pytorch", "fixture_count": fixture_count, "atol": ATOL, "rtol": RTOL, "maximum_absolute_difference": maximum_absolute, "maximum_relative_difference": maximum_relative, "top_one_agreement": top_one_equal_count / fixture_count, "top_five_set_agreement": top_five_set_equal_count / fixture_count, "top_five_rankings_equal": top_five_equal, "complete_rankings_equal": complete_rankings_equal},
+        "quantization": {"mode": "dynamic_int8_weights" if args.dynamic_int8 else ("float16_weights_float32_io" if args.float16 else "none"), "held_out_acceptance_required": args.dynamic_int8 or args.float16},
         "held_out_evaluation": {"status": "pending", "reason": "upstream test split and full image dataset have not been acquired"},
         "compatibility": {"onnx_checker": "passed", "opset": OPSET, "onnxruntime": ort.__version__, "providers": session.get_providers(), "operators": [{"domain": domain, "type": name} for domain, name in operators]},
         "runtime": {"python": platform.python_version(), "torch": torch.__version__, "torchvision": torchvision.__version__},
@@ -188,7 +227,7 @@ def main() -> int:
     manifest = {
         "schema_version": "1.0.0",
         "bundle_id": f"lepidoptera-maxvit-t-{checkpoint_hash[:12]}",
-        "model_version": "lepidoptera-maxvit-t-163-pilot",
+        "model_version": "lepidoptera-maxvit-t-163-dynamic-int8-pilot" if args.dynamic_int8 else ("lepidoptera-maxvit-t-163-fp16-pilot" if args.float16 else "lepidoptera-maxvit-t-163-pilot"),
         "artifact_status": "experimental_held_out_pending",
         "model": {"filename": model_path.name, "format": "ONNX", "sha256": sha256(model_path), "size_bytes": model_path.stat().st_size},
         "class_map": {"filename": runtime_class_path.name, "schema_version": "1.0.0", "catalog_id": class_map["catalog_id"], "class_count": CLASS_COUNT, "sha256": sha256(runtime_class_path), "common_names_sha256": sha256(args.common_names)},

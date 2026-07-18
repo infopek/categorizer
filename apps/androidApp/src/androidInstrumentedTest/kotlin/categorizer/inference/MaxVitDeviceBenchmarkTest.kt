@@ -27,7 +27,7 @@ class MaxVitDeviceBenchmarkTest {
             "Cannot create benchmark code-cache directory"
         }
         val copyStarted = SystemClock.elapsedRealtimeNanos()
-        testContext.assets.open("model.onnx").use { input ->
+        instrumentation.targetContext.assets.open("recognition/model.onnx").use { input ->
             FileOutputStream(model).use { output -> input.copyTo(output) }
         }
         val copyMs = elapsedMs(copyStarted)
