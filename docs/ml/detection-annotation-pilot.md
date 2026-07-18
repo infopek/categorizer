@@ -87,8 +87,10 @@ Train the proposed mobile detector against the reviewed dataset:
   --output ml/artifacts/lepidoptera/detection-training-ssdlite
 ```
 
-The trainer uses a one-class SSDLite320 MobileNetV3 Large detector, records the complete run configuration and dataset-manifest hash, selects its confidence threshold using validation F1, and evaluates the test split once at that frozen threshold. Checkpoints and reports stay in ignored artifact storage.
+The trainer uses a one-class SSDLite320 MobileNetV3 Large detector, records the complete run configuration and dataset-manifest hash, selects its confidence threshold using validation F1, and evaluates the test split once at that frozen threshold. By default it transfers every shape-compatible tensor from TorchVision's COCO detector and randomly initializes the incompatible class-prediction tensors; pass `--initialization imagenet-backbone` to reproduce the earlier backbone-only baseline. Checkpoints and reports stay in ignored artifact storage.
 
 This is an experimental pipeline check, not distribution approval. Its ImageNet-initialized TorchVision backbone needs a separate pretrained-weight provenance decision, and the current subject-forward dataset does not replace evaluation on cluttered photos or hard negatives.
 
 The first 20-epoch run used dataset manifest SHA-256 `24d7795861876de94029a1761202c1f294c00525754193c5162101509fd1dd2b`. Validation selected a `0.65` confidence threshold with 80.6% recall and 84.7% precision at IoU 0.5. The untouched test split then measured 71.4% recall and 84.9% precision (F1 77.6%) at the frozen threshold. This does not meet the 90% localization-recall pilot gate; it establishes a working baseline and confirms that more varied training data and hard-negative evaluation remain necessary.
+
+With all 464 shape-compatible COCO detector tensors transferred and only 12 class-prediction tensors randomly initialized, the otherwise identical run improved validation recall to 90.3% and precision to 88.9%. The frozen test result improved to 84.1% recall and 94.6% precision (F1 89.1%). This is a substantial improvement but still misses the test recall gate, and it does not resolve the dataset or pretrained-weight provenance gaps.
