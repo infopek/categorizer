@@ -76,3 +76,19 @@ Combine reviewed tranches only after every manifest has passed strict decision a
 ```
 
 The builder revalidates source hashes and box bounds, excludes unresolved images, rejects duplicate asset IDs, materializes managed image copies, and assigns train/validation/test splits independently within every source species.
+
+## Experimental SSDLite training
+
+Train the proposed mobile detector against the reviewed dataset:
+
+```bash
+.venv/bin/python ml/detection/train_ssdlite.py \
+  --dataset ml/artifacts/lepidoptera/detection-dataset \
+  --output ml/artifacts/lepidoptera/detection-training-ssdlite
+```
+
+The trainer uses a one-class SSDLite320 MobileNetV3 Large detector, records the complete run configuration and dataset-manifest hash, selects its confidence threshold using validation F1, and evaluates the test split once at that frozen threshold. Checkpoints and reports stay in ignored artifact storage.
+
+This is an experimental pipeline check, not distribution approval. Its ImageNet-initialized TorchVision backbone needs a separate pretrained-weight provenance decision, and the current subject-forward dataset does not replace evaluation on cluttered photos or hard negatives.
+
+The first 20-epoch run used dataset manifest SHA-256 `24d7795861876de94029a1761202c1f294c00525754193c5162101509fd1dd2b`. Validation selected a `0.65` confidence threshold with 80.6% recall and 84.7% precision at IoU 0.5. The untouched test split then measured 71.4% recall and 84.9% precision (F1 77.6%) at the frozen threshold. This does not meet the 90% localization-recall pilot gate; it establishes a working baseline and confirms that more varied training data and hard-negative evaluation remain necessary.
