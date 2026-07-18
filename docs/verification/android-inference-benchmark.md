@@ -108,6 +108,18 @@ Perform 10 independent cold trials:
 
 Report all raw samples plus median, p90, p95, minimum, and maximum. Cold numbers characterize startup and extraction behavior; they are not substituted for the warm gate.
 
+After installing the target and instrumentation APKs containing the benchmark fixture, run ten
+fresh-process trials with:
+
+```bash
+python3 verification/device/run_cold_benchmark.py \
+  --adb "$ANDROID_SDK_ROOT/platform-tools/adb"
+```
+
+The runner force-stops the target, starts a fresh instrumentation process for every trial, rejects
+missing or duplicate result records, and preserves fixture preprocessing, model copy, session
+creation, inference, and total timings for every attempt.
+
 ## Warm protocol
 
 1. Create and retain one validated ONNX session.

@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "status": "preliminary_debug_cold_protocol_complete",
+  "source_base_revision": "eb0066b",
+  "device": {
+    "model": "SM-G780G",
+    "android_version": "13",
+    "usb_powered": true,
+    "battery_percent_after": 100,
+    "thermal_status_after": 0
+  },
+  "build": {
+    "type": "debug instrumentation",
+    "application_apk_bytes": 258744810,
+    "application_apk_sha256": "271188f9117d84740ea10788354e8f608d49235e23945d68c00bfe37b56fd7d8",
+    "test_apk_bytes": 84555326,
+    "test_apk_sha256": "28778c91f8d7db27adc73e375d204378ce22117c75c58e7b97906b66d2dba976",
+    "onnx_sha256": "7e7159df11227389b5e406247d94896f2fa75d77ad2defd07057f50aaf43397b"
+  },
+  "protocol": {
+    "independent_trials": 10,
+    "fresh_instrumentation_process_per_trial": true,
+    "target_force_stopped_before_each_trial": true,
+    "extracted_model_deleted_before_each_trial": true,
+    "failures": []
+  },
+  "samples_ms": {
+    "fixture": [91.254844, 85.241302, 85.192605, 84.756563, 84.802343, 84.617083, 84.114010, 84.752500, 85.445937, 83.123490],
+    "model_copy": [802.743281, 804.218334, 805.897239, 804.989947, 806.927343, 815.511458, 815.321458, 811.982187, 817.279478, 822.006302],
+    "session_creation": [417.406510, 377.290104, 372.841093, 377.887031, 378.905781, 381.299479, 377.637031, 391.589844, 381.817187, 383.224479],
+    "inference": [234.485625, 230.705989, 233.718072, 222.152552, 231.811927, 225.927604, 224.014532, 227.351979, 248.303958, 235.644948],
+    "total": [1570.928281, 1522.737395, 1522.939895, 1513.756822, 1526.339791, 1531.643229, 1526.722864, 1540.395260, 1557.235312, 1548.040311]
+  },
+  "total_summary_ms": {
+    "median": 1529.1830465,
+    "p90": 1557.235312,
+    "p95": 1570.928281,
+    "minimum": 1513.756822,
+    "maximum": 1570.928281,
+    "mean": 1536.073916
+  },
+  "component_medians_ms": {
+    "fixture": 84.779453,
+    "model_copy": 809.454765,
+    "session_creation": 380.102630,
+    "inference": 231.258958
+  },
+  "interpretation": "The producer-side debug candidate completed the accepted ten-trial cold characterization with no failures. Cold total is diagnostic, not the warm inference acceptance metric. VER-003 must repeat against the signed release candidate."
+}
