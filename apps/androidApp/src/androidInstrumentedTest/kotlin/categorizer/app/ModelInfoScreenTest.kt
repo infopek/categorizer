@@ -30,6 +30,8 @@ class ModelInfoScreenTest {
     @Test fun missingAndInvalidManifestFailSafely() {
         val loader = AndroidModelInfoLoader(InstrumentationRegistry.getInstrumentation().targetContext)
         assertIs<ModelInfoUiState.Invalid>(loader.load("missing-model-info.json"))
+        val withoutBundle = assertIs<ModelInfoUiState.Ready>(loader.load(bundleAssetDir = "recognition-missing"))
+        assertEquals(null, withoutBundle.info.modelVersion)
         val invalid = assertIs<ModelInfoUiState.Invalid>(loader.parse("{\"schema_version\":\"9.0.0\"}") { "{}" })
         show(invalid); findText("Model information unavailable"); findText("Recognition stays disabled until a valid bundled manifest is installed. Your album remains available."); screenshot("invalid-manifest")
     }
