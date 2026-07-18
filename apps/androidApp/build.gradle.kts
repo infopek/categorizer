@@ -69,11 +69,29 @@ android {
     providers.gradleProperty("benchmarkAssetDir").orNull?.let {
         sourceSets["androidTest"].assets.srcDir(it)
     }
-    providers.gradleProperty("recognitionAssetRoot").orNull?.let {
-        sourceSets["main"].assets.srcDir(it)
+    val configuredRecognitionAssets = providers.gradleProperty("recognitionAssetRoot").orNull?.let(rootProject::file)
+    val localRecognitionAssets = rootProject.file("ml/artifacts/lepidoptera/android-assets")
+    val recognitionAssets = configuredRecognitionAssets ?: localRecognitionAssets.takeIf(File::isDirectory)
+    recognitionAssets?.let { sourceSets["main"].assets.srcDir(it) }
+
+    tasks.register("verifyReleaseRecognitionBundle") {
+        group = "verification"
+        description = "Requires the offline recognition bundle for a release build."
+        doLast {
+            val bundle = requireNotNull(recognitionAssets) {
+                "Release builds require recognition/model.onnx. Export it under ml/artifacts/lepidoptera/android-assets or pass -PrecognitionAssetRoot=<absolute-directory>."
+            }
+            require(bundle.resolve("recognition/model.onnx").isFile) { "Release recognition model is missing." }
+            require(bundle.resolve("recognition/model-manifest.json").isFile) { "Release recognition manifest is missing." }
+            require(bundle.resolve("recognition/class-map.json").isFile) { "Release recognition class map is missing." }
+        }
     }
 
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
+}
+
+tasks.matching { it.name == "preReleaseBuild" }.configureEach {
+    dependsOn("verifyReleaseRecognitionBundle")
 }

@@ -34,8 +34,16 @@ From a clean checkout:
 
 After dependencies have been downloaded once, add `--offline` to verify that the cached build does not require network access.
 
-The debug APK is written below `apps/androidApp/build/outputs/apk/debug/`. Install it with Android Studio or `adb install -r <apk-path>` and confirm the launcher displays the minimal Categorizer root.
+The debug APK is written below `apps/androidApp/build/outputs/apk/debug/`. When the ignored local
+`ml/artifacts/lepidoptera/android-assets` directory exists, Gradle includes its recognition bundle
+automatically. A different generated bundle can be selected with
+`-PrecognitionAssetRoot=<absolute-directory>`. Release builds fail early when the model, manifest,
+or class map is absent, preventing an accidentally model-free release APK.
+
+Install the APK with Android Studio or `adb install -r <apk-path>` and confirm the launcher displays
+the Categorizer album.
 
 ## Dependency boundary
 
-Approved foundation dependencies are Kotlin, Compose Multiplatform, Android Gradle tooling, AndroidX Activity, and their transitive UI/runtime dependencies. Network, authentication, analytics, telemetry, cloud, database, and ONNX libraries are intentionally absent from this foundation.
+The application has no network, authentication, analytics, telemetry, or cloud dependencies. ONNX
+Runtime is the local inference dependency; SQLite is provided by Android for private album metadata.
