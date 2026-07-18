@@ -41,7 +41,6 @@ persists `categoryId`, `scientificName`, alternate names, and attributes directl
 Opening a version-1 car database migrates its legacy identity fields without losing
 generation or approximate-year metadata.
 
-Version-1 archive import/export remains the final compatibility adapter. It continues
-to use the deprecated car views until the archive format receives its own versioned,
-category-neutral schema; removing those views before that migration would make existing
-archives unreadable.
+Archive exports use the category-neutral version-2 schema. The explicit version-1
+reader maps legacy car fields into `CategoryIdentity`, keeping existing backups
+readable without using deprecated car views for new data.

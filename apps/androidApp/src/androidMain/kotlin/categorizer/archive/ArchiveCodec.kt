@@ -1,7 +1,7 @@
 package categorizer.archive
 
 import categorizer.domain.AlbumEntry
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 import categorizer.domain.ManagedImageRef
 import java.io.ByteArrayOutputStream
@@ -17,7 +17,8 @@ internal data class ParsedArchive(val archiveId: String, val entries: List<Album
 
 internal object ArchiveCodec {
     const val FORMAT = "categorizer-album-archive"
-    const val VERSION = "1.0.0"
+    const val VERSION = "2.0.0"
+    const val LEGACY_VERSION = "1.0.0"
     const val MANIFEST = "manifest.json"
     const val MAX_COUNT = 10_000
     const val MAX_MANIFEST = 10L * 1024 * 1024
@@ -88,7 +89,8 @@ internal object ArchiveCodec {
     private fun parse(json: JSONObject, errors: MutableList<ArchiveError>): ParsedArchive? = try {
         requireKeys(json, setOf("format", "archive_schema_version", "archive_id", "created_at_epoch_ms", "exporting_app", "entry_count", "image_count", "entries", "image_files"), errors)
         if (json.getString("format") != FORMAT) errors += invalid("format is invalid")
-        if (json.getString("archive_schema_version") != VERSION) errors += ArchiveError(ArchiveErrorCode.UNSUPPORTED_VERSION, "archive_schema_version must be $VERSION")
+        val version = json.getString("archive_schema_version")
+        if (version !in setOf(LEGACY_VERSION, VERSION)) errors += ArchiveError(ArchiveErrorCode.UNSUPPORTED_VERSION, "archive_schema_version must be $LEGACY_VERSION or $VERSION")
         val archiveId = json.getString("archive_id")
         if (!safeId.matches(archiveId)) errors += invalid("archive_id is invalid")
         val entryArray = json.getJSONArray("entries")
@@ -111,16 +113,14 @@ internal object ArchiveCodec {
             val identity = value.getJSONObject("confirmed_identity")
             val imageId = value.getString("image_id")
             val image = imageById[imageId] ?: throw IllegalArgumentException("entry references missing image $imageId")
-            val parsedIdentity = CarIdentity(identity.getString("class_id"), identity.getString("make"), identity.getString("model"),
-                identity.optString("generation_label").takeIf(String::isNotEmpty), identity.optString("approximate_year_range").takeIf(String::isNotEmpty),
-                identity.getString("display_name"), IdentitySource.valueOf(identity.getString("source")))
+            val parsedIdentity = if (version == LEGACY_VERSION) legacyIdentity(identity) else categoryIdentity(identity)
             if (!classId.matches(parsedIdentity.classId)) errors += invalid("class_id is invalid")
             AlbumEntry(value.getString("entry_id"), ManagedImageRef(imageId, image.archivePath), parsedIdentity,
                 value.getString("album_date"), value.getBoolean("is_favorite"), value.getString("notes"),
                 value.getLong("created_at_epoch_ms"), value.getLong("updated_at_epoch_ms"), value.getInt("entry_schema_version"))
         }
         if (entries.map { it.entryId }.distinct().size != entries.size) errors += duplicate("entry_id values must be unique")
-        if (entries.any { !safeId.matches(it.entryId) || it.schemaVersion != 1 }) errors += invalid("entry ID or schema version is invalid")
+        if (entries.any { !safeId.matches(it.entryId) || it.schemaVersion <= 0 }) errors += invalid("entry ID or schema version is invalid")
         if (entries.map { it.managedImage.imageId }.distinct().size != entries.size) errors += duplicate("entry image_id references must be unique")
         if (images.map { it.imageId }.distinct().size != images.size) errors += duplicate("image_id values must be unique")
         if (images.map { it.archivePath }.distinct().size != images.size) errors += duplicate("image relative paths must be unique")
@@ -134,14 +134,37 @@ internal object ArchiveCodec {
 
     private fun requireKeys(json: JSONObject, allowed: Set<String>, errors: MutableList<ArchiveError>) {
         val keys = json.keys().asSequence().toSet()
-        if (keys != allowed) errors += invalid("manifest root fields do not match version 1 schema")
+        if (keys != allowed) errors += invalid("manifest root fields do not match archive schema")
     }
     private fun entryJson(entry: AlbumEntry) = JSONObject().put("entry_id", entry.entryId).put("entry_schema_version", entry.schemaVersion).put("image_id", entry.managedImage.imageId)
-        .put("confirmed_identity", JSONObject().put("class_id", entry.confirmedIdentity.classId).put("make", entry.confirmedIdentity.make).put("model", entry.confirmedIdentity.model)
-            .putOpt("generation_label", entry.confirmedIdentity.generationLabel).putOpt("approximate_year_range", entry.confirmedIdentity.approximateYearRange)
-            .put("display_name", entry.confirmedIdentity.displayName).put("source", entry.confirmedIdentity.source.name))
+        .put("confirmed_identity", identityJson(entry.confirmedIdentity))
         .put("album_date", entry.albumDate).put("is_favorite", entry.isFavorite).put("notes", entry.notes)
         .put("created_at_epoch_ms", entry.createdAtEpochMs).put("updated_at_epoch_ms", entry.updatedAtEpochMs)
+    private fun identityJson(identity: CategoryIdentity) = JSONObject()
+        .put("category_id", identity.categoryId).put("class_id", identity.classId)
+        .put("scientific_name", identity.scientificName ?: JSONObject.NULL)
+        .put("display_name", identity.displayName).put("alternate_names", JSONArray(identity.alternateNames))
+        .put("attributes", JSONObject(identity.attributes)).put("source", identity.source.name)
+    private fun categoryIdentity(value: JSONObject): CategoryIdentity {
+        require(value.keys().asSequence().toSet() == setOf("category_id", "class_id", "scientific_name", "display_name", "alternate_names", "attributes", "source")) {
+            "confirmed_identity fields do not match version 2 schema"
+        }
+        val names = value.getJSONArray("alternate_names")
+        val attributes = value.getJSONObject("attributes")
+        return CategoryIdentity(
+            value.getString("category_id"), value.getString("class_id"),
+            value.optString("scientific_name").takeUnless { value.isNull("scientific_name") || it.isBlank() },
+            value.getString("display_name"), (0 until names.length()).map(names::getString),
+            attributes.keys().asSequence().associateWith(attributes::getString),
+            IdentitySource.valueOf(value.getString("source"))
+        )
+    }
+    @Suppress("DEPRECATION")
+    private fun legacyIdentity(value: JSONObject) = CategoryIdentity(
+        value.getString("class_id"), value.getString("make"), value.getString("model"),
+        value.optString("generation_label").takeIf(String::isNotEmpty), value.optString("approximate_year_range").takeIf(String::isNotEmpty),
+        value.getString("display_name"), IdentitySource.valueOf(value.getString("source"))
+    )
     private fun imageJson(image: ArchiveImage) = JSONObject().put("image_id", image.imageId).put("relative_path", image.archivePath).put("media_type", image.mediaType).put("size_bytes", image.sizeBytes).put("sha256", image.sha256)
     private fun safeImagePath(value: String) = value.length <= 240 && imagePath.matches(value) && ".." !in value && '\\' !in value
     private fun mediaMatches(type: String, path: String) = when (type) { "image/jpeg" -> path.endsWith(".jpg") || path.endsWith(".jpeg"); "image/png" -> path.endsWith(".png"); "image/webp" -> path.endsWith(".webp"); else -> false }

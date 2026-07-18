@@ -118,6 +118,17 @@ def semantic_errors(manifest: dict[str, Any]) -> list[str]:
     for entry in entries:
         if not isinstance(entry, dict):
             continue
+        identity = entry.get("confirmed_identity")
+        if isinstance(identity, dict):
+            version = manifest.get("archive_schema_version")
+            if version == "1.0.0" and not {"make", "model"}.issubset(identity):
+                errors.append("version 1 identity must contain make and model")
+            if version == "2.0.0" and set(identity) != {
+                "category_id", "class_id", "scientific_name", "display_name", "alternate_names", "attributes", "source"
+            }:
+                errors.append("version 2 identity fields are invalid")
+            if version == "2.0.0" and identity.get("source") == "MODEL_CATALOG" and not identity.get("scientific_name"):
+                errors.append("version 2 model-catalog identity requires scientific_name")
         created = entry.get("created_at_epoch_ms")
         updated = entry.get("updated_at_epoch_ms")
         if isinstance(created, int) and isinstance(updated, int) and updated < created:
@@ -253,7 +264,7 @@ def mutated_fixture(base: dict[str, Any], mutation: str) -> tuple[dict[str, Any]
         manifest["entries"].append(copy.deepcopy(manifest["entries"][0]))
         manifest["entry_count"] = 2
     elif mutation == "incompatible_version":
-        manifest["archive_schema_version"] = "2.0.0"
+        manifest["archive_schema_version"] = "3.0.0"
     elif mutation == "path_traversal":
         image_path = "../escape.png"
         manifest["image_files"][0]["relative_path"] = image_path
@@ -293,6 +304,26 @@ def run_fixture_suite() -> int:
         else:
             print("PASS valid_archive accepted errors=0")
 
+        v2_manifest = copy.deepcopy(base_manifest)
+        v2_manifest["archive_schema_version"] = "2.0.0"
+        v2_manifest["entries"][0]["confirmed_identity"] = {
+            "category_id": "lepidoptera",
+            "class_id": "polyommatus-eros",
+            "scientific_name": "Polyommatus eros",
+            "display_name": "Eros blue",
+            "alternate_names": ["Eros blue butterfly"],
+            "attributes": {"family": "Lycaenidae"},
+            "source": "MODEL_CATALOG",
+        }
+        v2_path = temp_dir / "valid-v2.zip"
+        write_fixture_archive(v2_path, v2_manifest, payload_record["relative_path"], image_payload, None)
+        v2_errors = validate_archive(v2_path)
+        if v2_errors:
+            failures += 1
+            print(f"FAIL valid_v2_archive errors={v2_errors}")
+        else:
+            print("PASS valid_v2_archive accepted errors=0")
+
         empty_manifest = copy.deepcopy(base_manifest)
         empty_manifest["archive_id"] = "contract-fixture-empty-archive"
         empty_manifest["entry_count"] = 0
@@ -329,11 +360,11 @@ def run_fixture_suite() -> int:
             else:
                 print(f"PASS {case['name']} rejected errors={len(errors)}")
 
-    total = 2 + len(cases)
+    total = 3 + len(cases)
     if failures:
         print(f"RESULT FAIL cases={total} failures={failures}")
         return 1
-    print(f"RESULT OK cases={total} positive=2 negative={len(cases)}")
+    print(f"RESULT OK cases={total} positive=3 negative={len(cases)}")
     return 0
 
 
