@@ -139,6 +139,7 @@ def main() -> int:
     parser.add_argument("--nms-iou", type=float, default=0.50)
     parser.add_argument("--maximum-proposals", type=int, default=10)
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
     if not 0 < args.threshold < 1 or not 0 < args.text_threshold < 1 or not 0 < args.nms_iou < 1:
         raise SystemExit("thresholds must be between zero and one")
@@ -150,16 +151,17 @@ def main() -> int:
     rendered.mkdir(exist_ok=True)
     source, items = source_items(args.archive, args.sample_manifest, args.sample_root, args.limit)
     processor = AutoProcessor.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
+    device = torch.device(args.device)
     model = AutoModelForZeroShotObjectDetection.from_pretrained(
         MODEL_ID,
         revision=MODEL_REVISION,
         use_safetensors=True,
-    ).eval()
+    ).to(device).eval()
     annotations: list[dict[str, object]] = []
     for position, (name, content, provenance) in enumerate(items, 1):
             image = Image.open(BytesIO(content)).convert("RGB")
             original_width, original_height = image.size
-            inputs = processor(images=image, text=[PROMPT], return_tensors="pt")
+            inputs = processor(images=image, text=[PROMPT], return_tensors="pt").to(device)
             started = time.monotonic()
             with torch.inference_mode():
                 outputs = model(**inputs)
@@ -219,6 +221,7 @@ def main() -> int:
             "text_threshold": args.text_threshold,
             "nms_iou": args.nms_iou,
             "maximum_proposals": args.maximum_proposals,
+            "device": str(device),
         },
         "assets": annotations,
     }
