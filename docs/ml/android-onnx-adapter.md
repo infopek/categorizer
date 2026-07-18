@@ -7,5 +7,6 @@ Cancellation is checked before preprocessing, before native inference, and befor
 Generated model binaries remain ignored. Gradle automatically includes a local bundle from
 `ml/artifacts/lepidoptera/android-assets/recognition`; CI or alternate builds can pass
 `-PrecognitionAssetRoot=<absolute-directory>`. Debug builds without a bundle honestly return
-`MODEL_UNAVAILABLE`, while release builds fail before packaging rather than silently shipping
-without offline recognition.
+`MODEL_UNAVAILABLE`, while release builds verify the manifest-declared model size and model and
+class-map SHA-256 values before packaging rather than silently shipping an absent or mismatched
+offline bundle.

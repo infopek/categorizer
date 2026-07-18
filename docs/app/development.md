@@ -38,7 +38,8 @@ The debug APK is written below `apps/androidApp/build/outputs/apk/debug/`. When 
 `ml/artifacts/lepidoptera/android-assets` directory exists, Gradle includes its recognition bundle
 automatically. A different generated bundle can be selected with
 `-PrecognitionAssetRoot=<absolute-directory>`. Release builds fail early when the model, manifest,
-or class map is absent, preventing an accidentally model-free release APK.
+or class map is absent. The release guard also checks the model byte size and the model and class-map
+SHA-256 values against the manifest, preventing an absent, stale, or corrupted bundle from shipping.
 
 Install the APK with Android Studio or `adb install -r <apk-path>` and confirm the launcher displays
 the Categorizer album.
