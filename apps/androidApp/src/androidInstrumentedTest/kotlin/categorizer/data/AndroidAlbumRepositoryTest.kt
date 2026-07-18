@@ -1,6 +1,7 @@
 package categorizer.data
 
 import android.content.Context
+import android.content.ContentValues
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import categorizer.domain.AlbumEntry
@@ -10,7 +11,7 @@ import categorizer.domain.AlbumObserver
 import categorizer.domain.AlbumQuery
 import categorizer.domain.AlbumResult
 import categorizer.domain.AlbumSort
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 import categorizer.domain.ManagedImageRef
 import kotlin.coroutines.Continuation
@@ -142,6 +143,44 @@ class AndroidAlbumRepositoryTest {
     }
 
     @Test
+    fun versionOneCarRowMigratesToCategoryIdentityWithoutDataLoss() {
+        repository.close()
+        context.deleteDatabase(databaseName)
+        context.openOrCreateDatabase(databaseName, Context.MODE_PRIVATE, null).use { database ->
+            database.execSQL(
+                """CREATE TABLE $ALBUM_TABLE (
+                    entry_id TEXT NOT NULL PRIMARY KEY, image_id TEXT NOT NULL,
+                    image_relative_path TEXT NOT NULL, class_id TEXT NOT NULL,
+                    make TEXT NOT NULL, model TEXT NOT NULL, generation_label TEXT,
+                    approximate_year_range TEXT, display_name TEXT NOT NULL,
+                    identity_source TEXT NOT NULL, album_date TEXT NOT NULL,
+                    is_favorite INTEGER NOT NULL, notes TEXT NOT NULL,
+                    created_at_epoch_ms INTEGER NOT NULL, updated_at_epoch_ms INTEGER NOT NULL,
+                    entry_schema_version INTEGER NOT NULL
+                )""".trimIndent()
+            )
+            database.insertOrThrow(ALBUM_TABLE, null, ContentValues().apply {
+                put("entry_id", "legacy-car"); put("image_id", "legacy-image")
+                put("image_relative_path", "images/legacy-image.jpg")
+                put("class_id", "porsche-911"); put("make", "Porsche"); put("model", "911")
+                put("generation_label", "992"); put("approximate_year_range", "2019-present")
+                put("display_name", "Porsche 911 (992)"); put("identity_source", "MODEL_CATALOG")
+                put("album_date", "2026-07-18"); put("is_favorite", 0); put("notes", "legacy")
+                put("created_at_epoch_ms", 1); put("updated_at_epoch_ms", 1); put("entry_schema_version", 1)
+            })
+            database.version = 1
+        }
+        File(context.filesDir, "images/legacy-image.jpg").apply { parentFile?.mkdirs(); writeBytes(byteArrayOf(1)) }
+
+        repository = AndroidAlbumRepository(context, databaseName)
+        val identity = success(runSuspend { repository.get("legacy-car") }).confirmedIdentity
+        assertEquals("cars", identity.categoryId)
+        assertEquals("Porsche 911", identity.scientificName)
+        assertEquals("992", identity.generationLabel)
+        assertEquals("2019-present", identity.approximateYearRange)
+    }
+
+    @Test
     fun missingManagedImageIsRejectedWithoutDurableMutation() {
         val missing = entry("missing", "2026-07-11", false, "")
         val failure = assertIs<AlbumResult.Failure>(runSuspend { repository.create(missing) })
@@ -152,13 +191,13 @@ class AndroidAlbumRepositoryTest {
     private fun entry(id: String, date: String, favorite: Boolean, notes: String) = AlbumEntry(
         entryId = id,
         managedImage = ManagedImageRef("image-$id", "images/image-$id.jpg"),
-        confirmedIdentity = CarIdentity(
-            classId = "mercedes-benz-c-class-w206",
-            make = "Mercedes-Benz",
-            model = "C-Class",
-            generationLabel = "W206",
-            approximateYearRange = "2021-present",
-            displayName = "Mercedes-Benz C-Class (W206)",
+        confirmedIdentity = CategoryIdentity(
+            categoryId = "lepidoptera",
+            classId = "vanessa-cardui",
+            scientificName = "Vanessa cardui",
+            displayName = "Painted Lady",
+            alternateNames = listOf("Cosmopolitan"),
+            attributes = mapOf("region" to "Europe"),
             source = IdentitySource.MODEL_CATALOG
         ),
         albumDate = date,

@@ -212,6 +212,7 @@ def main() -> int:
         )
     runtime_class_map = {
         "schema_version": "1.0.0",
+        "category_id": "lepidoptera",
         "catalog_id": class_map["catalog_id"],
         "class_count": CLASS_COUNT,
         "classes": runtime_classes,

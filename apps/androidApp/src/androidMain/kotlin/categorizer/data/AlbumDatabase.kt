@@ -6,11 +6,13 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import categorizer.domain.AlbumEntry
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 import categorizer.domain.ManagedImageRef
+import org.json.JSONArray
+import org.json.JSONObject
 
-internal const val ALBUM_DATABASE_VERSION = 1
+internal const val ALBUM_DATABASE_VERSION = 2
 internal const val ALBUM_TABLE = "album_entries"
 
 internal class AlbumDatabase(
@@ -26,8 +28,13 @@ internal class AlbumDatabase(
     }
 
     override fun onUpgrade(database: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Version 1 is the migration baseline. Future versions must migrate incrementally here.
-        check(oldVersion == newVersion) {
+        if (oldVersion == 1 && newVersion >= 2) {
+            database.execSQL("ALTER TABLE $ALBUM_TABLE ADD COLUMN category_id TEXT NOT NULL DEFAULT 'cars'")
+            database.execSQL("ALTER TABLE $ALBUM_TABLE ADD COLUMN scientific_name TEXT")
+            database.execSQL("ALTER TABLE $ALBUM_TABLE ADD COLUMN alternate_names_json TEXT NOT NULL DEFAULT '[]'")
+            database.execSQL("ALTER TABLE $ALBUM_TABLE ADD COLUMN identity_attributes_json TEXT NOT NULL DEFAULT '{}'")
+            database.execSQL("UPDATE $ALBUM_TABLE SET scientific_name = make || ' ' || model")
+        } else check(oldVersion == newVersion) {
             "No album database migration from version $oldVersion to $newVersion"
         }
     }
@@ -45,6 +52,10 @@ internal class AlbumDatabase(
                 approximate_year_range TEXT,
                 display_name TEXT NOT NULL,
                 identity_source TEXT NOT NULL,
+                category_id TEXT NOT NULL,
+                scientific_name TEXT,
+                alternate_names_json TEXT NOT NULL,
+                identity_attributes_json TEXT NOT NULL,
                 album_date TEXT NOT NULL,
                 is_favorite INTEGER NOT NULL CHECK (is_favorite IN (0, 1)),
                 notes TEXT NOT NULL,
@@ -67,6 +78,10 @@ internal fun AlbumEntry.toValues(): ContentValues = ContentValues(16).apply {
     put("approximate_year_range", confirmedIdentity.approximateYearRange)
     put("display_name", confirmedIdentity.displayName)
     put("identity_source", confirmedIdentity.source.name)
+    put("category_id", confirmedIdentity.categoryId)
+    put("scientific_name", confirmedIdentity.scientificName)
+    put("alternate_names_json", JSONArray(confirmedIdentity.alternateNames).toString())
+    put("identity_attributes_json", JSONObject(confirmedIdentity.attributes).toString())
     put("album_date", albumDate)
     put("is_favorite", if (isFavorite) 1 else 0)
     put("notes", notes)
@@ -78,13 +93,16 @@ internal fun AlbumEntry.toValues(): ContentValues = ContentValues(16).apply {
 internal fun Cursor.toAlbumEntry(): AlbumEntry = AlbumEntry(
     entryId = text("entry_id"),
     managedImage = ManagedImageRef(text("image_id"), text("image_relative_path")),
-    confirmedIdentity = CarIdentity(
+    confirmedIdentity = CategoryIdentity(
+        categoryId = text("category_id"),
         classId = text("class_id"),
-        make = text("make"),
-        model = text("model"),
-        generationLabel = nullableText("generation_label"),
-        approximateYearRange = nullableText("approximate_year_range"),
+        scientificName = nullableText("scientific_name"),
         displayName = text("display_name"),
+        alternateNames = JSONArray(text("alternate_names_json")).strings(),
+        attributes = JSONObject(text("identity_attributes_json")).stringMap() + listOfNotNull(
+            nullableText("generation_label")?.let { "generation_label" to it },
+            nullableText("approximate_year_range")?.let { "approximate_year_range" to it }
+        ).toMap(),
         source = IdentitySource.valueOf(text("identity_source"))
     ),
     albumDate = text("album_date"),
@@ -99,3 +117,6 @@ private fun Cursor.text(column: String): String = getString(getColumnIndexOrThro
 
 private fun Cursor.nullableText(column: String): String? =
     getColumnIndexOrThrow(column).let { index -> if (isNull(index)) null else getString(index) }
+
+private fun JSONArray.strings() = (0 until length()).map(::getString)
+private fun JSONObject.stringMap() = keys().asSequence().associateWith(::getString)
