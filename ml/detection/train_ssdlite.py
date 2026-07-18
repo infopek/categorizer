@@ -14,7 +14,7 @@ import torchvision
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models import MobileNet_V3_Large_Weights
-from torchvision.models.detection import ssdlite320_mobilenet_v3_large
+from torchvision.models.detection import SSDLite320_MobileNet_V3_Large_Weights, ssdlite320_mobilenet_v3_large
 from torchvision.transforms.functional import pil_to_tensor
 
 
@@ -104,6 +104,26 @@ def metrics(predictions: list[tuple[dict, dict]], threshold: float) -> dict[str,
     }
 
 
+def build_model(initialization: str):
+    if initialization == "imagenet-backbone":
+        model = ssdlite320_mobilenet_v3_large(
+            weights=None,
+            weights_backbone=MobileNet_V3_Large_Weights.IMAGENET1K_V1,
+            num_classes=2,
+        )
+        return model, {"source": "torchvision MobileNet_V3_Large_Weights.IMAGENET1K_V1"}
+    model = ssdlite320_mobilenet_v3_large(weights=None, weights_backbone=None, num_classes=2)
+    source = ssdlite320_mobilenet_v3_large(weights=SSDLite320_MobileNet_V3_Large_Weights.DEFAULT)
+    target_state = model.state_dict()
+    compatible = {key: value for key, value in source.state_dict().items() if target_state[key].shape == value.shape}
+    model.load_state_dict(compatible, strict=False)
+    return model, {
+        "source": "torchvision SSDLite320_MobileNet_V3_Large_Weights.COCO_V1",
+        "loaded_parameter_tensors": len(compatible),
+        "random_parameter_tensors": len(target_state) - len(compatible),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=Path, required=True)
@@ -114,6 +134,7 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=20260718)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--initialization", choices=("imagenet-backbone", "coco-detector"), default="coco-detector")
     args = parser.parse_args()
 
     random.seed(args.seed)
@@ -144,11 +165,8 @@ def main() -> int:
         for split, dataset in datasets.items()
     }
     device = torch.device(args.device)
-    model = ssdlite320_mobilenet_v3_large(
-        weights=None,
-        weights_backbone=MobileNet_V3_Large_Weights.IMAGENET1K_V1,
-        num_classes=2,
-    ).to(device)
+    model, initialization = build_model(args.initialization)
+    model = model.to(device)
     optimizer = torch.optim.SGD(
         [parameter for parameter in model.parameters() if parameter.requires_grad],
         lr=args.learning_rate,
@@ -190,8 +208,7 @@ def main() -> int:
         "architecture": "ssdlite320_mobilenet_v3_large",
         "classes": {"background": 0, "Lepidoptera": 1},
         "initialization": {
-            "detector": "random",
-            "backbone": "torchvision MobileNet_V3_Large_Weights.IMAGENET1K_V1",
+            **initialization,
             "distribution_approval": "not granted; pretrained-weight provenance requires separate review",
         },
         "dataset_manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
