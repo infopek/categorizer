@@ -21,3 +21,12 @@ The upstream 163-class MaxViT-T checkpoint has a separate fail-closed exporter b
 ```
 
 Generated binaries and reports remain under the ignored `ml/artifacts/` directory. The exporter checks the pinned checkpoint identity, strict state-dictionary loading, fixed input/output contract, ONNX validity, CPU ONNX Runtime loading, size gate, and PyTorch/ONNX equivalence on deterministic synthetic fixtures and every image in the optional sample archive. This is only fixture-level evidence: the candidate remains unapproved until held-out evaluation can be reproduced from the upstream test split.
+
+The exporter also emits the Android runtime `class-map.json`, `model-manifest.json`, and candidate notice. To install an experimental debug build, stage those four files under an ignored `recognition/` asset directory and pass its absolute parent:
+
+```bash
+./gradlew :apps:androidApp:installDebug \
+  -PrecognitionAssetRoot="$(realpath ml/artifacts/lepidoptera/android-assets)"
+```
+
+The property is opt-in so ordinary source builds do not silently distribute an unqualified 120 MiB model.
