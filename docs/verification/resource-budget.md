@@ -60,6 +60,26 @@ The AAB file's raw size and a universal APK's size are not substitutes for the d
 5. Report the post-recognition total as the gate value, and report cache separately. If Android prevents a direct component measurement, record Play Console installed size and the device-observable total; use the larger value for the gate.
 6. Investigate model duplication caused by asset extraction or runtime optimization.
 
+Collect the device-observable code, data, cache, and total values with:
+
+```bash
+python3 verification/release/measure_installed_footprint.py \
+  --adb "$ANDROID_SDK_ROOT/platform-tools/adb"
+```
+
+The command prefers aligned package arrays from `dumpsys diskstats`. When a newly sideloaded
+debuggable build is not yet present there, it falls back to package-path `du` plus private `run-as
+du`; release builds must use `diskstats` or the Play Console because `run-as` is intentionally
+unavailable. The command reads the accepted target and hard gate from `resource-budgets.json` and
+exits nonzero when the installed total exceeds the hard gate. Record whether the measurement is
+before launch or after a successful recognition; the latter is the release gate value.
+
+The preliminary debug-device result is recorded in
+`verification/release/results/2026-07-18-debug-installed-footprint.json`. It passes the hard gate but
+misses the optimization target because ONNX Runtime requires a private filesystem copy in addition
+to the model bundled in the APK. It is diagnostic evidence only; the signed release candidate still
+requires the complete procedure above.
+
 ### Runtime memory
 
 Follow the accepted `DEC-002` warm protocol. Capture `adb shell dumpsys meminfo <package>` at idle before session creation, immediately after session creation, periodically during the 100 measured requests, and immediately after the sequence. A profiler may supplement but not replace the recorded `dumpsys meminfo` samples.
