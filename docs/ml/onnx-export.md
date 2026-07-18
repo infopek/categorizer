@@ -2,6 +2,19 @@
 
 The exporter uses PyTorch's recommended `dynamo=True` path and fixed NCHW batch-one input. ONNX Script is pinned because the modern exporter requires it. Candidate bundles are generated under ignored `ml/artifacts/` and must not enter Git until all release gates approve them.
 
+Android cross-runtime verification uses a small checked-in contract generated from the pinned
+PyTorch checkpoint:
+
+```bash
+.venv/bin/python ml/export/generate_android_equivalence_fixture.py \
+  --checkpoint ml/artifacts/lepidoptera/pytorch_model.bin \
+  --output apps/androidApp/src/androidInstrumentedTest/assets/recognition-equivalence.json
+```
+
+The contract stores deterministic tensor recipes, reference logits, and top-five rankings. The
+Android instrumentation test feeds those tensors to the exact bundled ONNX asset and fails on a
+ranking mismatch or an absolute logit difference above `1e-4`.
+
 ```bash
 .venv/bin/python ml/export/export_bundle.py --checkpoint ml/runs/candidate/checkpoint.pt --run-metadata ml/runs/candidate/run.json --evaluation ml/runs/candidate/held-out-report.json --manifest ml/datasets/manifest.json --splits ml/datasets/splits.json --root /local/images --output ml/artifacts/candidate
 ```

@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0.0",
+  "status": "producer_side_debug_equivalence_passed",
+  "source_base_revision": "03c0804",
+  "device": {
+    "model": "SM-G780G",
+    "android_version": "13"
+  },
+  "reference": {
+    "runtime": "PyTorch 2.12.1+cu130",
+    "torchvision": "0.27.1+cu130",
+    "checkpoint_sha256": "ac3cf138930a8b6f52dcb064ff44ace39b701d3412812e457930463073e5eca0",
+    "contract_bytes": 19726,
+    "contract_sha256": "ded04599843a3691578c45b4b32c18448809177fb58f07ed4e99c5a13e73d2f3"
+  },
+  "android": {
+    "model_sha256": "7e7159df11227389b5e406247d94896f2fa75d77ad2defd07057f50aaf43397b",
+    "application_apk_sha256": "271188f9117d84740ea10788354e8f608d49235e23945d68c00bfe37b56fd7d8",
+    "test_apk_sha256": "e789a3dacae4b77e0f01bcd0b902788bfdd302d9595aabd363bfcb10249ab438",
+    "execution_provider": "CPUExecutionProvider"
+  },
+  "equivalence": {
+    "fixture_count": 4,
+    "fixture_kinds": ["zeros", "ones", "negative-ones", "sparse"],
+    "absolute_tolerance": 0.0001,
+    "all_logits_within_tolerance": true,
+    "top_five_rankings_equal": true,
+    "instrumentation_result": "pass"
+  },
+  "scope": "This proves producer-side PyTorch-to-Android-ONNX equivalence on deterministic tensors. It does not satisfy the independently blocked held-out accuracy gate or replace VER-003 reproduction."
+}
