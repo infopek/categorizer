@@ -1,0 +1,37 @@
+{
+  "schema_version": "0.1.0",
+  "status": "preliminary_local_estimate",
+  "measured_at": "2026-07-18",
+  "git_commit": "51fa31f",
+  "bundletool": {
+    "version": "1.18.1",
+    "standalone_jar_sha256": "675786493983787ffa11550bdb7c0715679a44e1643f3ff980a529e9c822595c"
+  },
+  "application_bundle": {
+    "path": "apps/androidApp/build/outputs/bundle/release/androidApp-release.aab",
+    "bytes": 165679558,
+    "sha256": "06d9757ece47f5e14ebeb1813127c7d90324db4b1894831a94f77191a9684e79",
+    "signing": "local release build; generated device APKs signed with the Android debug keystore"
+  },
+  "device_spec": {
+    "model": "SM-G780G",
+    "sdk_version": 33,
+    "abis": ["arm64-v8a", "armeabi-v7a", "armeabi"],
+    "screen_density": 480,
+    "sha256": "73167912d18beadca9251b1466de5ad30b87538187bf3a731811948420dc2ca2"
+  },
+  "generated_apks": {
+    "bytes": 163992983,
+    "sha256": "68488d575f9ff1d6411f3810e80c4e5cf7562e7e0b015db075b4c34d28a2da78"
+  },
+  "delivery": {
+    "minimum_download_bytes": 131578479,
+    "maximum_download_bytes": 131578479,
+    "maximum_download_mb": 131.58,
+    "optimization_target_mb": 150,
+    "optimization_target_result": "pass",
+    "hard_gate_mb": 200,
+    "hard_gate_result": "pass"
+  },
+  "interpretation": "The local S20 FE-specific compressed delivery estimate passes both accepted limits. Google Play Console remains authoritative for the signed closed-testing artifact."
+}

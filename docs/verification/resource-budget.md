@@ -51,6 +51,20 @@ Example tools: `stat`, `sha256sum`, and Android Studio APK Analyzer or `apkanaly
 
 The AAB file's raw size and a universal APK's size are not substitutes for the device-specific compressed download metric.
 
+Generate a connected-device estimate with the standalone bundletool version matching the Android
+build toolchain:
+
+```bash
+python3 verification/release/measure_delivery_size.py \
+  --bundletool /path/to/bundletool-all-1.18.1.jar \
+  --aab apps/androidApp/build/outputs/bundle/release/androidApp-release.aab \
+  --adb "$ANDROID_SDK_ROOT/platform-tools/adb"
+```
+
+The preliminary S20 FE estimate is recorded in
+`verification/release/results/2026-07-18-s20fe-delivery-estimate.json`. It passes both accepted
+limits; the eventual Play Console measurement remains authoritative.
+
 ### Installed footprint
 
 1. Clean-install the release candidate on the accepted benchmark device.
