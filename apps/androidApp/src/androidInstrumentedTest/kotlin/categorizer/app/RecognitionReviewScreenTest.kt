@@ -11,6 +11,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import categorizer.application.ManualIdentityInput
 import categorizer.application.RecognitionUiState
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.CarIdentity
 import categorizer.domain.ManagedImageRef
 import categorizer.domain.RecognitionCandidate
@@ -66,6 +67,18 @@ class RecognitionReviewScreenTest {
         findText("Review the ranked suggestions or enter the identity yourself.")
         findText("Porsche 911 (992)")
         screenshot("uncertain")
+    }
+
+    @Test
+    fun lepidopteraCandidateShowsFriendlyAndScientificNamesWithoutCarFields() {
+        val identity = CategoryIdentity(
+            "lepidoptera", "polyommatus-eros", "Polyommatus eros", "Eros blue",
+            alternateNames = listOf("Eros blue butterfly")
+        )
+        show(RecognitionUiState.Candidates("butterfly", image, listOf(RecognitionCandidate(identity, 1, 0.8f, "fixture-model")), 20, "fixture-model"))
+        findText("Eros blue")
+        findText("Scientific name: Polyommatus eros")
+        findText("Also known as: Eros blue butterfly")
     }
 
     @Test
