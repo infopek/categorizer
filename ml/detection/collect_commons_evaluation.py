@@ -20,9 +20,15 @@ from ml.dataset.collect_wikimedia import (
     search_pages,
 )
 
-QUERIES = {
-    "positive": ("butterfly flower", "butterfly garden", "butterfly nature", "moth tree", "moth outdoor", "moth wall"),
-    "hard_negative": ("bee flower", "flower garden", "wildflower meadow", "tree bark closeup", "fallen leaves", "lichen tree"),
+PROFILES = {
+    "evaluation": {
+        "positive": ("butterfly flower", "butterfly garden", "butterfly nature", "moth tree", "moth outdoor", "moth wall"),
+        "hard_negative": ("bee flower", "flower garden", "wildflower meadow", "tree bark closeup", "fallen leaves", "lichen tree"),
+    },
+    "remediation": {
+        "positive": ("multiple butterflies", "butterfly group", "butterflies flower", "small butterfly meadow", "moths light", "two butterflies"),
+        "hard_negative": ("bee closeup", "dragonfly", "flower closeup", "dry leaves", "tree bark lichen", "bird flower"),
+    },
 }
 
 
@@ -33,6 +39,8 @@ def main() -> int:
     parser.add_argument("--per-status", type=int, default=35)
     parser.add_argument("--search-limit", type=int, default=80)
     parser.add_argument("--max-bytes", type=int, default=20 * 1024 * 1024)
+    parser.add_argument("--profile", choices=tuple(PROFILES), default="evaluation")
+    parser.add_argument("--exclude-manifest", type=Path, action="append", default=[])
     args = parser.parse_args()
     if args.per_query < 1 or args.per_status < 1 or args.search_limit < args.per_query:
         raise SystemExit("search limit must be at least the positive per-query count")
@@ -41,7 +49,14 @@ def main() -> int:
     manifest_path = args.output / "sample-manifest.json"
     assets = []
     seen_pages: set[int] = set()
-    for expected_status, queries in QUERIES.items():
+    exclusions = []
+    for path in args.exclude_manifest:
+        excluded = json.loads(path.read_text(encoding="utf-8"))
+        page_ids = {int(item["figshare_file_id"]) for item in excluded["assets"]}
+        seen_pages.update(page_ids)
+        exclusions.append({"filename": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "asset_count": len(page_ids)})
+    queries_by_status = PROFILES[args.profile]
+    for expected_status, queries in queries_by_status.items():
         status_start = len(assets)
         for query in queries:
             accepted = 0
@@ -102,13 +117,15 @@ def main() -> int:
                 manifest = {
                     "schema_version": "0.1.0",
                     "status": "unreviewed_detection_pilot_sample",
-                    "purpose": "frozen_cluttered_hard_negative_evaluation",
+                    "purpose": "frozen_cluttered_hard_negative_evaluation" if args.profile == "evaluation" else "detection_remediation_training_candidates",
                     "source": {"name": "Wikimedia Commons", "license_policy": "individual allowlisted license"},
                     "selection": {
-                        "queries": QUERIES,
+                        "profile": args.profile,
+                        "queries": queries_by_status,
                         "per_query": args.per_query,
                         "per_status": args.per_status,
                         "search_limit": args.search_limit,
+                        "exclusions": exclusions,
                     },
                     "assets": assets,
                 }
