@@ -100,3 +100,12 @@ With all 464 shape-compatible COCO detector tensors transferred and only 12 clas
 A 40-epoch comparison reduced training loss further but test recall fell to 82.5%, indicating tighter fitting rather than better generalization. After adding a fourth reviewed tranche, the dataset contains 514 images and 545 boxes across 93 source species, with 312/101/101 train/validation/test images. Its 20-epoch frozen test result reached 85.7% recall and 91.8% precision (F1 88.7%). Visual inspection showed that many failures had a confident but overly loose or shifted prediction, while others involved small or camouflaged subjects; training therefore includes mild color jitter and zoom-out augmentation in addition to horizontal flips.
 
 Augmentation improved the maximum-F1 operating point to 87.6% test recall and 94.8% precision. The high-recall validation policy selected `0.25` confidence (97.1% validation recall and 87.6% precision); that operating point measured 91.4% test recall and 87.3% precision at IoU 0.5, passing the localization-recall pilot target. Because this test split was inspected repeatedly during pilot development, the result is evidence for the configuration rather than final qualification; a new frozen cluttered/hard-negative evaluation set remains required.
+
+Collect that independent evaluation set from individually allowlisted Wikimedia Commons files before generating and reviewing teacher proposals:
+
+```bash
+.venv/bin/python ml/detection/collect_commons_evaluation.py \
+  --output ml/artifacts/lepidoptera/detection-commons-evaluation
+```
+
+The deterministic query groups intentionally mix likely Lepidoptera photos with visually confusable flowers, bees, bark, and leaves. Query-derived expectations are not truth: every candidate still requires explicit human box/no-subject review, and the set must remain frozen afterward.
