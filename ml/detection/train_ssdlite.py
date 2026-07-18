@@ -171,9 +171,12 @@ def main() -> int:
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--initialization", choices=("imagenet-backbone", "coco-detector"), default="coco-detector")
     parser.add_argument("--validation-recall-target", type=float, default=0.97)
+    parser.add_argument("--remediation-repeat", type=int, default=3)
     args = parser.parse_args()
     if not 0 < args.validation_recall_target <= 1:
         raise SystemExit("validation recall target must be in (0, 1]")
+    if args.remediation_repeat < 1:
+        raise SystemExit("remediation repeat must be positive")
 
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -184,10 +187,10 @@ def main() -> int:
     if manifest.get("status") != "reviewed_detection_dataset":
         raise SystemExit("dataset manifest is not a reviewed detection dataset")
     records = manifest["records"]
-    datasets = {
-        split: DetectionDataset(args.dataset, [r for r in records if r["split"] == split], split == "train")
-        for split in ("train", "validation", "test")
-    }
+    split_records = {split: [record for record in records if record["split"] == split] for split in ("train", "validation", "test")}
+    remediation = [record for record in split_records["train"] if "review_status" in record]
+    split_records["train"].extend(remediation * (args.remediation_repeat - 1))
+    datasets = {split: DetectionDataset(args.dataset, items, split == "train") for split, items in split_records.items()}
     generator = torch.Generator().manual_seed(args.seed)
     loaders = {
         split: DataLoader(
@@ -264,6 +267,7 @@ def main() -> int:
             "zoom_out_probability": 0.5,
             "subject_scale_range": [0.6666666667, 1.0],
         },
+        "effective_training_images": len(split_records["train"]),
         "training_history": history,
         "validation_threshold_candidates": candidates,
         "selected_validation_metrics": selected,
