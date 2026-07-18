@@ -12,7 +12,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import categorizer.application.ManualIdentityInput
 import categorizer.application.RecognitionUiState
 import categorizer.domain.CategoryIdentity
-import categorizer.domain.CarIdentity
 import categorizer.domain.ManagedImageRef
 import categorizer.domain.RecognitionCandidate
 import categorizer.domain.RecognitionError
@@ -220,17 +219,11 @@ class RecognitionReviewScreenTest {
         val image = ManagedImageRef("review-image", "images/review-image.jpg")
         val candidates = listOf(
             RecognitionCandidate(
-                CarIdentity(
-                    "porsche-911-992", "Porsche", "911", "992", "2019-present",
-                    "Porsche 911 (992)"
-                ),
+                CategoryIdentity("cars", "porsche-911-992", "Porsche 911", "Porsche 911 (992)", attributes = mapOf("generation_label" to "992", "approximate_year_range" to "2019-present")),
                 1, 0.5f, "fixture-model"
             ),
             RecognitionCandidate(
-                CarIdentity(
-                    "bmw-3-series-g20", "BMW", "3 Series", "G20", "2018-present",
-                    "BMW 3 Series (G20)"
-                ),
+                CategoryIdentity("cars", "bmw-3-series-g20", "BMW 3 Series", "BMW 3 Series (G20)", attributes = mapOf("generation_label" to "G20", "approximate_year_range" to "2018-present")),
                 2, 0.5f, "fixture-model"
             )
         )

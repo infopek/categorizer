@@ -21,19 +21,18 @@ Recognition results require category/class pairs to be unique. `CANDIDATES` requ
 at least one candidate, while `UNSUPPORTED` requires none. These states remain
 explicit and are not encoded as sentinel identities.
 
-## Version-1 car compatibility
+## Version-1 car migration
 
-The deprecated `CarIdentity` alias and constructor remain temporarily available for
-database, archive, and UI adapters. A version-1 car record decodes as:
+A version-1 car database or archive record decodes as:
 
 - `categoryId = "cars"`;
 - `scientificName = "$make $model"`;
 - generation and approximate years in category-neutral `attributes`;
 - the original stable class ID, display name, and source unchanged.
 
-Deprecated `make`, `model`, `generationLabel`, and `approximateYearRange` accessors
-are derived views, not required fields of the new contract. This keeps existing
-albums and version-1 archives readable while downstream adapters migrate separately.
+Compatibility is implemented inside the versioned database and archive readers, not
+as car-shaped domain APIs. This keeps existing albums and version-1 archives readable
+without allowing new application code to depend on make/model fields.
 
 The compatibility path must not be used for new Lepidoptera model output. The Android
 ONNX adapter reads the bundle-level `category_id`, and the version-2 Android database

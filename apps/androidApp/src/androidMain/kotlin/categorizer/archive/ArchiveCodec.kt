@@ -159,11 +159,16 @@ internal object ArchiveCodec {
             IdentitySource.valueOf(value.getString("source"))
         )
     }
-    @Suppress("DEPRECATION")
     private fun legacyIdentity(value: JSONObject) = CategoryIdentity(
-        value.getString("class_id"), value.getString("make"), value.getString("model"),
-        value.optString("generation_label").takeIf(String::isNotEmpty), value.optString("approximate_year_range").takeIf(String::isNotEmpty),
-        value.getString("display_name"), IdentitySource.valueOf(value.getString("source"))
+        categoryId = "cars",
+        classId = value.getString("class_id"),
+        scientificName = "${value.getString("make")} ${value.getString("model")}",
+        displayName = value.getString("display_name"),
+        attributes = listOfNotNull(
+            value.optString("generation_label").takeIf(String::isNotEmpty)?.let { "generation_label" to it },
+            value.optString("approximate_year_range").takeIf(String::isNotEmpty)?.let { "approximate_year_range" to it }
+        ).toMap(),
+        source = IdentitySource.valueOf(value.getString("source"))
     )
     private fun imageJson(image: ArchiveImage) = JSONObject().put("image_id", image.imageId).put("relative_path", image.archivePath).put("media_type", image.mediaType).put("size_bytes", image.sizeBytes).put("sha256", image.sha256)
     private fun safeImagePath(value: String) = value.length <= 240 && imagePath.matches(value) && ".." !in value && '\\' !in value

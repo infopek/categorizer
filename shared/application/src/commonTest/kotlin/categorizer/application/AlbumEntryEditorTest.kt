@@ -1,7 +1,7 @@
 package categorizer.application
 
 import categorizer.domain.AlbumEntry
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 import categorizer.domain.ManagedImageRef
 import categorizer.domain.testing.InMemoryAlbumRepository
@@ -75,7 +75,7 @@ class AlbumEntryEditorTest {
     private fun entry() = AlbumEntry(
         entryId = "entry-1",
         managedImage = ManagedImageRef("image-1", "images/image-1.jpg"),
-        confirmedIdentity = CarIdentity("bmw-3", "BMW", "3 Series", displayName = "BMW 3 Series"),
+        confirmedIdentity = CategoryIdentity("cars", "bmw-3", "BMW 3 Series", "BMW 3 Series"),
         albumDate = "2026-07-15",
         isFavorite = false,
         notes = "",
