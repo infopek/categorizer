@@ -12,7 +12,7 @@ sealed class ArchiveResult<out T> {
 }
 data class ArchiveConflict(val entryId: String, val imageId: String, val entryExists: Boolean, val imageExists: Boolean)
 data class ArchivePreview(val archiveId: String, val totalEntries: Int, val importCount: Int, val requiredBytes: Long, val conflicts: List<ArchiveConflict>)
-data class ValidatedImportPlan internal constructor(
+class ValidatedImportPlan internal constructor(
     val archiveHash: String,
     val localRevision: String,
     val preview: ArchivePreview,
