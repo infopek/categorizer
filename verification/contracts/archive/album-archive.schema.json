@@ -17,7 +17,7 @@
   ],
   "properties": {
     "format": {"const": "categorizer-album-archive"},
-    "archive_schema_version": {"const": "1.0.0"},
+    "archive_schema_version": {"enum": ["1.0.0", "2.0.0"]},
     "archive_id": {
       "type": "string",
       "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
@@ -57,27 +57,42 @@
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
           },
-          "entry_schema_version": {"const": 1},
+          "entry_schema_version": {"type": "integer", "minimum": 1},
           "image_id": {
             "type": "string",
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
           },
           "confirmed_identity": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["class_id", "make", "model", "display_name", "source"],
-            "properties": {
-              "class_id": {
-                "type": "string",
-                "pattern": "^[a-z0-9][a-z0-9-]*$"
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["class_id", "make", "model", "display_name", "source"],
+                "properties": {
+                  "class_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+                  "make": {"type": "string", "minLength": 1},
+                  "model": {"type": "string", "minLength": 1},
+                  "generation_label": {"type": "string", "minLength": 1},
+                  "approximate_year_range": {"type": "string", "minLength": 1},
+                  "display_name": {"type": "string", "minLength": 1},
+                  "source": {"enum": ["MODEL_CATALOG", "USER_CONFIRMED"]}
+                }
               },
-              "make": {"type": "string", "minLength": 1},
-              "model": {"type": "string", "minLength": 1},
-              "generation_label": {"type": "string", "minLength": 1},
-              "approximate_year_range": {"type": "string", "minLength": 1},
-              "display_name": {"type": "string", "minLength": 1},
-              "source": {"enum": ["MODEL_CATALOG", "USER_CONFIRMED"]}
-            }
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["category_id", "class_id", "scientific_name", "display_name", "alternate_names", "attributes", "source"],
+                "properties": {
+                  "category_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+                  "class_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+                  "scientific_name": {"type": ["string", "null"], "minLength": 1},
+                  "display_name": {"type": "string", "minLength": 1},
+                  "alternate_names": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+                  "attributes": {"type": "object", "additionalProperties": {"type": "string"}, "propertyNames": {"minLength": 1}},
+                  "source": {"enum": ["MODEL_CATALOG", "USER_CONFIRMED"]}
+                }
+              }
+            ]
           },
           "album_date": {
             "type": "string",

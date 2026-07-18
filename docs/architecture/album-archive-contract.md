@@ -11,7 +11,7 @@ manifest.json
 images/<safe-image-id>.<jpg|jpeg|png|webp>
 ```
 
-`manifest.json` conforms to `verification/contracts/archive/album-archive.schema.json`. Image entries use `ZIP_STORED` because managed JPEG, PNG, and WebP bytes are already compressed. The manifest may be stored or deflated. Directory entries, duplicate ZIP member names, backslashes, absolute paths, `.` or `..` segments, drive-qualified paths, symbolic links, and undeclared files are invalid.
+`manifest.json` conforms to `verification/contracts/archive/album-archive.schema.json`, which covers readable versions 1 and 2. Image entries use `ZIP_STORED` because managed JPEG, PNG, and WebP bytes are already compressed. The manifest may be stored or deflated. Directory entries, duplicate ZIP member names, backslashes, absolute paths, `.` or `..` segments, drive-qualified paths, symbolic links, and undeclared files are invalid.
 
 The archive includes only app-managed image copies that have already passed the metadata-removal boundary. It never exports source gallery URIs, absolute device paths, cache paths, database keys, recognition candidates, or training feedback.
 
@@ -24,7 +24,7 @@ The manifest records:
 - exporting application identity and version;
 - declared entry and image counts;
 - album fields that map to the shared `AlbumEntry` contract;
-- complete confirmed identity display data and its source;
+- complete confirmed identity data (`category_id`, `class_id`, nullable `scientific_name`, display and alternate names, category attributes, and source);
 - logical image IDs, relative archive paths, media types, byte counts, and SHA-256 checksums.
 
 Entries reference images by logical `image_id`; internal database paths and the archive's relative ZIP path are not persisted as the imported managed path. Import assigns a new private managed path while retaining the logical entry and image IDs.
@@ -66,12 +66,13 @@ No entry becomes observable until all planned images and metadata are durable. I
 ## Compatibility policy
 
 - Archive versions use `major.minor.patch`.
-- Version 1 readers accept exactly `1.0.0`; unsupported versions fail before extraction or mutation.
+- Writers emit category-neutral version `2.0.0`; readers accept both `1.0.0` and `2.0.0`.
+- Version 1 car identities are migrated on import to category `cars`, with generation and approximate years retained as attributes.
 - A major version changes required meaning or layout and needs an explicit migration reader.
 - A minor version may add optional data, but strict readers remain pinned until updated and tested.
 - A patch version may clarify validation without changing serialized meaning.
 - `entry_schema_version` is retained per entry so later application migrations do not change the archive's historical meaning.
-- Imported identities retain their stable class ID and saved display fields even when the installed model catalog differs.
+- Imported identities retain their stable category/class pair and saved display fields even when the installed model catalog differs.
 
 ## Fixtures and validation
 

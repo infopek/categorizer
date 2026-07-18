@@ -12,7 +12,7 @@ import categorizer.data.AndroidAlbumRepository
 import categorizer.domain.AlbumEntry
 import categorizer.domain.AlbumQuery
 import categorizer.domain.AlbumResult
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.ManagedImageRef
 import categorizer.media.ManagedImageStore
 import java.io.ByteArrayOutputStream
@@ -72,6 +72,29 @@ class AlbumArchiveServiceTest {
         val restored = assertIs<AlbumResult.Success<List<AlbumEntry>>>(runSuspend { repository.query(AlbumQuery()) }).value.single()
         assertEquals(fixtureEntry(), restored.copy(managedImage = fixtureEntry().managedImage))
         assertContentEquals(originalBytes, File(context.filesDir, restored.managedImage.relativePath).readBytes())
+    }
+
+    @Test fun exportUsesCategoryNeutralV2IdentityAndLegacyV1StillImports() {
+        seed()
+        assertIs<ArchiveResult.Success<ArchiveExportInfo>>(runSuspend { service.export(archive, 1_783_962_000_000) })
+        ZipFile(archive).use { zip ->
+            val manifest = JSONObject(zip.getInputStream(zip.getEntry("manifest.json")).readBytes().toString(Charsets.UTF_8))
+            assertEquals("2.0.0", manifest.getString("archive_schema_version"))
+            val identity = manifest.getJSONArray("entries").getJSONObject(0).getJSONObject("confirmed_identity")
+            assertEquals("lepidoptera", identity.getString("category_id"))
+            assertEquals("Polyommatus eros", identity.getString("scientific_name"))
+            assertEquals("Eros blue butterfly", identity.getJSONArray("alternate_names").getString(0))
+        }
+
+        val legacy = File(context.cacheDir, "legacy-v1.zip")
+        rewriteAsLegacyV1(archive, legacy)
+        runSuspend { repository.delete("entry-001") }; image.delete()
+        val plan = assertIs<ArchiveResult.Success<ValidatedImportPlan>>(service.validate(legacy)).value
+        assertIs<ArchiveResult.Success<ArchiveImportInfo>>(service.commit(plan))
+        val restored = assertIs<AlbumResult.Success<List<AlbumEntry>>>(runSuspend { repository.query(AlbumQuery()) }).value.single()
+        assertEquals("cars", restored.confirmedIdentity.categoryId)
+        assertEquals("Mercedes-Benz C-Class", restored.confirmedIdentity.scientificName)
+        legacy.delete()
     }
 
     @Test fun canonicalNegativeMutationsAreRejectedWithoutAlbumMutation() {
@@ -167,7 +190,7 @@ class AlbumArchiveServiceTest {
         assertIs<AlbumResult.Success<*>>(runSuspend { repository.create(fixtureEntry()) })
     }
     private fun fixtureEntry() = AlbumEntry("entry-001", ManagedImageRef("image-001", "images/image-001.png"),
-        CarIdentity("mercedes-benz-c-class-w204", "Mercedes-Benz", "C-Class", "W204", null, "Mercedes-Benz C-Class (W204)"),
+        CategoryIdentity("lepidoptera", "polyommatus-eros", "Polyommatus eros", "Eros blue", listOf("Eros blue butterfly"), mapOf("family" to "Lycaenidae")),
         "2026-07-13", true, "Synthetic contract fixture", 1_783_962_000_000, 1_783_962_000_000, 1)
 
     private fun mutateArchive(source: File, output: File, mutation: String) {
@@ -180,7 +203,7 @@ class AlbumArchiveServiceTest {
             when (mutation) {
                 "checksum" -> manifest.getJSONArray("image_files").getJSONObject(0).put("sha256", "0".repeat(64))
                 "duplicate-id" -> { manifest.getJSONArray("entries").put(JSONObject(manifest.getJSONArray("entries").getJSONObject(0).toString())); manifest.put("entry_count", 2) }
-                "version" -> manifest.put("archive_schema_version", "2.0.0")
+                "version" -> manifest.put("archive_schema_version", "3.0.0")
                 "traversal" -> { path = "../escape.png"; manifest.getJSONArray("image_files").getJSONObject(0).put("relative_path", path) }
                 "absolute" -> { path = "/sdcard/escape.png"; manifest.getJSONArray("image_files").getJSONObject(0).put("relative_path", path) }
                 "oversized" -> manifest.getJSONArray("image_files").getJSONObject(0).put("size_bytes", ArchiveCodec.MAX_IMAGE + 1)
@@ -203,6 +226,22 @@ class AlbumArchiveServiceTest {
         val crc = CRC32().apply { update(bytes) }
         out.putNextEntry(ZipEntry(name).apply { method = ZipEntry.STORED; size = bytes.size.toLong(); compressedSize = size; this.crc = crc.value })
         out.write(bytes); out.closeEntry()
+    }
+
+    private fun rewriteAsLegacyV1(source: File, output: File) {
+        ZipFile(source).use { zip ->
+            val imageEntry = zip.entries().asSequence().first { it.name.startsWith("images/") }
+            val bytes = zip.getInputStream(imageEntry).readBytes()
+            val manifest = JSONObject(zip.getInputStream(zip.getEntry("manifest.json")).readBytes().toString(Charsets.UTF_8))
+            manifest.put("archive_schema_version", "1.0.0")
+            manifest.getJSONArray("entries").getJSONObject(0).put("confirmed_identity", JSONObject()
+                .put("class_id", "mercedes-benz-c-class-w204").put("make", "Mercedes-Benz").put("model", "C-Class")
+                .put("generation_label", "W204").put("display_name", "Mercedes-Benz C-Class (W204)").put("source", "MODEL_CATALOG"))
+            ZipOutputStream(FileOutputStream(output)).use { out ->
+                out.putNextEntry(ZipEntry("manifest.json")); out.write(manifest.toString().toByteArray()); out.closeEntry()
+                putStored(out, imageEntry.name, bytes)
+            }
+        }
     }
 
     private fun rawZip(output: File, values: List<Pair<String, ByteArray>>) {

@@ -1,6 +1,6 @@
 # Album archive export and import
 
-The Android archive adapter implements version `1.0.0` of the accepted album archive contract.
+The Android archive adapter writes category-neutral version `2.0.0` and retains a migration reader for existing version `1.0.0` car archives.
 Export reads only domain album entries and app-managed images. ZIP image members are stored without
 recompression and the manifest contains logical IDs, portable image paths, byte sizes, media types,
 and SHA-256 checksums—never database details, source URIs, cache paths, or absolute device paths.
