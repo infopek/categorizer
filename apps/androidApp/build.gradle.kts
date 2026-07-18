@@ -97,6 +97,19 @@ android {
                 ?: error("Release recognition manifest has no model metadata.")
             val classMapMetadata = manifest["class_map"] as? Map<*, *>
                 ?: error("Release recognition manifest has no class-map metadata.")
+            val resourceBudgetsFile = rootProject.file("verification/release/resource-budgets.json")
+            require(resourceBudgetsFile.isFile) { "Accepted release resource budgets are missing." }
+            @Suppress("UNCHECKED_CAST")
+            val resourceBudgets = JsonSlurper().parse(resourceBudgetsFile) as Map<String, Any>
+            val budgets = resourceBudgets["budgets"] as? Map<*, *>
+                ?: error("Release resource budgets are invalid.")
+            val modelBudget = budgets["bundled_onnx_file"] as? Map<*, *>
+                ?: error("Bundled ONNX resource budget is missing.")
+            val mib = 1_048_576L
+            val targetBytes = (modelBudget["optimization_target_maximum"] as? Number)?.toLong()?.times(mib)
+                ?: error("Bundled ONNX optimization target is invalid.")
+            val hardGateBytes = (modelBudget["hard_gate_maximum"] as? Number)?.toLong()?.times(mib)
+                ?: error("Bundled ONNX hard gate is invalid.")
             fun sha256(file: File): String {
                 val digest = MessageDigest.getInstance("SHA-256")
                 file.inputStream().buffered().use { input ->
@@ -110,6 +123,15 @@ android {
                 return digest.digest().joinToString("") { "%02x".format(it) }
             }
 
+            require(model.length() <= hardGateBytes) {
+                "Release recognition model exceeds the ${hardGateBytes / mib} MiB hard gate."
+            }
+            if (model.length() > targetBytes) {
+                logger.warn(
+                    "Release recognition model is %.2f MiB and exceeds the %d MiB optimization target."
+                        .format(model.length().toDouble() / mib, targetBytes / mib),
+                )
+            }
             require(model.length() == (modelMetadata["size_bytes"] as? Number)?.toLong()) {
                 "Release recognition model size does not match its manifest."
             }

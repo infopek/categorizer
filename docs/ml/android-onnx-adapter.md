@@ -9,4 +9,6 @@ Generated model binaries remain ignored. Gradle automatically includes a local b
 `-PrecognitionAssetRoot=<absolute-directory>`. Debug builds without a bundle honestly return
 `MODEL_UNAVAILABLE`, while release builds verify the manifest-declared model size and model and
 class-map SHA-256 values before packaging rather than silently shipping an absent or mismatched
-offline bundle.
+offline bundle. The same guard reads the accepted ONNX optimization target and hard limit from the
+canonical release resource-budget file; exceeding the target warns, while exceeding the hard limit
+fails the release build.

@@ -40,6 +40,8 @@ automatically. A different generated bundle can be selected with
 `-PrecognitionAssetRoot=<absolute-directory>`. Release builds fail early when the model, manifest,
 or class map is absent. The release guard also checks the model byte size and the model and class-map
 SHA-256 values against the manifest, preventing an absent, stale, or corrupted bundle from shipping.
+It reads the accepted ONNX size limits from `verification/release/resource-budgets.json`, warns when
+the optimization target is missed, and rejects a model above the hard gate.
 
 Install the APK with Android Studio or `adb install -r <apk-path>` and confirm the launcher displays
 the Categorizer album.
