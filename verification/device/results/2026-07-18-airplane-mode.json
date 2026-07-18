@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "status": "passed",
+  "source_revision": "d5707a2",
+  "device": {
+    "manufacturer": "Samsung",
+    "model": "SM-G780G",
+    "android_version": "13"
+  },
+  "build": {
+    "variant": "debug instrumentation",
+    "application_id": "com.infopek.categorizer",
+    "version_code": 1,
+    "version_name": "0.1.0",
+    "apk_bytes": 315452455,
+    "apk_sha256": "3658b1f878234986ab220ce4146741a669837207ce7234d6c86ff29b370236c4",
+    "model_bytes": 126581359,
+    "model_sha256": "7e7159df11227389b5e406247d94896f2fa75d77ad2defd07057f50aaf43397b"
+  },
+  "network_boundary": {
+    "airplane_mode_during_tests": "enabled",
+    "airplane_mode_after_tests": "disabled",
+    "declared_internet_permission": false,
+    "declared_network_state_permission": false,
+    "permission_inspection": "aapt2 dump permissions"
+  },
+  "verification": {
+    "core_rerun_tests": 19,
+    "core_rerun_failures": 0,
+    "covered": [
+      "real bundled ONNX session and 100 inference requests",
+      "album archive export, validation, preview, import, and recovery",
+      "repository persistence",
+      "managed image storage and metadata stripping",
+      "album entry detail and editing"
+    ],
+    "warm_inference_median_ms": 192.782187,
+    "warm_inference_gate_ms_exclusive": 2000,
+    "end_of_run_total_pss_kib": 408680,
+    "additional_ui_run": {
+      "correctly_selected_passes": 18,
+      "ui_visibility_flakes": 1,
+      "selection_errors": 3,
+      "selection_errors_reason": "initial command used incorrect package names; corrected in the passing rerun"
+    }
+  },
+  "manual_system_ui_journey": {
+    "confirmed_by": "repository-owner",
+    "confirmed_at": "2026-07-18",
+    "airplane_mode_remained_enabled": true,
+    "gallery_selection": "passed",
+    "recognition_confirmation_and_save": "passed",
+    "restart_persistence": "passed",
+    "document_picker_export": "passed"
+  },
+  "remaining_manual_evidence": []
+}
