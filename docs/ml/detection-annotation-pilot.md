@@ -133,3 +133,15 @@ Collect a disjoint remediation tranche targeted at small/multiple subjects and c
   --exclude-manifest ml/artifacts/lepidoptera/detection-commons-evaluation/sample-manifest.json \
   --output ml/artifacts/lepidoptera/detection-commons-remediation
 ```
+
+After review, add only resolved positives and `not_visible` negatives while preserving every existing validation/test assignment. Ten deterministically ranked remediation negatives extend validation so threshold selection can measure false positives; the remainder go to training and are repeated by the trainer to give the small targeted tranche useful weight:
+
+```bash
+.venv/bin/python ml/detection/add_reviewed_training.py \
+  --base-dataset ml/artifacts/lepidoptera/detection-dataset-v2 \
+  --reviewed ml/artifacts/lepidoptera/detection-commons-remediation-review/reviewed-annotations.json \
+  --sample-manifest ml/artifacts/lepidoptera/detection-commons-remediation/sample-manifest.json \
+  --output ml/artifacts/lepidoptera/detection-dataset-v3
+```
+
+The first remediation export supplied 13 resolved positive images (33 boxes) and 37 hard negatives; six incomplete crowded images remained excluded. Repeating resolved training examples and adding ten deterministic negative validation images moved the selected threshold to `0.90`. On the unchanged frozen set, false positives improved from 0.5 to 0.115 per negative image, but localization recall fell from 68.2% to 54.5%. The remediation therefore fails: threshold calibration alone cannot compensate for weak small/multiple-subject localization at 320-pixel input.
