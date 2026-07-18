@@ -2,6 +2,7 @@ package categorizer.media
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.ExifInterface
 import android.net.Uri
@@ -20,6 +21,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import categorizer.app.MainActivity
+import categorizer.app.CropSelection
 
 @RunWith(AndroidJUnit4::class)
 class ManagedImageStoreTest {
@@ -100,6 +102,18 @@ class ManagedImageStoreTest {
         val success = assertIs<ImageAcquisitionResult.Success>(imported, imported.toString())
         assertTrue(store.delete(success.image.reference))
         assertTrue(store.delete(success.image.reference))
+    }
+
+    @Test
+    fun cropReplacesOnlyTheManagedCopyAtNormalizedBounds() {
+        val source = jpegFixture("crop.jpg", 400, 300)
+        val success = assertIs<ImageAcquisitionResult.Success>(store.import(uri(source), "crop"))
+        assertTrue(store.crop(success.image.reference, CropSelection(0.25f, 0.2f, 0.75f, 0.8f)))
+        val cropped = BitmapFactory.decodeFile(assertNotNull(store.resolve(success.image.reference)).absolutePath)
+        assertEquals(200, cropped.width)
+        assertEquals(180, cropped.height)
+        cropped.recycle()
+        assertEquals(400, BitmapFactory.decodeFile(source.absolutePath).width)
     }
 
     @Test

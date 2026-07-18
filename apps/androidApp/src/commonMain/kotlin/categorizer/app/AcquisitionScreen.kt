@@ -19,6 +19,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +37,7 @@ internal fun AcquisitionScreen(
     onRetry: () -> Unit,
     onCancel: () -> Unit,
     onContinue: () -> Unit,
+    onCropAndContinue: (CropSelection) -> Unit,
     onChooseAnother: () -> Unit
 ) {
     MaterialTheme {
@@ -55,7 +60,7 @@ internal fun AcquisitionScreen(
                             )
                             is AcquisitionScreenState.Processing -> Progress("Preparing photo…")
                             is AcquisitionScreenState.Review -> RecognitionHandoff(
-                                state, onContinue, onChooseAnother
+                                state, onContinue, onCropAndContinue, onChooseAnother
                             )
                             is AcquisitionScreenState.Error -> AcquisitionError(state, onRetry)
                         }
@@ -110,20 +115,27 @@ private fun Progress(message: String) {
 private fun RecognitionHandoff(
     state: AcquisitionScreenState.Review,
     onContinue: () -> Unit,
+    onCropAndContinue: (CropSelection) -> Unit,
     onChooseAnother: () -> Unit
 ) {
+    var selection by remember(state.image.imageId) { mutableStateOf(CropSelection()) }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Photo ready", style = MaterialTheme.typography.titleLarge)
-        Text("Review this managed photo before recognition.")
+        Text("Drag a box around the butterfly or moth, or use the full photo.")
         Spacer(Modifier.height(20.dp))
-        ManagedThumbnail(
+        ManualCropEditor(
             image = state.image,
-            contentDescription = "Photo ready for recognition",
-            modifier = Modifier.size(240.dp).clip(RoundedCornerShape(18.dp))
+            selection = selection,
+            onSelectionChanged = { selection = it },
+            modifier = Modifier.fillMaxWidth().height(320.dp).clip(RoundedCornerShape(18.dp))
         )
         Spacer(Modifier.height(20.dp))
-        Button(onClick = onContinue, modifier = Modifier.fillMaxWidth()) {
-            Text("Continue to recognition")
+        Button(onClick = { onCropAndContinue(selection) }, modifier = Modifier.fillMaxWidth()) {
+            Text("Crop and recognize")
+        }
+        Spacer(Modifier.height(10.dp))
+        FilledTonalButton(onClick = onContinue, modifier = Modifier.fillMaxWidth()) {
+            Text("Use full photo")
         }
         Spacer(Modifier.height(10.dp))
         OutlinedButton(onClick = onChooseAnother, modifier = Modifier.fillMaxWidth()) {
@@ -131,6 +143,21 @@ private fun RecognitionHandoff(
         }
     }
 }
+
+internal data class CropSelection(
+    val left: Float = 0.1f,
+    val top: Float = 0.1f,
+    val right: Float = 0.9f,
+    val bottom: Float = 0.9f
+)
+
+@Composable
+internal expect fun ManualCropEditor(
+    image: categorizer.domain.ManagedImageRef,
+    selection: CropSelection,
+    onSelectionChanged: (CropSelection) -> Unit,
+    modifier: Modifier = Modifier
+)
 
 @Composable
 private fun AcquisitionError(state: AcquisitionScreenState.Error, onRetry: () -> Unit) {

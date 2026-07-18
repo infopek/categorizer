@@ -8,6 +8,7 @@ import android.media.ExifInterface
 import android.net.Uri
 import android.os.StatFs
 import categorizer.domain.ManagedImageRef
+import categorizer.app.CropSelection
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -86,6 +87,41 @@ class ManagedImageStore(context: Context) {
         val root = applicationContext.filesDir.canonicalFile
         val candidate = File(root, reference.relativePath).canonicalFile
         return candidate.takeIf { it.path.startsWith(root.path + File.separator) && it.isFile }
+    }
+
+    internal fun crop(reference: ManagedImageRef, selection: CropSelection): Boolean {
+        val source = resolve(reference) ?: return false
+        var bitmap: Bitmap? = null
+        var cropped: Bitmap? = null
+        var temporary: File? = null
+        return try {
+            bitmap = BitmapFactory.decodeFile(source.absolutePath) ?: return false
+            val left = (selection.left.coerceIn(0f, 1f) * bitmap.width).toInt()
+            val top = (selection.top.coerceIn(0f, 1f) * bitmap.height).toInt()
+            val right = (selection.right.coerceIn(0f, 1f) * bitmap.width).toInt()
+            val bottom = (selection.bottom.coerceIn(0f, 1f) * bitmap.height).toInt()
+            if (right - left < 32 || bottom - top < 32) return false
+            cropped = Bitmap.createBitmap(bitmap, left, top, right - left, bottom - top)
+            temporary = File(imageDirectory, ".crop-${reference.imageId}-${UUID.randomUUID()}.tmp")
+            FileOutputStream(temporary).use { output ->
+                if (!cropped.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) return false
+                output.flush()
+                output.fd.sync()
+            }
+            try {
+                Files.move(temporary.toPath(), source.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE)
+            } catch (_: AtomicMoveNotSupportedException) {
+                Files.move(temporary.toPath(), source.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            }
+            temporary = null
+            true
+        } catch (_: Exception) {
+            false
+        } finally {
+            temporary?.delete()
+            cropped?.recycle()
+            bitmap?.recycle()
+        }
     }
 
     private fun readBounds(source: Uri): Pair<Int, Int> {
