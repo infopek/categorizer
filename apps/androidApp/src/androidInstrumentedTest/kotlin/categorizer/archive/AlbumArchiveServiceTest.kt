@@ -2,6 +2,10 @@ package categorizer.archive
 
 import android.content.Context
 import android.util.Base64
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.media.ExifInterface
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import categorizer.data.AndroidAlbumRepository
@@ -78,6 +82,9 @@ class AlbumArchiveServiceTest {
             "duplicate-id" to ArchiveErrorCode.DUPLICATE_VALUE,
             "version" to ArchiveErrorCode.UNSUPPORTED_VERSION,
             "traversal" to ArchiveErrorCode.UNSAFE_PATH,
+            "absolute" to ArchiveErrorCode.UNSAFE_PATH,
+            "compressed" to ArchiveErrorCode.INVALID_MANIFEST,
+            "oversized" to ArchiveErrorCode.RESOURCE_LIMIT,
             "duplicate-member" to ArchiveErrorCode.UNREADABLE_ARCHIVE
         )
         mutations.forEach { (mutation, expected) ->
@@ -88,6 +95,36 @@ class AlbumArchiveServiceTest {
             mutated.delete()
         }
         assertEquals(1, assertIs<AlbumResult.Success<List<AlbumEntry>>>(runSuspend { repository.query(AlbumQuery()) }).value.size)
+    }
+
+    @Test fun exportedManagedJpegContainsNoSourceLocationOrDeviceMetadata() {
+        val source = File(context.cacheDir, "metadata-source.jpg")
+        val bitmap = Bitmap.createBitmap(64, 48, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.BLUE) }
+        FileOutputStream(source).use { assertTrue(bitmap.compress(Bitmap.CompressFormat.JPEG, 90, it)) }
+        bitmap.recycle()
+        ExifInterface(source.absolutePath).apply {
+            setAttribute(ExifInterface.TAG_GPS_LATITUDE, "47/1,29/1,0/1")
+            setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "N")
+            setAttribute(ExifInterface.TAG_MAKE, "Private Fixture Camera")
+            setAttribute(ExifInterface.TAG_MODEL, "Secret Model")
+            saveAttributes()
+        }
+        val managed = assertIs<categorizer.media.ImageAcquisitionResult.Success>(
+            ManagedImageStore(context).import(Uri.fromFile(source), "metadata-export")
+        ).image.reference
+        assertIs<AlbumResult.Success<*>>(runSuspend { repository.create(fixtureEntry().copy(managedImage = managed)) })
+        assertIs<ArchiveResult.Success<ArchiveExportInfo>>(runSuspend { service.export(archive, 1_783_962_000_000) })
+
+        ZipFile(archive).use { zip ->
+            val entry = zip.entries().asSequence().single { it.name.startsWith("images/") }
+            zip.getInputStream(entry).use { input ->
+                val metadata = ExifInterface(input)
+                assertEquals(null, metadata.getAttribute(ExifInterface.TAG_GPS_LATITUDE))
+                assertEquals(null, metadata.getAttribute(ExifInterface.TAG_MAKE))
+                assertEquals(null, metadata.getAttribute(ExifInterface.TAG_MODEL))
+            }
+        }
+        source.delete()
     }
 
     @Test fun conflictsAbortByDefaultAndExplicitKeepProducesNoOp() {
@@ -145,13 +182,19 @@ class AlbumArchiveServiceTest {
                 "duplicate-id" -> { manifest.getJSONArray("entries").put(JSONObject(manifest.getJSONArray("entries").getJSONObject(0).toString())); manifest.put("entry_count", 2) }
                 "version" -> manifest.put("archive_schema_version", "2.0.0")
                 "traversal" -> { path = "../escape.png"; manifest.getJSONArray("image_files").getJSONObject(0).put("relative_path", path) }
+                "absolute" -> { path = "/sdcard/escape.png"; manifest.getJSONArray("image_files").getJSONObject(0).put("relative_path", path) }
+                "oversized" -> manifest.getJSONArray("image_files").getJSONObject(0).put("size_bytes", ArchiveCodec.MAX_IMAGE + 1)
             }
             if (mutation == "duplicate-member") {
                 rawZip(output, listOf("manifest.json" to manifest.toString().toByteArray(), path to imageBytes, path to imageBytes)); return
             }
             ZipOutputStream(FileOutputStream(output)).use { out ->
                 out.putNextEntry(ZipEntry("manifest.json")); out.write(manifest.toString().toByteArray()); out.closeEntry()
-                if (mutation != "missing") putStored(out, path, imageBytes)
+                if (mutation != "missing") {
+                    if (mutation == "compressed") {
+                        out.putNextEntry(ZipEntry(path)); out.write(imageBytes); out.closeEntry()
+                    } else putStored(out, path, imageBytes)
+                }
             }
         }
     }
