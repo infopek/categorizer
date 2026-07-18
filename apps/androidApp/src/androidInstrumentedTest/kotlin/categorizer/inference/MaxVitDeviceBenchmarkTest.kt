@@ -18,6 +18,56 @@ import kotlin.test.assertEquals
 
 class MaxVitDeviceBenchmarkTest {
     @Test
+    fun benchmarkColdSessionAndInference() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val targetContext = instrumentation.targetContext
+        val model = File(targetContext.cacheDir, "lepidoptera-maxvit-t.onnx")
+        check(!model.exists() || model.delete()) { "Cannot clear the extracted model before a cold trial" }
+
+        val totalStarted = SystemClock.elapsedRealtimeNanos()
+        val fixtureStarted = SystemClock.elapsedRealtimeNanos()
+        val fixture = instrumentation.context.assets.open("Polyommatus_eros.ZIP").use { source ->
+            ZipInputStream(source).use { archive ->
+                var entry = archive.nextEntry
+                while (entry != null && !entry.name.lowercase().endsWith(".jpg")) entry = archive.nextEntry
+                check(entry != null) { "Benchmark archive has no JPEG fixture" }
+                val bitmap = requireNotNull(BitmapFactory.decodeStream(archive))
+                try {
+                    preprocess(bitmap)
+                } finally {
+                    bitmap.recycle()
+                }
+            }
+        }
+        val fixtureMs = elapsedMs(fixtureStarted)
+        val copyStarted = SystemClock.elapsedRealtimeNanos()
+        targetContext.assets.open("recognition/model.onnx").use { input ->
+            FileOutputStream(model).use { output -> input.copyTo(output) }
+        }
+        val copyMs = elapsedMs(copyStarted)
+        val environment = OrtEnvironment.getEnvironment()
+        val options = OrtSession.SessionOptions()
+        val sessionStarted = SystemClock.elapsedRealtimeNanos()
+        val session = environment.createSession(model.absolutePath, options)
+        val sessionMs = elapsedMs(sessionStarted)
+        options.close()
+        val inferenceStarted = SystemClock.elapsedRealtimeNanos()
+        session.use {
+            tensor(environment, fixture).use { input ->
+                session.run(mapOf("images" to input)).use { result ->
+                    assertEquals(163, (result[0].value as Array<FloatArray>)[0].size)
+                }
+            }
+        }
+        val inferenceMs = elapsedMs(inferenceStarted)
+        val totalMs = elapsedMs(totalStarted)
+        println(
+            "BENCHMARK_COLD_RESULT fixture_ms=$fixtureMs copy_ms=$copyMs " +
+                "session_ms=$sessionMs inference_ms=$inferenceMs total_ms=$totalMs",
+        )
+    }
+
+    @Test
     fun benchmarkWarmInference() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val testContext = instrumentation.context

@@ -54,3 +54,14 @@ latency gate at 239.62 ms.
 The raw memory samples and exact build identity are recorded in
 `verification/device/results/2026-07-18-lepidoptera-memory-gate.json`. This is producer-side debug
 qualification; `VER-003` must still repeat it independently against the signed release candidate.
+
+## Cold-start characterization
+
+Ten fresh-process cold trials completed without failure on 2026-07-18. Median total time was
+1,529.18 ms, p90 was 1,557.24 ms, and the maximum was 1,570.93 ms. Median component times were
+84.78 ms for fixture decode/preprocessing, 809.45 ms for the model asset copy, 380.10 ms for ONNX
+session creation, and 231.26 ms for the first inference.
+
+All samples and artifact hashes are retained in
+`verification/device/results/2026-07-18-lepidoptera-cold-start.json`. Cold total is diagnostic and
+does not replace the accepted warm inference-only gate.
