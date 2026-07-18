@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "status": "preliminary_debug_memory_gate_passed",
+  "source_base_revision": "a3dcccc",
+  "device": {
+    "model": "SM-G780G",
+    "android_version": "13",
+    "security_patch": "2025-10-01",
+    "build_fingerprint": "samsung/r8qeea/r8q:13/TP1A.220624.014/G780GXXSHEYJ1:user/release-keys"
+  },
+  "build": {
+    "type": "debug instrumentation",
+    "application_apk_sha256": "271188f9117d84740ea10788354e8f608d49235e23945d68c00bfe37b56fd7d8",
+    "application_apk_bytes": 258744810,
+    "test_apk_sha256": "d23cb7760c029bb3c0d19f9b73b05a0f9ab75b1954cab7e93f4266722fe57692",
+    "test_apk_bytes": 84555326,
+    "onnx_sha256": "7e7159df11227389b5e406247d94896f2fa75d77ad2defd07057f50aaf43397b"
+  },
+  "conditions_after": {
+    "battery_percent": 100,
+    "usb_powered": true,
+    "thermal_status": 2,
+    "thermal_status_label": "moderate"
+  },
+  "protocol": {
+    "warmup_runs": 10,
+    "measured_sequences": 3,
+    "runs_per_sequence": 100,
+    "memory_sample_interval_requests": 10,
+    "memory_tool": "android.os.Debug.getMemoryInfo"
+  },
+  "latency_ms": {
+    "median": 239.615104,
+    "p90": 286.04052,
+    "p95": 357.547031,
+    "minimum": 192.944531,
+    "maximum": 784.526302,
+    "mean": 246.47673927333335,
+    "gate_maximum_exclusive": 2000,
+    "gate_result": "pass"
+  },
+  "memory_kib": {
+    "baseline_before_session": 106368,
+    "after_session": 280096,
+    "peak": 392378,
+    "working_memory_delta": 286010,
+    "sequence_end": [370809, 345883, 356268],
+    "periodic_samples": [
+      385999, 391857, 377172, 383110, 389043, 374071, 380003, 385935, 391867, 370838,
+      375868, 381142, 386426, 392378, 340248, 346365, 352294, 358188, 339948, 345879,
+      351811, 357743, 338626, 344570, 350502, 356418, 338469, 344400, 350332, 356268
+    ]
+  },
+  "memory_mib": {
+    "peak": 383.18,
+    "peak_optimization_target": 768,
+    "peak_hard_gate": 1024,
+    "peak_gate_result": "pass",
+    "working_memory_delta": 279.31,
+    "working_memory_optimization_target": 512,
+    "working_memory_hard_gate": 768,
+    "working_memory_gate_result": "pass"
+  },
+  "stability": {
+    "monotonic_sequence_end_growth": false,
+    "result": "pass"
+  },
+  "interpretation": "The debug instrumentation candidate passes latency, peak-PSS, working-memory, and three-sequence stability gates. Repeat independently against the signed release candidate for VER-003."
+}

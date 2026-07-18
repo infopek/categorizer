@@ -136,6 +136,8 @@ Store a machine-readable report under `verification/device/results/` containing:
 
 The report must be reproducible from the raw samples. `VER-003` independently repeats the protocol for the release candidate.
 
-## Current limitation
-
-ADB is not installed or connected in the current AI execution environment, so no dry run was performed during `DEC-002`. This does not change the accepted physical device; execution tasks must capture the missing runtime properties and raw measurements on the actual phone.
+The Android instrumentation benchmark implements the accepted three-sequence memory protocol. It
+records total PSS before and after session creation, every ten requests, and at each sequence end;
+it reports peak PSS and the peak-minus-baseline working-memory delta and enforces the accepted hard
+gates. Device conditions and artifact identity still belong in the retained result artifact rather
+than being inferred by the test.
