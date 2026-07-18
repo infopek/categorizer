@@ -18,5 +18,11 @@ Device latency, resource, bundle-integrity, and fixture-equivalence evidence rem
 valid, but they must not be represented as satisfying the missing 80% held-out
 top-five accuracy gate.
 
+Producer-side PyTorch-to-Android equivalence now covers four deterministic tensors with full-logit
+absolute tolerance `1e-4` and exact top-five rankings. Its immutable evidence is
+`verification/device/results/2026-07-18-android-pytorch-equivalence.json`. This closes the producer
+cross-runtime implementation gap, but it is deliberately not labeled independent verification and
+does not weaken the held-out blocker.
+
 Source article: Figshare Plus article 29135618, DOI
 `10.25452/figshare.plus.29135618`, inventory checked 2026-07-18.
