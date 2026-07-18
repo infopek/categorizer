@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import categorizer.media.CameraCaptureFiles
+import categorizer.domain.ManagedImageRef
 import java.io.File
 import java.io.FileOutputStream
 import org.junit.After
@@ -74,13 +75,37 @@ class AcquisitionFlowScreenTest {
                 AcquisitionScreen(
                     state = AcquisitionScreenState.Error("Selected photo cannot be decoded.", true),
                     onCamera = {}, onGallery = {}, onRetry = {}, onCancel = {},
-                    onContinue = {}, onChooseAnother = {}
+                    onContinue = {}, onCropAndContinue = {}, onChooseAnother = {}
                 )
             }
         }
         findText("Couldn’t prepare photo")
         findText("Choose another photo")
         screenshot("recoverable-error")
+    }
+
+    @Test
+    fun reviewOffersManualCropAndFullPhotoFallback() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val image = File(context.filesDir, "images/crop-review.jpg").apply {
+            parentFile?.mkdirs()
+            FileOutputStream(this).use { output ->
+                check(Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888).compress(Bitmap.CompressFormat.JPEG, 90, output))
+            }
+        }
+        scenario.onActivity { activity ->
+            activity.setContent {
+                AcquisitionScreen(
+                    state = AcquisitionScreenState.Review(ManagedImageRef("crop-review", "images/crop-review.jpg")),
+                    onCamera = {}, onGallery = {}, onRetry = {}, onCancel = {},
+                    onContinue = {}, onCropAndContinue = {}, onChooseAnother = {}
+                )
+            }
+        }
+        findText("Crop and recognize")
+        findText("Use full photo")
+        screenshot("manual-crop")
+        image.delete()
     }
 
     @Test

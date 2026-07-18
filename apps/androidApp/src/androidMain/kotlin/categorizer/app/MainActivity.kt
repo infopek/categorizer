@@ -145,6 +145,7 @@ class MainActivity : ComponentActivity() {
                     onRetry = acquisitionController::reset,
                     onCancel = ::leaveAcquisition,
                     onContinue = ::startRecognition,
+                    onCropAndContinue = ::cropAndStartRecognition,
                     onChooseAnother = ::discardAndReset
                 )
             } else {
@@ -214,6 +215,15 @@ class MainActivity : ComponentActivity() {
         reviewSaveState = ReviewSaveState.Ready
         showingRecognition = true
         recognitionCoordinator.submit(image)
+    }
+
+    private fun cropAndStartRecognition(selection: CropSelection) {
+        val image = (acquisitionController.state as? AcquisitionScreenState.Review)?.image ?: return
+        if (!imageStore.crop(image, selection)) {
+            acquisitionController.failed(activeRequestToken, "The selected crop could not be saved", true)
+            return
+        }
+        startRecognition()
     }
 
     private fun confirmCandidate(classId: String) {
