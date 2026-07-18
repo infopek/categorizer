@@ -124,3 +124,12 @@ Evaluate a checkpoint at its already selected operating threshold without tuning
 The evaluator verifies source and checkpoint identities, excludes unresolved reviews, and reports localization, hard-negative false positives, subject-count/relative-size slices, and host inference timing.
 
 The first frozen evaluation included 18 positive images (22 boxes) and 52 hard negatives. At the preselected `0.25` threshold it measured 68.2% localization recall, 78.9% precision, 0.5 false positives per hard-negative image, and a 59.6% hard-negative no-detection rate. Single-subject recall was 88.2%, but multiple-subject recall was 0%; large/medium/small relative-area recall was 100%/37.5%/0%. Mean desktop GPU inference was 17.8 ms/image. The detector therefore fails the frozen localization and hard-negative gates; this set must not be added to training or used to tune the threshold.
+
+Collect a disjoint remediation tranche targeted at small/multiple subjects and confusable negatives by excluding the frozen manifest:
+
+```bash
+.venv/bin/python ml/detection/collect_commons_evaluation.py \
+  --profile remediation --per-status 25 \
+  --exclude-manifest ml/artifacts/lepidoptera/detection-commons-evaluation/sample-manifest.json \
+  --output ml/artifacts/lepidoptera/detection-commons-remediation
+```
