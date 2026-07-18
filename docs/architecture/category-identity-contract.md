@@ -36,5 +36,12 @@ are derived views, not required fields of the new contract. This keeps existing
 albums and version-1 archives readable while downstream adapters migrate separately.
 
 The compatibility path must not be used for new Lepidoptera model output. The Android
-bundle/database/archive integration must populate and persist `categoryId` and
-`scientificName` directly before the deprecated alias can be removed.
+ONNX adapter reads the bundle-level `category_id`, and the version-2 Android database
+persists `categoryId`, `scientificName`, alternate names, and attributes directly.
+Opening a version-1 car database migrates its legacy identity fields without losing
+generation or approximate-year metadata.
+
+Version-1 archive import/export remains the final compatibility adapter. It continues
+to use the deprecated car views until the archive format receives its own versioned,
+category-neutral schema; removing those views before that migration would make existing
+archives unreadable.

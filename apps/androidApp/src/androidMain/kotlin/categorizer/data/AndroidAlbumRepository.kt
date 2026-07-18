@@ -159,10 +159,9 @@ class AndroidAlbumRepository(
 
     private fun searchableText(entry: AlbumEntry): String = listOf(
         entry.confirmedIdentity.displayName,
-        entry.confirmedIdentity.make,
-        entry.confirmedIdentity.model,
-        entry.confirmedIdentity.generationLabel.orEmpty(),
-        entry.confirmedIdentity.approximateYearRange.orEmpty(),
+        entry.confirmedIdentity.scientificName.orEmpty(),
+        entry.confirmedIdentity.alternateNames.joinToString(" "),
+        entry.confirmedIdentity.attributes.values.joinToString(" "),
         entry.notes
     ).joinToString(" ").lowercase(Locale.ROOT)
 
