@@ -1,0 +1,178 @@
+{
+  "architecture": "torchvision.maxvit_t",
+  "candidate_status": "quantized_fixture_comparison_held_out_pending",
+  "checkpoint_sha256": "ac3cf138930a8b6f52dcb064ff44ace39b701d3412812e457930463073e5eca0",
+  "class_count": 163,
+  "class_map_sha256": "d25dc78eee1d32061f6a6ec7a98b7d6ffbec523aa4d6e62b3dc66a277296e349",
+  "compatibility": {
+    "onnx_checker": "passed",
+    "onnxruntime": "1.27.0",
+    "operators": [
+      {
+        "domain": "ai.onnx",
+        "type": "Add"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "AveragePool"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "BatchNormalization"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Cast"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Constant"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "ConvInteger"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Div"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "DynamicQuantizeLinear"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Einsum"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Erf"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Flatten"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Gather"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "GlobalAveragePool"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "LayerNormalization"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "MatMulInteger"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Mul"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Reshape"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Shape"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Sigmoid"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Slice"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Softmax"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Tanh"
+      },
+      {
+        "domain": "ai.onnx",
+        "type": "Transpose"
+      }
+    ],
+    "opset": 18,
+    "providers": [
+      "CPUExecutionProvider"
+    ]
+  },
+  "equivalence": {
+    "atol": 0.0001,
+    "complete_rankings_equal": false,
+    "fixture_count": 66,
+    "maximum_absolute_difference": 4.201382637023926,
+    "maximum_relative_difference": 3504.337158203125,
+    "reference": "legacy_float_onnx",
+    "rtol": 0.0001,
+    "top_five_rankings_equal": false,
+    "top_five_set_agreement": 0.7424242424242424,
+    "top_one_agreement": 0.9848484848484849
+  },
+  "held_out_evaluation": {
+    "reason": "upstream test split and full image dataset have not been acquired",
+    "status": "pending"
+  },
+  "input": {
+    "layout": "NCHW",
+    "name": "images",
+    "shape": [
+      1,
+      3,
+      224,
+      224
+    ],
+    "type": "float32"
+  },
+  "model_sha256": "8cafa93a7abbc1bd5ed97cbf8db02b71ebe068fedfe9a253fd20ef0aa88f184f",
+  "model_size_bytes": 33450990,
+  "model_size_mib": 31.901350021362305,
+  "output": {
+    "name": "logits",
+    "ranking": "descending_logit_then_ascending_index",
+    "shape": [
+      1,
+      163
+    ]
+  },
+  "preprocessing": {
+    "center_crop": 224,
+    "color": "RGB",
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "resize_short_edge": 224,
+    "scale": "uint8_to_0_1",
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "quantization": {
+    "held_out_acceptance_required": true,
+    "mode": "dynamic_int8_weights"
+  },
+  "runtime": {
+    "python": "3.12.3",
+    "torch": "2.12.1+cu130",
+    "torchvision": "0.27.1+cu130"
+  },
+  "schema_version": "1.0.0",
+  "size_gate": {
+    "hard_gate_passed": true,
+    "hard_maximum_mib": 150,
+    "optimization_target_mib": 80
+  }
+}
