@@ -59,3 +59,20 @@ Additional tranches can exclude already sampled classes without relying on chat 
 ```
 
 The exclusion manifest identity and complete excluded class-ID set are recorded in the new sample manifest.
+
+## Reviewed dataset materialization
+
+Combine reviewed tranches only after every manifest has passed strict decision application:
+
+```bash
+.venv/bin/python ml/detection/build_dataset.py \
+  --reviewed ml/artifacts/lepidoptera/detection-pilot-v2/reviewed-annotations.json \
+  --source ml/artifacts/lepidoptera/Polyommatus_eros.ZIP \
+  --reviewed ml/artifacts/lepidoptera/detection-balanced-review/reviewed-annotations.json \
+  --source ml/artifacts/lepidoptera/detection-balanced-sample \
+  --reviewed ml/artifacts/lepidoptera/detection-balanced-tranche-2-review/reviewed-annotations.json \
+  --source ml/artifacts/lepidoptera/detection-balanced-tranche-2 \
+  --output ml/artifacts/lepidoptera/detection-dataset
+```
+
+The builder revalidates source hashes and box bounds, excludes unresolved images, rejects duplicate asset IDs, materializes managed image copies, and assigns train/validation/test splits independently within every source species.
