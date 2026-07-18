@@ -10,11 +10,13 @@ import time
 from pathlib import Path
 
 import torch
+import torch.nn.functional as functional
 import torchvision
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models import MobileNet_V3_Large_Weights
 from torchvision.models.detection import SSDLite320_MobileNet_V3_Large_Weights, ssdlite320_mobilenet_v3_large
+from torchvision.transforms import ColorJitter
 from torchvision.transforms.functional import pil_to_tensor
 
 
@@ -23,6 +25,7 @@ class DetectionDataset(Dataset):
         self.root = root
         self.records = records
         self.augment = augment
+        self.color_jitter = ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05)
 
     def __len__(self) -> int:
         return len(self.records)
@@ -32,10 +35,35 @@ class DetectionDataset(Dataset):
         with Image.open(self.root / record["image_path"]) as source:
             image = pil_to_tensor(source.convert("RGB")).float().div(255)
         boxes = torch.tensor([box["xyxy"] for box in record["boxes"]], dtype=torch.float32)
+        height, width = image.shape[-2:]
+        if max(height, width) > 640:
+            scale = 640 / max(height, width)
+            image = functional.interpolate(
+                image[None], scale_factor=scale, mode="bilinear", align_corners=False, antialias=True
+            )[0]
+            boxes *= scale
         if self.augment and torch.rand(()) < 0.5:
             image = image.flip(-1)
             width = image.shape[-1]
             boxes[:, [0, 2]] = width - boxes[:, [2, 0]]
+        if self.augment:
+            image = self.color_jitter(image)
+        if self.augment and torch.rand(()) < 0.5:
+            height, width = image.shape[-2:]
+            scale = 2 / 3 + float(torch.rand(())) / 3
+            scaled_height, scaled_width = round(height * scale), round(width * scale)
+            resized = functional.interpolate(
+                image[None], size=(scaled_height, scaled_width), mode="bilinear", align_corners=False, antialias=True
+            )[0]
+            top = int(torch.randint(0, height - scaled_height + 1, ()))
+            left = int(torch.randint(0, width - scaled_width + 1, ()))
+            canvas = torch.empty((3, height, width), dtype=image.dtype)
+            canvas[:] = torch.tensor((0.485, 0.456, 0.406))[:, None, None]
+            canvas[:, top : top + scaled_height, left : left + scaled_width] = resized
+            image = canvas
+            boxes *= scale
+            boxes[:, [0, 2]] += left
+            boxes[:, [1, 3]] += top
         target = {
             "boxes": boxes,
             "labels": torch.ones(len(boxes), dtype=torch.int64),
@@ -124,6 +152,13 @@ def build_model(initialization: str):
     }
 
 
+def select_threshold(candidates: list[dict[str, float | int]], recall_target: float) -> tuple[dict, str]:
+    eligible = [item for item in candidates if float(item["recall"]) >= recall_target]
+    if eligible:
+        return max(eligible, key=lambda item: (item["precision"], item["f1"], item["score_threshold"])), "recall_target"
+    return max(candidates, key=lambda item: (item["recall"], item["precision"], item["f1"])), "maximum_available_recall"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=Path, required=True)
@@ -135,7 +170,10 @@ def main() -> int:
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--initialization", choices=("imagenet-backbone", "coco-detector"), default="coco-detector")
+    parser.add_argument("--validation-recall-target", type=float, default=0.97)
     args = parser.parse_args()
+    if not 0 < args.validation_recall_target <= 1:
+        raise SystemExit("validation recall target must be in (0, 1]")
 
     random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -197,7 +235,7 @@ def main() -> int:
 
     validation_predictions = predict(model, loaders["validation"], device)
     candidates = [metrics(validation_predictions, threshold / 100) for threshold in range(5, 96, 5)]
-    selected = max(candidates, key=lambda item: (item["f1"], item["recall"], item["score_threshold"]))
+    selected, selection_outcome = select_threshold(candidates, args.validation_recall_target)
     test_metrics = metrics(predict(model, loaders["test"], device), float(selected["score_threshold"]))
     args.output.mkdir(parents=True, exist_ok=True)
     checkpoint = args.output / "ssdlite320-mobilenet-v3-large.pt"
@@ -219,9 +257,21 @@ def main() -> int:
         "torchvision": torchvision.__version__,
         "duration_seconds": time.time() - started,
         "parameters": vars(args) | {"dataset": str(args.dataset), "output": str(args.output)},
+        "training_augmentation": {
+            "preload_max_edge": 640,
+            "horizontal_flip_probability": 0.5,
+            "color_jitter": {"brightness": 0.2, "contrast": 0.2, "saturation": 0.2, "hue": 0.05},
+            "zoom_out_probability": 0.5,
+            "subject_scale_range": [0.6666666667, 1.0],
+        },
         "training_history": history,
         "validation_threshold_candidates": candidates,
         "selected_validation_metrics": selected,
+        "threshold_selection": {
+            "policy": "highest validation precision meeting the recall target; otherwise maximum available recall",
+            "recall_target": args.validation_recall_target,
+            "outcome": selection_outcome,
+        },
         "test_metrics_at_frozen_threshold": test_metrics,
         "checkpoint": checkpoint.name,
     }
