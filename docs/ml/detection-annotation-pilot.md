@@ -47,3 +47,15 @@ Generate teacher proposals directly from that verified sample:
 ```
 
 The proposal command rechecks every local byte count and SHA-256 hash and propagates its class, source archive, member, and Figshare file identities into the review manifest.
+
+Additional tranches can exclude already sampled classes without relying on chat state:
+
+```bash
+.venv/bin/python ml/detection/sample_remote_archives.py \
+  --output ml/artifacts/lepidoptera/detection-balanced-tranche-2 \
+  --class-count 40 --images-per-class 5 --seed detection-pilot-v2 \
+  --exclude-manifest ml/artifacts/lepidoptera/detection-balanced-sample/sample-manifest.json \
+  --exclude-class polyommatus-eros
+```
+
+The exclusion manifest identity and complete excluded class-ID set are recorded in the new sample manifest.
