@@ -1,4 +1,6 @@
+import groovy.json.JsonSlurper
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.security.MessageDigest
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -76,14 +78,47 @@ android {
 
     tasks.register("verifyReleaseRecognitionBundle") {
         group = "verification"
-        description = "Requires the offline recognition bundle for a release build."
+        description = "Validates the offline recognition bundle for a release build."
         doLast {
             val bundle = requireNotNull(recognitionAssets) {
                 "Release builds require recognition/model.onnx. Export it under ml/artifacts/lepidoptera/android-assets or pass -PrecognitionAssetRoot=<absolute-directory>."
             }
-            require(bundle.resolve("recognition/model.onnx").isFile) { "Release recognition model is missing." }
-            require(bundle.resolve("recognition/model-manifest.json").isFile) { "Release recognition manifest is missing." }
-            require(bundle.resolve("recognition/class-map.json").isFile) { "Release recognition class map is missing." }
+            val recognition = bundle.resolve("recognition")
+            val model = recognition.resolve("model.onnx")
+            val manifestFile = recognition.resolve("model-manifest.json")
+            val classMap = recognition.resolve("class-map.json")
+            require(model.isFile) { "Release recognition model is missing." }
+            require(manifestFile.isFile) { "Release recognition manifest is missing." }
+            require(classMap.isFile) { "Release recognition class map is missing." }
+
+            @Suppress("UNCHECKED_CAST")
+            val manifest = JsonSlurper().parse(manifestFile) as Map<String, Any>
+            val modelMetadata = manifest["model"] as? Map<*, *>
+                ?: error("Release recognition manifest has no model metadata.")
+            val classMapMetadata = manifest["class_map"] as? Map<*, *>
+                ?: error("Release recognition manifest has no class-map metadata.")
+            fun sha256(file: File): String {
+                val digest = MessageDigest.getInstance("SHA-256")
+                file.inputStream().buffered().use { input ->
+                    val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                    while (true) {
+                        val count = input.read(buffer)
+                        if (count < 0) break
+                        digest.update(buffer, 0, count)
+                    }
+                }
+                return digest.digest().joinToString("") { "%02x".format(it) }
+            }
+
+            require(model.length() == (modelMetadata["size_bytes"] as? Number)?.toLong()) {
+                "Release recognition model size does not match its manifest."
+            }
+            require(sha256(model) == modelMetadata["sha256"]) {
+                "Release recognition model SHA-256 does not match its manifest."
+            }
+            require(sha256(classMap) == classMapMetadata["sha256"]) {
+                "Release recognition class-map SHA-256 does not match its manifest."
+            }
         }
     }
 
