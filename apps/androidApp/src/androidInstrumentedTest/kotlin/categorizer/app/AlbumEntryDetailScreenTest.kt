@@ -65,8 +65,7 @@ class AlbumEntryDetailScreenTest {
         scrollToEnd()
         click(findText("Save changes"))
         scrollToStart()
-        findText("Make is required")
-        findText("Model is required")
+        findText("Name is required")
     }
 
     @Test

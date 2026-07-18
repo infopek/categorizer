@@ -7,14 +7,14 @@ The recognition review keeps the user in control of the identity saved to the al
 - **Running:** explains that recognition is happening locally on the device.
 - **Ranked candidates:** selects the first suggestion by default and lets the user choose another before confirming.
 - **Uncertain:** clearly states that the result is uncertain while preserving the ranked choices.
-- **Unsupported:** explains that the car is not supported yet and opens manual entry directly.
+- **Unsupported:** explains that the species is not supported yet and opens manual entry directly.
 - **Error:** shows the engine's user-safe message and offers retry only for recoverable errors.
-- **Manual correction:** requires make and model; generation and approximate year range are optional.
+- **Manual correction:** requires a user-facing name; scientific name, alternate names, and identity notes are optional.
 - **Cancel:** leaves review without saving and removes the unconfirmed managed image.
 
 Candidate confirmation and valid manual entry both produce an album draft. `RecognitionEntrySaver` serializes save attempts and remembers completed result IDs, so repeated or concurrent confirmation creates exactly one album entry.
 
-The Android application currently supplies an honest unavailable-engine adapter. It reports that the bundled model is not installed instead of simulating recognition. The recognition coordinator and review flow are ready for the production on-device model engine planned by the ML task.
+The Android application runs the bundled recognition model locally and reports model or inference failures honestly instead of simulating recognition.
 
 ## Device evidence
 

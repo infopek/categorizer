@@ -98,27 +98,24 @@ private fun EntryDetail(
                 Modifier.fillMaxWidth().height(240.dp).clip(RoundedCornerShape(16.dp))
             )
             if (editing) {
-                val isLepidoptera = state.entry.confirmedIdentity.categoryId == "lepidoptera"
                 Text("Changes are not saved until you tap Save changes.")
                 OutlinedTextField(
-                    input.make, { input = input.copy(make = it) }, label = { Text(if (isLepidoptera) "Genus" else "Make") },
-                    isError = attempted && invalid?.makeError != null,
-                    supportingText = { if (attempted) invalid?.makeError?.let { Text(it) } },
+                    input.displayName, { input = input.copy(displayName = it) }, label = { Text("Display name") },
+                    isError = attempted && invalid?.displayNameError != null,
+                    supportingText = { if (attempted) invalid?.displayNameError?.let { Text(it) } },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    input.model, { input = input.copy(model = it) }, label = { Text(if (isLepidoptera) "Species" else "Model") },
-                    isError = attempted && invalid?.modelError != null,
-                    supportingText = { if (attempted) invalid?.modelError?.let { Text(it) } },
+                    input.scientificName, { input = input.copy(scientificName = it) }, label = { Text("Scientific name (optional)") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    input.generation, { input = input.copy(generation = it) },
-                    label = { Text(if (isLepidoptera) "Subspecies or form (optional)" else "Generation (optional)") }, modifier = Modifier.fillMaxWidth()
+                    input.alternateNames, { input = input.copy(alternateNames = it) },
+                    label = { Text("Other names, comma-separated (optional)") }, modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    input.approximateYearRange, { input = input.copy(approximateYearRange = it) },
-                    label = { Text(if (isLepidoptera) "Identity notes (optional)" else "Approximate years (optional)") }, modifier = Modifier.fillMaxWidth()
+                    input.identityNotes, { input = input.copy(identityNotes = it) },
+                    label = { Text("Identity notes (optional)") }, modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     input.notes, { input = input.copy(notes = it) }, label = { Text("Personal notes") },

@@ -9,51 +9,38 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 data class ManualIdentityInput(
-    val make: String = "",
-    val model: String = "",
-    val generation: String = "",
-    val approximateYearRange: String = "",
+    val displayName: String = "",
+    val scientificName: String = "",
+    val alternateNames: String = "",
+    val identityNotes: String = "",
     val categoryId: String = "lepidoptera"
 )
 
 sealed class ManualIdentityValidation {
     data class Valid(val identity: CategoryIdentity) : ManualIdentityValidation()
-    data class Invalid(val makeError: String? = null, val modelError: String? = null) :
+    data class Invalid(val displayNameError: String? = null) :
         ManualIdentityValidation()
 }
 
 fun ManualIdentityInput.validate(): ManualIdentityValidation {
-    val cleanMake = make.trim()
-    val cleanModel = model.trim()
-    val makeError = if (cleanMake.isEmpty()) "Make is required" else null
-    val modelError = if (cleanModel.isEmpty()) "Model is required" else null
-    if (makeError != null || modelError != null) {
-        return ManualIdentityValidation.Invalid(makeError, modelError)
-    }
-    val cleanGeneration = generation.trim().ifEmpty { null }
-    val cleanYears = approximateYearRange.trim().ifEmpty { null }
-    val displayName = buildString {
-        append(cleanMake)
-        append(' ')
-        append(cleanModel)
-        cleanGeneration?.let { append(" ($it)") }
-    }
-    val slug = listOfNotNull(cleanMake, cleanModel, cleanGeneration)
-        .joinToString("-")
+    val cleanDisplayName = displayName.trim()
+    if (cleanDisplayName.isEmpty()) return ManualIdentityValidation.Invalid("Name is required")
+    val cleanScientificName = scientificName.trim().ifEmpty { null }
+    val cleanAlternateNames = alternateNames.split(',').map(String::trim).filter(String::isNotEmpty).distinct()
+    val cleanNotes = identityNotes.trim().ifEmpty { null }
+    val slug = (cleanScientificName ?: cleanDisplayName)
         .lowercase()
         .replace(Regex("[^a-z0-9]+"), "-")
         .trim('-')
-        .ifEmpty { "manual-car" }
+        .ifEmpty { "manual-identity" }
     return ManualIdentityValidation.Valid(
         CategoryIdentity(
             categoryId = categoryId,
             classId = "user:$slug",
-            scientificName = "$cleanMake $cleanModel",
-            displayName = displayName,
-            attributes = listOfNotNull(
-                cleanGeneration?.let { "subspecies_or_form" to it },
-                cleanYears?.let { "notes" to it }
-            ).toMap(),
+            scientificName = cleanScientificName,
+            displayName = cleanDisplayName,
+            alternateNames = cleanAlternateNames,
+            attributes = cleanNotes?.let { mapOf("notes" to it) }.orEmpty(),
             source = IdentitySource.USER_CONFIRMED
         )
     )

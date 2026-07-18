@@ -2,7 +2,7 @@
 
 Selecting an album card opens its saved photo, confirmed identity, album date, favorite state, and personal notes. Internal entry IDs and storage paths are never displayed.
 
-Editing uses a local draft. Make and model are required; generation, approximate years, and notes are optional. Canceling discards the draft without calling the repository. A successful save marks the identity as user-confirmed, updates observable album queries, and persists across repository and application restarts. Save failures remain visible without discarding the draft.
+Editing uses a local category-neutral draft. Display name is required; scientific name, alternate names, identity notes, and personal notes are optional. Existing category attributes that are not shown by the editor are retained. Canceling discards the draft without calling the repository. A successful save marks the identity as user-confirmed, updates observable album queries, and persists across repository and application restarts. Save failures remain visible without discarding the draft.
 
 Favorite changes use the same persistent update path. Consequently, edited identity text, notes, and favorite status immediately affect album search and filters.
 

@@ -16,7 +16,7 @@ class AlbumEntryEditorTest {
         val original = entry()
         val repository = InMemoryAlbumRepository(listOf(original))
 
-        val invalid = AlbumEntryEditInput("", "", notes = "changed").validate(original, 20)
+        val invalid = AlbumEntryEditInput("", notes = "changed").validate(original, 20)
 
         assertIs<AlbumEntryEditValidation.Invalid>(invalid)
         assertEquals(original, assertIs<AlbumEntryEditorResult.Success<AlbumEntry>>(
@@ -29,13 +29,15 @@ class AlbumEntryEditorTest {
         val original = entry()
         val editor = AlbumEntryEditor(InMemoryAlbumRepository(listOf(original)))
         val valid = assertIs<AlbumEntryEditValidation.Valid>(
-            AlbumEntryEditInput(" Mercedes-Benz ", " C-Class ", " W205 ", "2014-2021", "Spotted downtown", true)
+            AlbumEntryEditInput(" Eros blue ", " Polyommatus eros ", " Eros blue butterfly ", "male form", "Spotted downtown", true)
                 .validate(original, 30)
         )
 
         val saved = assertIs<AlbumEntryEditorResult.Success<AlbumEntry>>(editor.save(valid.entry)).value
 
-        assertEquals("Mercedes-Benz C-Class (W205)", saved.confirmedIdentity.displayName)
+        assertEquals("Eros blue", saved.confirmedIdentity.displayName)
+        assertEquals("Polyommatus eros", saved.confirmedIdentity.scientificName)
+        assertEquals(listOf("Eros blue butterfly"), saved.confirmedIdentity.alternateNames)
         assertEquals(IdentitySource.USER_CONFIRMED, saved.confirmedIdentity.source)
         assertEquals("Spotted downtown", saved.notes)
         assertEquals(true, saved.isFavorite)
