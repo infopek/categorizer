@@ -145,3 +145,7 @@ After review, add only resolved positives and `not_visible` negatives while pres
 ```
 
 The first remediation export supplied 13 resolved positive images (33 boxes) and 37 hard negatives; six incomplete crowded images remained excluded. Repeating resolved training examples and adding ten deterministic negative validation images moved the selected threshold to `0.90`. On the unchanged frozen set, false positives improved from 0.5 to 0.115 per negative image, but localization recall fell from 68.2% to 54.5%. The remediation therefore fails: threshold calibration alone cannot compensate for weak small/multiple-subject localization at 320-pixel input.
+
+For small-object experiments, training and evaluation accept a matched `--input-size` and seven-value `--anchor-scales`. These geometry values are part of the run report and must be reproduced exactly when loading the checkpoint.
+
+A 512-pixel experiment with anchor scales `0.05,0.12,0.25,0.45,0.65,0.85,1.0` improved frozen localization recall to 77.3%, confirming that stock 20%-minimum anchors were a material small-object limitation. It also produced 1.85 false positives per hard-negative image and only a 7.7% no-detection rate. The candidate remains rejected; higher resolution/smaller anchors alone do not satisfy the combined localization and negative gates.

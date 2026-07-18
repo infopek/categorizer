@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 from torchvision.models.detection import ssdlite320_mobilenet_v3_large
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from ml.detection.train_ssdlite import DetectionDataset, collate, metrics, predict  # noqa: E402
+from ml.detection.train_ssdlite import DetectionDataset, collate, configure_detection_geometry, metrics, predict  # noqa: E402
 
 
 def digest(path: Path) -> str:
@@ -31,6 +31,8 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--input-size", type=int, default=320)
+    parser.add_argument("--anchor-scales", default="0.2,0.35,0.5,0.65,0.8,0.95,1.0")
     args = parser.parse_args()
     if not 0 < args.score_threshold < 1:
         raise SystemExit("score threshold must be between zero and one")
@@ -66,6 +68,10 @@ def main() -> int:
     loader = DataLoader(dataset, batch_size=args.batch_size, num_workers=args.workers, collate_fn=collate)
     device = torch.device(args.device)
     model = ssdlite320_mobilenet_v3_large(weights=None, weights_backbone=None, num_classes=2)
+    try:
+        configure_detection_geometry(model, args.input_size, [float(value) for value in args.anchor_scales.split(",")])
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     model.load_state_dict(torch.load(args.checkpoint, map_location="cpu", weights_only=True))
     model.to(device)
     if device.type == "cuda":
