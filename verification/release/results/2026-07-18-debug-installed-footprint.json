@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1.0",
+  "status": "preliminary_debug_measurement",
+  "measured_at": "2026-07-18",
+  "git_commit": "730190b88a7597bdb055159b58abed1eac5f307b",
+  "build": {
+    "variant": "debug",
+    "application_id": "com.infopek.categorizer",
+    "version_code": 1,
+    "version_name": "0.1.0",
+    "apk_bytes": 258744810,
+    "apk_sha256": "271188f9117d84740ea10788354e8f608d49235e23945d68c00bfe37b56fd7d8"
+  },
+  "model": {
+    "bytes": 126581359,
+    "sha256": "7e7159df11227389b5e406247d94896f2fa75d77ad2defd07057f50aaf43397b"
+  },
+  "device": {
+    "model": "SM-G780G",
+    "abi": "arm64-v8a",
+    "android_version": "13"
+  },
+  "measurement": {
+    "phase": "after_one_successful_real-model_recognition",
+    "source": "adb shell du plus run-as du (debuggable build fallback)",
+    "code_bytes": 259017728,
+    "data_bytes": 126727168,
+    "cache_bytes": 4096,
+    "total_bytes": 385748992,
+    "total_mib": 367.88,
+    "optimization_target_mib": 300,
+    "optimization_target_result": "miss",
+    "hard_gate_mib": 500,
+    "hard_gate_result": "pass"
+  },
+  "procedure": [
+    "Installed the debug target and instrumentation APKs with adb install -r.",
+    "Ran bundledLepidopteraClassesUseCategoryNeutralIdentity directly with adb shell am instrument.",
+    "Ran verification/release/measure_installed_footprint.py against the connected device."
+  ],
+  "interpretation": "The debug build passes the hard installed-footprint gate but misses the optimization target because the model remains bundled in the APK and is copied into private app storage for ONNX Runtime. Repeat with the signed release candidate and Play Console installed-size evidence before release acceptance."
+}
