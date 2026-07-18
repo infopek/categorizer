@@ -21,42 +21,8 @@ data class CategoryIdentity(
         require(attributes.keys.none(String::isBlank)) { "attribute keys must not be blank" }
     }
 
-    /** Backward-compatible constructor for version-1 car records and archives. */
-    constructor(
-        classId: String,
-        make: String,
-        model: String,
-        generationLabel: String? = null,
-        approximateYearRange: String? = null,
-        displayName: String,
-        source: IdentitySource = IdentitySource.MODEL_CATALOG
-    ) : this(
-        categoryId = "cars",
-        classId = classId,
-        scientificName = "$make $model",
-        displayName = displayName,
-        alternateNames = emptyList(),
-        attributes = listOfNotNull(
-            generationLabel?.let { "generation_label" to it },
-            approximateYearRange?.let { "approximate_year_range" to it }
-        ).toMap(),
-        source = source
-    )
-
-    @Deprecated("Use scientificName and category-neutral attributes")
-    val make: String get() = scientificName.orEmpty().substringBefore(' ')
-    @Deprecated("Use scientificName and category-neutral attributes")
-    val model: String get() = scientificName.orEmpty().substringAfter(' ', scientificName.orEmpty())
-    @Deprecated("Use attributes")
-    val generationLabel: String? get() = attributes["generation_label"] ?: attributes["subspecies_or_form"]
-    @Deprecated("Use attributes")
-    val approximateYearRange: String? get() = attributes["approximate_year_range"] ?: attributes["notes"]
-
     companion object { private val CATEGORY_ID = Regex("^[a-z0-9][a-z0-9-]*$") }
 }
-
-@Deprecated("Use CategoryIdentity")
-typealias CarIdentity = CategoryIdentity
 
 enum class IdentitySource { MODEL_CATALOG, USER_CONFIRMED }
 
@@ -72,8 +38,6 @@ data class RecognitionCandidate(
         require(modelVersion.isNotBlank()) { "modelVersion must not be blank" }
     }
 
-    @Deprecated("Use identity")
-    val carIdentity: CategoryIdentity get() = identity
 }
 
 enum class RecognitionStatus { CANDIDATES, UNCERTAIN, UNSUPPORTED }

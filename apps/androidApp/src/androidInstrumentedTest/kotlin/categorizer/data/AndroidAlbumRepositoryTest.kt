@@ -176,8 +176,8 @@ class AndroidAlbumRepositoryTest {
         val identity = success(runSuspend { repository.get("legacy-car") }).confirmedIdentity
         assertEquals("cars", identity.categoryId)
         assertEquals("Porsche 911", identity.scientificName)
-        assertEquals("992", identity.generationLabel)
-        assertEquals("2019-present", identity.approximateYearRange)
+        assertEquals("992", identity.attributes["generation_label"])
+        assertEquals("2019-present", identity.attributes["approximate_year_range"])
     }
 
     @Test

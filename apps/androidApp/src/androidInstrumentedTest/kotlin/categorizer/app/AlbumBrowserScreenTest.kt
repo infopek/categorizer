@@ -15,7 +15,7 @@ import categorizer.domain.AlbumError
 import categorizer.domain.AlbumErrorCode
 import categorizer.domain.AlbumQuery
 import categorizer.domain.AlbumSort
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.ManagedImageRef
 import java.io.File
 import java.io.FileOutputStream
@@ -226,8 +226,8 @@ class AlbumBrowserScreenTest {
         ) = AlbumEntry(
             entryId = id,
             managedImage = ManagedImageRef("image-$id", "images/image-$id.jpg"),
-            confirmedIdentity = CarIdentity(
-                classId, make, model, generation, null, "$make $model ($generation)"
+            confirmedIdentity = CategoryIdentity(
+                "cars", classId, "$make $model", "$make $model ($generation)", attributes = mapOf("generation_label" to generation)
             ),
             albumDate = "2026-07-14",
             isFavorite = favorite,

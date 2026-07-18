@@ -12,7 +12,7 @@ import categorizer.application.AlbumEntryEditInput
 import categorizer.domain.AlbumEntry
 import categorizer.domain.AlbumError
 import categorizer.domain.AlbumErrorCode
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.ManagedImageRef
 import java.io.File
 import java.io.FileOutputStream
@@ -183,7 +183,7 @@ class AlbumEntryDetailScreenTest {
     private companion object {
         val entry = AlbumEntry(
             "entry-secret", ManagedImageRef("image-secret", "images/missing-fixture.jpg"),
-            CarIdentity("mercedes-c-w205", "Mercedes-Benz", "C-Class", "W205", "2014-2021", "Mercedes-Benz C-Class (W205)"),
+            CategoryIdentity("cars", "mercedes-c-w205", "Mercedes-Benz C-Class", "Mercedes-Benz C-Class (W205)", attributes = mapOf("generation_label" to "W205", "approximate_year_range" to "2014-2021")),
             "2026-07-15", false, "Spotted in Budapest", 10, 10, 1
         )
     }
