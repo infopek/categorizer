@@ -91,18 +91,17 @@ class RecognitionReviewScreenTest {
         findText("This species isn’t supported yet")
         screenshot("unsupported")
         click(findText("Confirm manual identity"))
-        findText("Make is required")
-        findText("Model is required")
+        findText("Name is required")
 
         val fields = findNodes { it.className == "android.widget.EditText" }
-        setText(fields[0], "Mercedes-Benz")
-        setText(fields[1], "C-Class")
-        setText(fields[2], "W205")
-        setText(fields[3], "2014-2021")
+        setText(fields[0], "Eros blue")
+        setText(fields[1], "Polyommatus eros")
+        setText(fields[2], "Eros blue butterfly")
+        setText(fields[3], "male form")
         screenshot("manual-correction")
         click(findText("Confirm manual identity"))
-        assertEquals("Mercedes-Benz", submitted?.make)
-        assertEquals("C-Class", submitted?.model)
+        assertEquals("Eros blue", submitted?.displayName)
+        assertEquals("Polyommatus eros", submitted?.scientificName)
     }
 
     @Test

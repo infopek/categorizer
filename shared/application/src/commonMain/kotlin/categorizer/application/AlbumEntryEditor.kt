@@ -9,53 +9,47 @@ import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 
 data class AlbumEntryEditInput(
-    val make: String,
-    val model: String,
-    val generation: String = "",
-    val approximateYearRange: String = "",
+    val displayName: String,
+    val scientificName: String = "",
+    val alternateNames: String = "",
+    val identityNotes: String = "",
     val notes: String = "",
     val isFavorite: Boolean = false,
-    val categoryId: String = "lepidoptera"
+    val categoryId: String = "lepidoptera",
+    val retainedAttributes: Map<String, String> = emptyMap()
 ) {
     companion object {
         fun from(entry: AlbumEntry) = AlbumEntryEditInput(
-            make = entry.confirmedIdentity.make,
-            model = entry.confirmedIdentity.model,
-            generation = entry.confirmedIdentity.generationLabel.orEmpty(),
-            approximateYearRange = entry.confirmedIdentity.approximateYearRange.orEmpty(),
+            displayName = entry.confirmedIdentity.displayName,
+            scientificName = entry.confirmedIdentity.scientificName.orEmpty(),
+            alternateNames = entry.confirmedIdentity.alternateNames.joinToString(", "),
+            identityNotes = entry.confirmedIdentity.attributes["notes"].orEmpty(),
             notes = entry.notes,
             isFavorite = entry.isFavorite,
-            categoryId = entry.confirmedIdentity.categoryId
+            categoryId = entry.confirmedIdentity.categoryId,
+            retainedAttributes = entry.confirmedIdentity.attributes - "notes"
         )
     }
 }
 
 sealed class AlbumEntryEditValidation {
     data class Valid(val entry: AlbumEntry) : AlbumEntryEditValidation()
-    data class Invalid(val makeError: String? = null, val modelError: String? = null) : AlbumEntryEditValidation()
+    data class Invalid(val displayNameError: String? = null) : AlbumEntryEditValidation()
 }
 
 fun AlbumEntryEditInput.validate(original: AlbumEntry, nowEpochMs: Long): AlbumEntryEditValidation {
-    val cleanMake = make.trim()
-    val cleanModel = model.trim()
-    if (cleanMake.isEmpty() || cleanModel.isEmpty()) {
-        return AlbumEntryEditValidation.Invalid(
-            makeError = if (cleanMake.isEmpty()) "Make is required" else null,
-            modelError = if (cleanModel.isEmpty()) "Model is required" else null
-        )
-    }
-    val cleanGeneration = generation.trim().ifEmpty { null }
-    val cleanYears = approximateYearRange.trim().ifEmpty { null }
-    val displayName = listOfNotNull(cleanMake, cleanModel, cleanGeneration?.let { "($it)" }).joinToString(" ")
+    val cleanDisplayName = displayName.trim()
+    if (cleanDisplayName.isEmpty()) return AlbumEntryEditValidation.Invalid("Name is required")
+    val cleanScientificName = scientificName.trim().ifEmpty { null }
+    val cleanAlternateNames = alternateNames.split(',').map(String::trim).filter(String::isNotEmpty).distinct()
+    val cleanIdentityNotes = identityNotes.trim().ifEmpty { null }
     val identity = CategoryIdentity(
         categoryId = categoryId,
-        classId = userClassId(cleanMake, cleanModel, cleanGeneration),
-        scientificName = "$cleanMake $cleanModel",
-        displayName = displayName,
-        attributes = listOfNotNull(
-            cleanGeneration?.let { "subspecies_or_form" to it },
-            cleanYears?.let { "notes" to it }
-        ).toMap(),
+        classId = userClassId(cleanScientificName ?: cleanDisplayName),
+        scientificName = cleanScientificName,
+        displayName = cleanDisplayName,
+        alternateNames = cleanAlternateNames,
+        attributes = retainedAttributes + listOfNotNull(cleanIdentityNotes?.let { "notes" to it }).toMap(),
         source = IdentitySource.USER_CONFIRMED
     )
     return AlbumEntryEditValidation.Valid(
@@ -90,9 +84,8 @@ private fun <T> AlbumResult<T>.editorResult(): AlbumEntryEditorResult<T> = when 
     is AlbumResult.Failure -> AlbumEntryEditorResult.Failed(error)
 }
 
-private fun userClassId(make: String, model: String, generation: String?): String =
-    "user:" + listOfNotNull(make, model, generation)
-        .joinToString("-")
+private fun userClassId(name: String): String =
+    "user:" + name
         .lowercase()
         .replace(Regex("[^a-z0-9]+"), "-")
         .trim('-')

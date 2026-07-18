@@ -193,26 +193,24 @@ private fun ManualReview(
         Text(explanation)
         Spacer(Modifier.height(12.dp))
         OutlinedTextField(
-            input.make, { input = input.copy(make = it) },
-            label = { Text("Genus") },
-            isError = attempted && invalid?.makeError != null,
-            supportingText = { if (attempted) invalid?.makeError?.let { Text(it) } },
+            input.displayName, { input = input.copy(displayName = it) },
+            label = { Text("Common or display name") },
+            isError = attempted && invalid?.displayNameError != null,
+            supportingText = { if (attempted) invalid?.displayNameError?.let { Text(it) } },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            input.model, { input = input.copy(model = it) },
-            label = { Text("Species") },
-            isError = attempted && invalid?.modelError != null,
-            supportingText = { if (attempted) invalid?.modelError?.let { Text(it) } },
+            input.scientificName, { input = input.copy(scientificName = it) },
+            label = { Text("Scientific name (optional)") },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            input.generation, { input = input.copy(generation = it) },
-            label = { Text("Subspecies or form (optional)") }, modifier = Modifier.fillMaxWidth()
+            input.alternateNames, { input = input.copy(alternateNames = it) },
+            label = { Text("Other names, comma-separated (optional)") }, modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
-            input.approximateYearRange, { input = input.copy(approximateYearRange = it) },
-            label = { Text("Notes (optional)") }, modifier = Modifier.fillMaxWidth()
+            input.identityNotes, { input = input.copy(identityNotes = it) },
+            label = { Text("Identity notes (optional)") }, modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.weight(1f))
         saveError(saveState)

@@ -12,15 +12,17 @@ import kotlin.test.assertIs
 
 class RecognitionReviewTest {
     @Test
-    fun manualCorrectionRequiresMakeAndModelAndPreservesOptionalFields() {
+    fun manualCorrectionRequiresDisplayNameAndPreservesNeutralFields() {
         assertIs<ManualIdentityValidation.Invalid>(ManualIdentityInput().validate())
         val valid = assertIs<ManualIdentityValidation.Valid>(
-            ManualIdentityInput(" Mercedes-Benz ", " C-Class ", " W205 ", "2014-2021").validate()
+            ManualIdentityInput(" Eros blue ", " Polyommatus eros ", " Eros blue butterfly, Eros blue butterfly ", "male form").validate()
         )
-        assertEquals("Mercedes-Benz C-Class (W205)", valid.identity.displayName)
-        assertEquals("user:mercedes-benz-c-class-w205", valid.identity.classId)
+        assertEquals("Eros blue", valid.identity.displayName)
+        assertEquals("Polyommatus eros", valid.identity.scientificName)
+        assertEquals(listOf("Eros blue butterfly"), valid.identity.alternateNames)
+        assertEquals("user:polyommatus-eros", valid.identity.classId)
         assertEquals(IdentitySource.USER_CONFIRMED, valid.identity.source)
-        assertEquals("2014-2021", valid.identity.approximateYearRange)
+        assertEquals("male form", valid.identity.attributes["notes"])
     }
 
     @Test
