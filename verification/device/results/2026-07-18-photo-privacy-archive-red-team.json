@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "task": "VER-004",
+  "status": "passed",
+  "date": "2026-07-18",
+  "device": "Samsung SM-G780G, Android 13",
+  "tests": {
+    "executed": 6,
+    "failed": 0,
+    "class": "categorizer.archive.AlbumArchiveServiceTest"
+  },
+  "metadata_inspection": {
+    "reader": "android.media.ExifInterface",
+    "exported_jpeg_gps_absent": true,
+    "exported_jpeg_camera_make_absent": true,
+    "exported_jpeg_camera_model_absent": true
+  },
+  "rejected_archive_cases": [
+    "checksum mismatch",
+    "missing member",
+    "duplicate entry ID",
+    "unsupported schema version",
+    "relative path traversal",
+    "absolute path",
+    "compressed image member",
+    "declared image above 50 MiB",
+    "duplicate ZIP member"
+  ],
+  "atomicity": {
+    "failure_after_first_installed_file_rolled_back": true,
+    "metadata_unchanged_after_validation_failures": true,
+    "installed_file_removed_after_failure": true,
+    "recovery_journal_removed_after_failure": true,
+    "stale_preview_rejected": true
+  },
+  "private_storage": {
+    "managed_root": "application files/images",
+    "managed_root_exposed_by_file_provider": false,
+    "file_provider_exported": false
+  }
+}
