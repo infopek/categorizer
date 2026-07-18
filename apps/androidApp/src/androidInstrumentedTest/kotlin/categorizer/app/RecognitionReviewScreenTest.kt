@@ -75,7 +75,7 @@ class RecognitionReviewScreenTest {
             RecognitionUiState.Unsupported("unsupported", image, 12, "fixture-model"),
             onConfirmManual = { submitted = it }
         )
-        findText("This car isn’t supported yet")
+        findText("This species isn’t supported yet")
         screenshot("unsupported")
         click(findText("Confirm manual identity"))
         findText("Make is required")

@@ -80,7 +80,7 @@ private fun SourceChooser(
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Choose a photo source", style = MaterialTheme.typography.titleLarge)
         Text(
-            "Take a new car photo or choose one already on this device.",
+            "Take a butterfly or moth photo, or choose one already on this device.",
             textAlign = TextAlign.Center
         )
         state.message?.let {

@@ -21,8 +21,8 @@ class ModelInfoScreenTest {
 
     @Test fun bundledCatalogPrivacyAndNoticesAreRendered() {
         val state = assertIs<ModelInfoUiState.Ready>(AndroidModelInfoLoader(InstrumentationRegistry.getInstrumentation().targetContext).load())
-        assertEquals("cars-mvp-150-v1", state.info.catalogId); assertEquals(150, state.info.classes.size)
-        show(state); findText("Model not installed in this build"); findText("Supported catalog: cars-mvp-150-v1 · 150 car classes"); findText("Private and offline"); findText("Recognition has limits"); screenshot("disclosures")
+        assertEquals("lepidoptera-at-163-v1", state.info.catalogId); assertEquals(163, state.info.classes.size)
+        show(state); findText("Model version lepidoptera-maxvit-t-163-pilot"); findText("Supported catalog: lepidoptera-at-163-v1 · 163 species"); findText("Private and offline"); findText("Recognition has limits"); screenshot("disclosures")
     }
 
     @Test fun missingAndInvalidManifestFailSafely() {

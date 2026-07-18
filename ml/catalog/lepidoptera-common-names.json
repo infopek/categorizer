@@ -1,0 +1,1313 @@
+{
+  "class_count": 163,
+  "classes": [
+    {
+      "class_id": "acherontia-atropos",
+      "common_name": "Death's Head Hawkmoth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Acherontia+atropos",
+      "gbif_usage_key": 1861510,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1861510/vernacularNames?limit=100",
+      "scientific_name": "Acherontia atropos"
+    },
+    {
+      "class_id": "acronicta-rumicis",
+      "common_name": "Knot Grass",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Acronicta+rumicis",
+      "gbif_usage_key": 1782672,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1782672/vernacularNames?limit=100",
+      "scientific_name": "Acronicta rumicis"
+    },
+    {
+      "class_id": "aglais-io",
+      "common_name": "Peacock",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Aglais+io",
+      "gbif_usage_key": 4535827,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535827/vernacularNames?limit=100",
+      "scientific_name": "Aglais io"
+    },
+    {
+      "class_id": "aglais-urticae",
+      "common_name": "Small Tortoiseshell",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Aglais+urticae",
+      "gbif_usage_key": 1894840,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1894840/vernacularNames?limit=100",
+      "scientific_name": "Aglais urticae"
+    },
+    {
+      "class_id": "agriades-optilete",
+      "common_name": "Cranberry Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Agriades+optilete",
+      "gbif_usage_key": 8020665,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8020665/vernacularNames?limit=100",
+      "scientific_name": "Agriades optilete"
+    },
+    {
+      "class_id": "agriades-orbitulus",
+      "common_name": "Alpine Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Agriades+orbitulus",
+      "gbif_usage_key": 7601222,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7601222/vernacularNames?limit=100",
+      "scientific_name": "Agriades orbitulus"
+    },
+    {
+      "class_id": "agrius-convolvuli",
+      "common_name": "Convolvulus Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Agrius+convolvuli",
+      "gbif_usage_key": 1861644,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1861644/vernacularNames?limit=100",
+      "scientific_name": "Agrius convolvuli"
+    },
+    {
+      "class_id": "amata-phegea",
+      "common_name": "Nine-Spotted",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Amata+phegea",
+      "gbif_usage_key": 1808450,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1808450/vernacularNames?limit=100",
+      "scientific_name": "Amata phegea"
+    },
+    {
+      "class_id": "antheraea-yamamai",
+      "common_name": "Japanese oak silk moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Antheraea+yamamai",
+      "gbif_usage_key": 1866568,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1866568/vernacularNames?limit=100",
+      "scientific_name": "Antheraea yamamai"
+    },
+    {
+      "class_id": "anthocharis-cardamines",
+      "common_name": "Orange-tip",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Anthocharis+cardamines",
+      "gbif_usage_key": 1919712,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1919712/vernacularNames?limit=100",
+      "scientific_name": "Anthocharis cardamines"
+    },
+    {
+      "class_id": "apatura-ilia",
+      "common_name": "Lesser Purple Emperor",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Apatura+ilia",
+      "gbif_usage_key": 8138711,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8138711/vernacularNames?limit=100",
+      "scientific_name": "Apatura ilia"
+    },
+    {
+      "class_id": "apatura-iris",
+      "common_name": "Purple Emperor",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Apatura+iris",
+      "gbif_usage_key": 5131910,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5131910/vernacularNames?limit=100",
+      "scientific_name": "Apatura iris"
+    },
+    {
+      "class_id": "aphantopus-hyperantus",
+      "common_name": "Ringlet",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Aphantopus+hyperantus",
+      "gbif_usage_key": 1896841,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1896841/vernacularNames?limit=100",
+      "scientific_name": "Aphantopus hyperantus"
+    },
+    {
+      "class_id": "aporia-crataegi",
+      "common_name": "Black-Veined White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Aporia+crataegi",
+      "gbif_usage_key": 1920218,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1920218/vernacularNames?limit=100",
+      "scientific_name": "Aporia crataegi"
+    },
+    {
+      "class_id": "araschnia-levana",
+      "common_name": "Map",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Araschnia+levana",
+      "gbif_usage_key": 1902533,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1902533/vernacularNames?limit=100",
+      "scientific_name": "Araschnia levana"
+    },
+    {
+      "class_id": "arctia-caja",
+      "common_name": "Garden Tiger",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Arctia+caja",
+      "gbif_usage_key": 5115874,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5115874/vernacularNames?limit=100",
+      "scientific_name": "Arctia caja"
+    },
+    {
+      "class_id": "arethusana-arethusa",
+      "common_name": "False Grayling",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Arethusana+arethusa",
+      "gbif_usage_key": 1893137,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1893137/vernacularNames?limit=100",
+      "scientific_name": "Arethusana arethusa"
+    },
+    {
+      "class_id": "argynnis-paphia",
+      "common_name": "Silver-washed Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Argynnis+paphia",
+      "gbif_usage_key": 1909398,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1909398/vernacularNames?limit=100",
+      "scientific_name": "Argynnis paphia"
+    },
+    {
+      "class_id": "aricia-agestis-a-artaxerxes",
+      "common_name": "Brown Argus",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Aricia+agestis%2FA.+artaxerxes",
+      "gbif_usage_key": 1933095,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1933095/vernacularNames?limit=100",
+      "scientific_name": "Aricia agestis/A. artaxerxes"
+    },
+    {
+      "class_id": "autographa-gamma",
+      "common_name": "Silver Y",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Autographa+gamma",
+      "gbif_usage_key": 1792418,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1792418/vernacularNames?limit=100",
+      "scientific_name": "Autographa gamma"
+    },
+    {
+      "class_id": "boloria-aquilonaris",
+      "common_name": "Cranberry Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Boloria+aquilonaris",
+      "gbif_usage_key": 1912372,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1912372/vernacularNames?limit=100",
+      "scientific_name": "Boloria aquilonaris"
+    },
+    {
+      "class_id": "boloria-dia",
+      "common_name": "Weaver's Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Boloria+dia",
+      "gbif_usage_key": 5772890,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5772890/vernacularNames?limit=100",
+      "scientific_name": "Boloria dia"
+    },
+    {
+      "class_id": "boloria-eunomia",
+      "common_name": "Bog Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Boloria+eunomia",
+      "gbif_usage_key": 4299535,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4299535/vernacularNames?limit=100",
+      "scientific_name": "Boloria eunomia"
+    },
+    {
+      "class_id": "boloria-euphrosyne",
+      "common_name": "Pearl-bordered Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Boloria+euphrosyne",
+      "gbif_usage_key": 5772893,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5772893/vernacularNames?limit=100",
+      "scientific_name": "Boloria euphrosyne"
+    },
+    {
+      "class_id": "boloria-selene",
+      "common_name": "Small Pearl-bordered Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Boloria+selene",
+      "gbif_usage_key": 1912325,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1912325/vernacularNames?limit=100",
+      "scientific_name": "Boloria selene"
+    },
+    {
+      "class_id": "boloria-thore",
+      "common_name": "Thor's Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Boloria+thore",
+      "gbif_usage_key": 7428726,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7428726/vernacularNames?limit=100",
+      "scientific_name": "Boloria thore"
+    },
+    {
+      "class_id": "boloria-titania",
+      "common_name": "Titania's Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Boloria+titania",
+      "gbif_usage_key": 4299597,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4299597/vernacularNames?limit=100",
+      "scientific_name": "Boloria titania"
+    },
+    {
+      "class_id": "brenthis-daphne",
+      "common_name": "Marbled Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Brenthis+daphne",
+      "gbif_usage_key": 8140883,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8140883/vernacularNames?limit=100",
+      "scientific_name": "Brenthis daphne"
+    },
+    {
+      "class_id": "brenthis-ino",
+      "common_name": "Lesser Marbled Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Brenthis+ino",
+      "gbif_usage_key": 1902749,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1902749/vernacularNames?limit=100",
+      "scientific_name": "Brenthis ino"
+    },
+    {
+      "class_id": "brintesia-circe",
+      "common_name": "Great Banded Grayling",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Brintesia+circe",
+      "gbif_usage_key": 4535529,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535529/vernacularNames?limit=100",
+      "scientific_name": "Brintesia circe"
+    },
+    {
+      "class_id": "callimorpha-dominula",
+      "common_name": "Scarlet Tiger",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Callimorpha+dominula",
+      "gbif_usage_key": 4532534,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4532534/vernacularNames?limit=100",
+      "scientific_name": "Callimorpha dominula"
+    },
+    {
+      "class_id": "calliteara-pudibunda",
+      "common_name": "Pale Tussock",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Calliteara+pudibunda",
+      "gbif_usage_key": 1819145,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1819145/vernacularNames?limit=100",
+      "scientific_name": "Calliteara pudibunda"
+    },
+    {
+      "class_id": "callophrys-rubi",
+      "common_name": "Green Hairstreak",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Callophrys+rubi",
+      "gbif_usage_key": 1932411,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1932411/vernacularNames?limit=100",
+      "scientific_name": "Callophrys rubi"
+    },
+    {
+      "class_id": "carcharodus-alceae",
+      "common_name": "Mallow Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Carcharodus+alceae",
+      "gbif_usage_key": 8277078,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8277078/vernacularNames?limit=100",
+      "scientific_name": "Carcharodus alceae"
+    },
+    {
+      "class_id": "carterocephalus-palaemon",
+      "common_name": "Chequered Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Carterocephalus+palaemon",
+      "gbif_usage_key": 1947335,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1947335/vernacularNames?limit=100",
+      "scientific_name": "Carterocephalus palaemon"
+    },
+    {
+      "class_id": "celastrina-argiolus",
+      "common_name": "Holly Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Celastrina+argiolus",
+      "gbif_usage_key": 1925918,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1925918/vernacularNames?limit=100",
+      "scientific_name": "Celastrina argiolus"
+    },
+    {
+      "class_id": "chazara-briseis",
+      "common_name": "The Hermit",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Chazara+briseis",
+      "gbif_usage_key": 4535583,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535583/vernacularNames?limit=100",
+      "scientific_name": "Chazara briseis"
+    },
+    {
+      "class_id": "chiasmia-clathrata",
+      "common_name": "Latticed Heath",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Chiasmia+clathrata",
+      "gbif_usage_key": 4525078,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4525078/vernacularNames?limit=100",
+      "scientific_name": "Chiasmia clathrata"
+    },
+    {
+      "class_id": "coenonympha-arcania",
+      "common_name": "Pearly Heath",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Coenonympha+arcania",
+      "gbif_usage_key": 7728366,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7728366/vernacularNames?limit=100",
+      "scientific_name": "Coenonympha arcania"
+    },
+    {
+      "class_id": "coenonympha-gardetta",
+      "common_name": "Ringlets",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Coenonympha+gardetta",
+      "gbif_usage_key": 1911078,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1911078/vernacularNames?limit=100",
+      "scientific_name": "Coenonympha gardetta"
+    },
+    {
+      "class_id": "coenonympha-glycerion",
+      "common_name": "Chestnut Heath",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Coenonympha+glycerion",
+      "gbif_usage_key": 1911125,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1911125/vernacularNames?limit=100",
+      "scientific_name": "Coenonympha glycerion"
+    },
+    {
+      "class_id": "coenonympha-pamphilus",
+      "common_name": "Small Heath",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Coenonympha+pamphilus",
+      "gbif_usage_key": 1911461,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1911461/vernacularNames?limit=100",
+      "scientific_name": "Coenonympha pamphilus"
+    },
+    {
+      "class_id": "colias-croceus",
+      "common_name": "Clouded Yellow",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Colias+croceus",
+      "gbif_usage_key": 5137612,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5137612/vernacularNames?limit=100",
+      "scientific_name": "Colias croceus"
+    },
+    {
+      "class_id": "colias-palaeno",
+      "common_name": "Moorland Clouded Yellow",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Colias+palaeno",
+      "gbif_usage_key": 5137582,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5137582/vernacularNames?limit=100",
+      "scientific_name": "Colias palaeno"
+    },
+    {
+      "class_id": "colias-phicomone",
+      "common_name": "Mountain Clouded Yellow",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Colias+phicomone",
+      "gbif_usage_key": 5137695,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5137695/vernacularNames?limit=100",
+      "scientific_name": "Colias phicomone"
+    },
+    {
+      "class_id": "cossus-cossus",
+      "common_name": "Goat Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Cossus+cossus",
+      "gbif_usage_key": 5101394,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5101394/vernacularNames?limit=100",
+      "scientific_name": "Cossus cossus"
+    },
+    {
+      "class_id": "cupido-argiades",
+      "common_name": "Short-tailed Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Cupido+argiades",
+      "gbif_usage_key": 4535140,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535140/vernacularNames?limit=100",
+      "scientific_name": "Cupido argiades"
+    },
+    {
+      "class_id": "cupido-decolorata",
+      "common_name": "Eastern Short-tailed Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Cupido+decolorata",
+      "gbif_usage_key": 8068808,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8068808/vernacularNames?limit=100",
+      "scientific_name": "Cupido decolorata"
+    },
+    {
+      "class_id": "cupido-minimus",
+      "common_name": "Small Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Cupido+minimus",
+      "gbif_usage_key": 1926260,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1926260/vernacularNames?limit=100",
+      "scientific_name": "Cupido minimus"
+    },
+    {
+      "class_id": "cyaniris-semiargus",
+      "common_name": "Mazarine Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Cyaniris+semiargus",
+      "gbif_usage_key": 5139156,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5139156/vernacularNames?limit=100",
+      "scientific_name": "Cyaniris semiargus"
+    },
+    {
+      "class_id": "cydalima-perspectalis",
+      "common_name": "Box Tree Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Cydalima+perspectalis",
+      "gbif_usage_key": 4532122,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4532122/vernacularNames?limit=100",
+      "scientific_name": "Cydalima perspectalis"
+    },
+    {
+      "class_id": "deilephila-elpenor",
+      "common_name": "Elephant Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Deilephila+elpenor",
+      "gbif_usage_key": 1864377,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1864377/vernacularNames?limit=100",
+      "scientific_name": "Deilephila elpenor"
+    },
+    {
+      "class_id": "diacrisia-sannio",
+      "common_name": "Clouded Buff",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Diacrisia+sannio",
+      "gbif_usage_key": 4532544,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4532544/vernacularNames?limit=100",
+      "scientific_name": "Diacrisia sannio"
+    },
+    {
+      "class_id": "ematurga-atomaria",
+      "common_name": "Common Heath",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Ematurga+atomaria",
+      "gbif_usage_key": 1956440,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1956440/vernacularNames?limit=100",
+      "scientific_name": "Ematurga atomaria"
+    },
+    {
+      "class_id": "erebia-aethiops",
+      "common_name": "Scotch Argus",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Erebia+aethiops",
+      "gbif_usage_key": 5135191,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5135191/vernacularNames?limit=100",
+      "scientific_name": "Erebia aethiops"
+    },
+    {
+      "class_id": "erebia-euryale",
+      "common_name": "Large Ringlet",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Erebia+euryale",
+      "gbif_usage_key": 5134469,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5134469/vernacularNames?limit=100",
+      "scientific_name": "Erebia euryale"
+    },
+    {
+      "class_id": "erebia-ligea",
+      "common_name": "Arran Brown",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Erebia+ligea",
+      "gbif_usage_key": 5134682,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5134682/vernacularNames?limit=100",
+      "scientific_name": "Erebia ligea"
+    },
+    {
+      "class_id": "erebia-manto",
+      "common_name": "Yellow-spotted Ringlet",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Erebia+manto",
+      "gbif_usage_key": 5134815,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5134815/vernacularNames?limit=100",
+      "scientific_name": "Erebia manto"
+    },
+    {
+      "class_id": "erebia-medusa",
+      "common_name": "Woodland Ringlet",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Erebia+medusa",
+      "gbif_usage_key": 8314088,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8314088/vernacularNames?limit=100",
+      "scientific_name": "Erebia medusa"
+    },
+    {
+      "class_id": "erebia-pronoe",
+      "common_name": "Water Ringlet",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Erebia+pronoe",
+      "gbif_usage_key": 7798382,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7798382/vernacularNames?limit=100",
+      "scientific_name": "Erebia pronoe"
+    },
+    {
+      "class_id": "erynnis-tages",
+      "common_name": "Dingy Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Erynnis+tages",
+      "gbif_usage_key": 8270406,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8270406/vernacularNames?limit=100",
+      "scientific_name": "Erynnis tages"
+    },
+    {
+      "class_id": "euclidia-glyphica",
+      "common_name": "Burnet Companion",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Euclidia+glyphica",
+      "gbif_usage_key": 1798408,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1798408/vernacularNames?limit=100",
+      "scientific_name": "Euclidia glyphica"
+    },
+    {
+      "class_id": "eumedonia-eumedon",
+      "common_name": "Geranium argus",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Eumedonia+eumedon",
+      "gbif_usage_key": 1933793,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1933793/vernacularNames?limit=100",
+      "scientific_name": "Eumedonia eumedon"
+    },
+    {
+      "class_id": "euphydryas-aurinia",
+      "common_name": "Marsh Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Euphydryas+aurinia",
+      "gbif_usage_key": 4535809,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535809/vernacularNames?limit=100",
+      "scientific_name": "Euphydryas aurinia"
+    },
+    {
+      "class_id": "euphydryas-cynthia",
+      "common_name": "Cynthia's Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Euphydryas+cynthia",
+      "gbif_usage_key": 4535804,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535804/vernacularNames?limit=100",
+      "scientific_name": "Euphydryas cynthia"
+    },
+    {
+      "class_id": "euphydryas-maturna",
+      "common_name": "Scarce Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Euphydryas+maturna",
+      "gbif_usage_key": 4535817,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535817/vernacularNames?limit=100",
+      "scientific_name": "Euphydryas maturna"
+    },
+    {
+      "class_id": "euplagia-quadripunctaria",
+      "common_name": "Jersey Tiger",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Euplagia+quadripunctaria",
+      "gbif_usage_key": 4532532,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4532532/vernacularNames?limit=100",
+      "scientific_name": "Euplagia quadripunctaria"
+    },
+    {
+      "class_id": "fabriciana-adippe",
+      "common_name": "High Brown Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Fabriciana+adippe",
+      "gbif_usage_key": 7809779,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7809779/vernacularNames?limit=100",
+      "scientific_name": "Fabriciana adippe"
+    },
+    {
+      "class_id": "fabriciana-niobe",
+      "common_name": "Niobe Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Fabriciana+niobe",
+      "gbif_usage_key": 8078362,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8078362/vernacularNames?limit=100",
+      "scientific_name": "Fabriciana niobe"
+    },
+    {
+      "class_id": "favonius-quercus",
+      "common_name": "Purple Hairstreak",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Favonius+quercus",
+      "gbif_usage_key": 4535180,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535180/vernacularNames?limit=100",
+      "scientific_name": "Favonius quercus"
+    },
+    {
+      "class_id": "glaucopsyche-alexis",
+      "common_name": "Green-underside Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Glaucopsyche+alexis",
+      "gbif_usage_key": 1924097,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1924097/vernacularNames?limit=100",
+      "scientific_name": "Glaucopsyche alexis"
+    },
+    {
+      "class_id": "gonepteryx-rhamni",
+      "common_name": "Brimstone",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Gonepteryx+rhamni",
+      "gbif_usage_key": 1920712,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1920712/vernacularNames?limit=100",
+      "scientific_name": "Gonepteryx rhamni"
+    },
+    {
+      "class_id": "hamearis-lucina",
+      "common_name": "Duke of Burgundy Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Hamearis+lucina",
+      "gbif_usage_key": 1934693,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1934693/vernacularNames?limit=100",
+      "scientific_name": "Hamearis lucina"
+    },
+    {
+      "class_id": "hemaris-fuciformis",
+      "common_name": "Broad-Bordered Bee Hawk",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Hemaris+fuciformis",
+      "gbif_usage_key": 1861797,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1861797/vernacularNames?limit=100",
+      "scientific_name": "Hemaris fuciformis"
+    },
+    {
+      "class_id": "hesperia-comma",
+      "common_name": "Silver-spotted Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Hesperia+comma",
+      "gbif_usage_key": 7633472,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7633472/vernacularNames?limit=100",
+      "scientific_name": "Hesperia comma"
+    },
+    {
+      "class_id": "heteropterus-morpheus",
+      "common_name": "Large Chequered Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Heteropterus+morpheus",
+      "gbif_usage_key": 5141677,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5141677/vernacularNames?limit=100",
+      "scientific_name": "Heteropterus morpheus"
+    },
+    {
+      "class_id": "hipparchia-alcyone",
+      "common_name": "Rock Grayling",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Hipparchia+alcyone",
+      "gbif_usage_key": 1918851,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1918851/vernacularNames?limit=100",
+      "scientific_name": "Hipparchia alcyone"
+    },
+    {
+      "class_id": "hipparchia-fagi",
+      "common_name": "Woodland Grayling",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Hipparchia+fagi",
+      "gbif_usage_key": 1918669,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1918669/vernacularNames?limit=100",
+      "scientific_name": "Hipparchia fagi"
+    },
+    {
+      "class_id": "hipparchia-semele",
+      "common_name": "Grayling",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Hipparchia+semele",
+      "gbif_usage_key": 8176911,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8176911/vernacularNames?limit=100",
+      "scientific_name": "Hipparchia semele"
+    },
+    {
+      "class_id": "iphiclides-podalirius",
+      "common_name": "Scarce Swallowtail",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Iphiclides+podalirius",
+      "gbif_usage_key": 1938214,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1938214/vernacularNames?limit=100",
+      "scientific_name": "Iphiclides podalirius"
+    },
+    {
+      "class_id": "issoria-lathonia",
+      "common_name": "Queen of Spain Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Issoria+lathonia",
+      "gbif_usage_key": 1905383,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1905383/vernacularNames?limit=100",
+      "scientific_name": "Issoria lathonia"
+    },
+    {
+      "class_id": "laothoe-populi",
+      "common_name": "Poplar Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Laothoe+populi",
+      "gbif_usage_key": 5124007,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5124007/vernacularNames?limit=100",
+      "scientific_name": "Laothoe populi"
+    },
+    {
+      "class_id": "lasiommata-maera",
+      "common_name": "Large Wall Brown",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lasiommata+maera",
+      "gbif_usage_key": 4535636,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535636/vernacularNames?limit=100",
+      "scientific_name": "Lasiommata maera"
+    },
+    {
+      "class_id": "lasiommata-megera",
+      "common_name": "Wall Brown",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lasiommata+megera",
+      "gbif_usage_key": 4535632,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535632/vernacularNames?limit=100",
+      "scientific_name": "Lasiommata megera"
+    },
+    {
+      "class_id": "lasiommata-petropolitana",
+      "common_name": "Northern Wall Brown",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lasiommata+petropolitana",
+      "gbif_usage_key": 4535634,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535634/vernacularNames?limit=100",
+      "scientific_name": "Lasiommata petropolitana"
+    },
+    {
+      "class_id": "leptidea-sinapis-juvernica",
+      "common_name": "Wood White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Leptidea+sinapis%2Fjuvernica",
+      "gbif_usage_key": 5137903,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5137903/vernacularNames?limit=100",
+      "scientific_name": "Leptidea sinapis/juvernica"
+    },
+    {
+      "class_id": "libythea-celtis",
+      "common_name": "Nettle-tree Butterfly",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Libythea+celtis",
+      "gbif_usage_key": 1909838,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1909838/vernacularNames?limit=100",
+      "scientific_name": "Libythea celtis"
+    },
+    {
+      "class_id": "limenitis-camilla",
+      "common_name": "Admirals",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Limenitis+camilla",
+      "gbif_usage_key": 7017,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7017/vernacularNames?limit=100",
+      "scientific_name": "Limenitis camilla"
+    },
+    {
+      "class_id": "limenitis-populi",
+      "common_name": "Poplar Admiral",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Limenitis+populi",
+      "gbif_usage_key": 5132183,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5132183/vernacularNames?limit=100",
+      "scientific_name": "Limenitis populi"
+    },
+    {
+      "class_id": "limenitis-reducta",
+      "common_name": "Southern White Admiral",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Limenitis+reducta",
+      "gbif_usage_key": 8001799,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8001799/vernacularNames?limit=100",
+      "scientific_name": "Limenitis reducta"
+    },
+    {
+      "class_id": "lopinga-achine",
+      "common_name": "Woodland Brown",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lopinga+achine",
+      "gbif_usage_key": 4535614,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535614/vernacularNames?limit=100",
+      "scientific_name": "Lopinga achine"
+    },
+    {
+      "class_id": "lycaena-dispar",
+      "common_name": "Large Copper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lycaena+dispar",
+      "gbif_usage_key": 1929270,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1929270/vernacularNames?limit=100",
+      "scientific_name": "Lycaena dispar"
+    },
+    {
+      "class_id": "lycaena-helle",
+      "common_name": "Violet Copper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lycaena+helle",
+      "gbif_usage_key": 7417698,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7417698/vernacularNames?limit=100",
+      "scientific_name": "Lycaena helle"
+    },
+    {
+      "class_id": "lycaena-hippothoe",
+      "common_name": "Blues",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lycaena+hippothoe",
+      "gbif_usage_key": 5473,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5473/vernacularNames?limit=100",
+      "scientific_name": "Lycaena hippothoe"
+    },
+    {
+      "class_id": "lycaena-phlaeas",
+      "common_name": "Small Copper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lycaena+phlaeas",
+      "gbif_usage_key": 1929697,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1929697/vernacularNames?limit=100",
+      "scientific_name": "Lycaena phlaeas"
+    },
+    {
+      "class_id": "lycaena-tityrus",
+      "common_name": "Sooty Copper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lycaena+tityrus",
+      "gbif_usage_key": 5882898,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5882898/vernacularNames?limit=100",
+      "scientific_name": "Lycaena tityrus"
+    },
+    {
+      "class_id": "lycaena-virgaureae",
+      "common_name": "Scarce Copper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lycaena+virgaureae",
+      "gbif_usage_key": 1929659,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1929659/vernacularNames?limit=100",
+      "scientific_name": "Lycaena virgaureae"
+    },
+    {
+      "class_id": "lysandra-bellargus",
+      "common_name": "Adonis Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lysandra+bellargus",
+      "gbif_usage_key": 1925233,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1925233/vernacularNames?limit=100",
+      "scientific_name": "Lysandra bellargus"
+    },
+    {
+      "class_id": "lysandra-coridon",
+      "common_name": "Chalk-hill Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Lysandra+coridon",
+      "gbif_usage_key": 1925221,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1925221/vernacularNames?limit=100",
+      "scientific_name": "Lysandra coridon"
+    },
+    {
+      "class_id": "macroglossum-stellatarum",
+      "common_name": "Humming-Bird Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Macroglossum+stellatarum",
+      "gbif_usage_key": 1864652,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1864652/vernacularNames?limit=100",
+      "scientific_name": "Macroglossum stellatarum"
+    },
+    {
+      "class_id": "macrothylacia-rubi",
+      "common_name": "Fox Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Macrothylacia+rubi",
+      "gbif_usage_key": 1732416,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1732416/vernacularNames?limit=100",
+      "scientific_name": "Macrothylacia rubi"
+    },
+    {
+      "class_id": "maniola-jurtina",
+      "common_name": "Meadow Brown",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Maniola+jurtina",
+      "gbif_usage_key": 5135513,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5135513/vernacularNames?limit=100",
+      "scientific_name": "Maniola jurtina"
+    },
+    {
+      "class_id": "melanargia-galathea",
+      "common_name": "Marbled White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Melanargia+galathea",
+      "gbif_usage_key": 7854318,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7854318/vernacularNames?limit=100",
+      "scientific_name": "Melanargia galathea"
+    },
+    {
+      "class_id": "melitaea-athalia",
+      "common_name": "Heath Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Melitaea+athalia",
+      "gbif_usage_key": 1899433,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1899433/vernacularNames?limit=100",
+      "scientific_name": "Melitaea athalia"
+    },
+    {
+      "class_id": "melitaea-cinxia",
+      "common_name": "Glanville Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Melitaea+cinxia",
+      "gbif_usage_key": 8168644,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8168644/vernacularNames?limit=100",
+      "scientific_name": "Melitaea cinxia"
+    },
+    {
+      "class_id": "melitaea-diamina",
+      "common_name": "False Heath Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Melitaea+diamina",
+      "gbif_usage_key": 7768674,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7768674/vernacularNames?limit=100",
+      "scientific_name": "Melitaea diamina"
+    },
+    {
+      "class_id": "melitaea-didyma",
+      "common_name": "Spotted Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Melitaea+didyma",
+      "gbif_usage_key": 8393082,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8393082/vernacularNames?limit=100",
+      "scientific_name": "Melitaea didyma"
+    },
+    {
+      "class_id": "melitaea-phoebe",
+      "common_name": "Knapweed Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Melitaea+phoebe",
+      "gbif_usage_key": 7934873,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7934873/vernacularNames?limit=100",
+      "scientific_name": "Melitaea phoebe"
+    },
+    {
+      "class_id": "mimas-tiliae",
+      "common_name": "Lime Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Mimas+tiliae",
+      "gbif_usage_key": 5123922,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5123922/vernacularNames?limit=100",
+      "scientific_name": "Mimas tiliae"
+    },
+    {
+      "class_id": "minois-dryas",
+      "common_name": "Dryad",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Minois+dryas",
+      "gbif_usage_key": 4535510,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535510/vernacularNames?limit=100",
+      "scientific_name": "Minois dryas"
+    },
+    {
+      "class_id": "muschampia-floccifera",
+      "common_name": "Tufted Marbled Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Muschampia+floccifera",
+      "gbif_usage_key": 10950170,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/10950170/vernacularNames?limit=100",
+      "scientific_name": "Muschampia floccifera"
+    },
+    {
+      "class_id": "neptis-rivularis",
+      "common_name": "Hungarian Glider",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Neptis+rivularis",
+      "gbif_usage_key": 5131096,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5131096/vernacularNames?limit=100",
+      "scientific_name": "Neptis rivularis"
+    },
+    {
+      "class_id": "neptis-sappho",
+      "common_name": "Common Glider",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Neptis+sappho",
+      "gbif_usage_key": 5131142,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5131142/vernacularNames?limit=100",
+      "scientific_name": "Neptis sappho"
+    },
+    {
+      "class_id": "nymphalis-antiopa",
+      "common_name": "Camberwell Beauty",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Nymphalis+antiopa",
+      "gbif_usage_key": 5130682,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5130682/vernacularNames?limit=100",
+      "scientific_name": "Nymphalis antiopa"
+    },
+    {
+      "class_id": "nymphalis-polychloros",
+      "common_name": "Large Tortoiseshell",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Nymphalis+polychloros",
+      "gbif_usage_key": 7762841,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7762841/vernacularNames?limit=100",
+      "scientific_name": "Nymphalis polychloros"
+    },
+    {
+      "class_id": "ochlodes-sylvanus",
+      "common_name": "Large Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Ochlodes+sylvanus",
+      "gbif_usage_key": 1946844,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1946844/vernacularNames?limit=100",
+      "scientific_name": "Ochlodes sylvanus"
+    },
+    {
+      "class_id": "papilio-machaon",
+      "common_name": "Swallowtail",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Papilio+machaon",
+      "gbif_usage_key": 8225376,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8225376/vernacularNames?limit=100",
+      "scientific_name": "Papilio machaon"
+    },
+    {
+      "class_id": "pararge-aegeria",
+      "common_name": "Speckled Wood",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pararge+aegeria",
+      "gbif_usage_key": 8049830,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8049830/vernacularNames?limit=100",
+      "scientific_name": "Pararge aegeria"
+    },
+    {
+      "class_id": "parnassius-apollo",
+      "common_name": "Apollo",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Parnassius+apollo",
+      "gbif_usage_key": 1938810,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1938810/vernacularNames?limit=100",
+      "scientific_name": "Parnassius apollo"
+    },
+    {
+      "class_id": "parnassius-mnemosyne",
+      "common_name": "Clouded Apollo",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Parnassius+mnemosyne",
+      "gbif_usage_key": 1938520,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1938520/vernacularNames?limit=100",
+      "scientific_name": "Parnassius mnemosyne"
+    },
+    {
+      "class_id": "parnassius-phoebus",
+      "common_name": "Small Apollo",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Parnassius+phoebus",
+      "gbif_usage_key": 1938955,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1938955/vernacularNames?limit=100",
+      "scientific_name": "Parnassius phoebus"
+    },
+    {
+      "class_id": "phalera-bucephala",
+      "common_name": "Buff-Tip",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Phalera+bucephala",
+      "gbif_usage_key": 5119245,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5119245/vernacularNames?limit=100",
+      "scientific_name": "Phalera bucephala"
+    },
+    {
+      "class_id": "phengaris-alcon-rebeli",
+      "common_name": "Alcon Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Phengaris+alcon%2Frebeli",
+      "gbif_usage_key": 7459402,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7459402/vernacularNames?limit=100",
+      "scientific_name": "Phengaris alcon/rebeli"
+    },
+    {
+      "class_id": "phengaris-arion",
+      "common_name": "Large Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Phengaris+arion",
+      "gbif_usage_key": 4535168,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535168/vernacularNames?limit=100",
+      "scientific_name": "Phengaris arion"
+    },
+    {
+      "class_id": "phengaris-nausithous",
+      "common_name": "Dusky Large Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Phengaris+nausithous",
+      "gbif_usage_key": 4535165,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535165/vernacularNames?limit=100",
+      "scientific_name": "Phengaris nausithous"
+    },
+    {
+      "class_id": "phengaris-teleius",
+      "common_name": "Scarce Large Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Phengaris+teleius",
+      "gbif_usage_key": 4535172,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535172/vernacularNames?limit=100",
+      "scientific_name": "Phengaris teleius"
+    },
+    {
+      "class_id": "pieris-brassicae",
+      "common_name": "Large White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pieris+brassicae",
+      "gbif_usage_key": 1920506,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1920506/vernacularNames?limit=100",
+      "scientific_name": "Pieris brassicae"
+    },
+    {
+      "class_id": "pieris-bryoniae",
+      "common_name": "Mountain Green-veined White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pieris+bryoniae",
+      "gbif_usage_key": 4535307,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4535307/vernacularNames?limit=100",
+      "scientific_name": "Pieris bryoniae"
+    },
+    {
+      "class_id": "pieris-mannii",
+      "common_name": "Southern Small White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pieris+mannii",
+      "gbif_usage_key": 1920491,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1920491/vernacularNames?limit=100",
+      "scientific_name": "Pieris mannii"
+    },
+    {
+      "class_id": "pieris-napi",
+      "common_name": "Green-veined White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pieris+napi",
+      "gbif_usage_key": 1920494,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1920494/vernacularNames?limit=100",
+      "scientific_name": "Pieris napi"
+    },
+    {
+      "class_id": "pieris-rapae",
+      "common_name": "Small White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pieris+rapae",
+      "gbif_usage_key": 1920496,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1920496/vernacularNames?limit=100",
+      "scientific_name": "Pieris rapae"
+    },
+    {
+      "class_id": "plebejus-argus",
+      "common_name": "Silver-studded Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Plebejus+argus",
+      "gbif_usage_key": 5138561,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5138561/vernacularNames?limit=100",
+      "scientific_name": "Plebejus argus"
+    },
+    {
+      "class_id": "polygonia-c-album",
+      "common_name": "Comma",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Polygonia+c-album",
+      "gbif_usage_key": 1898544,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1898544/vernacularNames?limit=100",
+      "scientific_name": "Polygonia c-album"
+    },
+    {
+      "class_id": "polyommatus-damon",
+      "common_name": "Damon Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Polyommatus+damon",
+      "gbif_usage_key": 7484070,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7484070/vernacularNames?limit=100",
+      "scientific_name": "Polyommatus damon"
+    },
+    {
+      "class_id": "polyommatus-daphnis",
+      "common_name": "Meleager's Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Polyommatus+daphnis",
+      "gbif_usage_key": 5140436,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5140436/vernacularNames?limit=100",
+      "scientific_name": "Polyommatus daphnis"
+    },
+    {
+      "class_id": "polyommatus-dorylas",
+      "common_name": "Blues",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Polyommatus+dorylas",
+      "gbif_usage_key": 5473,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5473/vernacularNames?limit=100",
+      "scientific_name": "Polyommatus dorylas"
+    },
+    {
+      "class_id": "polyommatus-eros",
+      "common_name": "Eros Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Polyommatus+eros",
+      "gbif_usage_key": 5140244,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5140244/vernacularNames?limit=100",
+      "scientific_name": "Polyommatus eros"
+    },
+    {
+      "class_id": "polyommatus-icarus",
+      "common_name": "Common Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Polyommatus+icarus",
+      "gbif_usage_key": 5140214,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5140214/vernacularNames?limit=100",
+      "scientific_name": "Polyommatus icarus"
+    },
+    {
+      "class_id": "polyommatus-thersites",
+      "common_name": "Chapman's Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Polyommatus+thersites",
+      "gbif_usage_key": 7634721,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7634721/vernacularNames?limit=100",
+      "scientific_name": "Polyommatus thersites"
+    },
+    {
+      "class_id": "pontia-edusa",
+      "common_name": "Bath White",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pontia+edusa",
+      "gbif_usage_key": 1920259,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1920259/vernacularNames?limit=100",
+      "scientific_name": "Pontia edusa"
+    },
+    {
+      "class_id": "pseudopanthera-macularia",
+      "common_name": "Speckled Yellow",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pseudopanthera+macularia",
+      "gbif_usage_key": 1954563,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1954563/vernacularNames?limit=100",
+      "scientific_name": "Pseudopanthera macularia"
+    },
+    {
+      "class_id": "pyrgus-armoricanus",
+      "common_name": "Oberth\u00fcr's Grizzled Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pyrgus+armoricanus",
+      "gbif_usage_key": 1949784,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1949784/vernacularNames?limit=100",
+      "scientific_name": "Pyrgus armoricanus"
+    },
+    {
+      "class_id": "pyrgus-carthami",
+      "common_name": "Safflower Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pyrgus+carthami",
+      "gbif_usage_key": 7637698,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7637698/vernacularNames?limit=100",
+      "scientific_name": "Pyrgus carthami"
+    },
+    {
+      "class_id": "pyrgus-malvae",
+      "common_name": "Grizzled Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Pyrgus+malvae",
+      "gbif_usage_key": 8109173,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8109173/vernacularNames?limit=100",
+      "scientific_name": "Pyrgus malvae"
+    },
+    {
+      "class_id": "saturnia-pyri",
+      "common_name": "Great Peacock Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Saturnia+pyri",
+      "gbif_usage_key": 1867928,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1867928/vernacularNames?limit=100",
+      "scientific_name": "Saturnia pyri"
+    },
+    {
+      "class_id": "satyrium-acaciae",
+      "common_name": "Sloe Hairstreak",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Satyrium+acaciae",
+      "gbif_usage_key": 7508312,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7508312/vernacularNames?limit=100",
+      "scientific_name": "Satyrium acaciae"
+    },
+    {
+      "class_id": "satyrium-pruni",
+      "common_name": "Black Hairstreak",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Satyrium+pruni",
+      "gbif_usage_key": 5882980,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5882980/vernacularNames?limit=100",
+      "scientific_name": "Satyrium pruni"
+    },
+    {
+      "class_id": "satyrium-spini",
+      "common_name": "Blue-spot Hairstreak",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Satyrium+spini",
+      "gbif_usage_key": 7391741,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/7391741/vernacularNames?limit=100",
+      "scientific_name": "Satyrium spini"
+    },
+    {
+      "class_id": "satyrium-w-album",
+      "common_name": "White-letter Hairstreak",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Satyrium+w-album",
+      "gbif_usage_key": 5882965,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5882965/vernacularNames?limit=100",
+      "scientific_name": "Satyrium w-album"
+    },
+    {
+      "class_id": "scolitanides-orion",
+      "common_name": "Chequered Blue",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Scolitanides+orion",
+      "gbif_usage_key": 1928248,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1928248/vernacularNames?limit=100",
+      "scientific_name": "Scolitanides orion"
+    },
+    {
+      "class_id": "siona-lineata",
+      "common_name": "Black-Veined Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Siona+lineata",
+      "gbif_usage_key": 5144543,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5144543/vernacularNames?limit=100",
+      "scientific_name": "Siona lineata"
+    },
+    {
+      "class_id": "smerinthus-ocellata",
+      "common_name": "Eyed Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Smerinthus+ocellata",
+      "gbif_usage_key": 1862580,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1862580/vernacularNames?limit=100",
+      "scientific_name": "Smerinthus ocellata"
+    },
+    {
+      "class_id": "speyeria-aglaja",
+      "common_name": "Dark Green Fritillary",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Speyeria+aglaja",
+      "gbif_usage_key": 6221746,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/6221746/vernacularNames?limit=100",
+      "scientific_name": "Speyeria aglaja"
+    },
+    {
+      "class_id": "sphinx-ligustri",
+      "common_name": "Privet Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Sphinx+ligustri",
+      "gbif_usage_key": 5124143,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5124143/vernacularNames?limit=100",
+      "scientific_name": "Sphinx ligustri"
+    },
+    {
+      "class_id": "sphinx-pinastri",
+      "common_name": "Pine Hawk-Moth",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Sphinx+pinastri",
+      "gbif_usage_key": 5124233,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5124233/vernacularNames?limit=100",
+      "scientific_name": "Sphinx pinastri"
+    },
+    {
+      "class_id": "spialia-sertorius",
+      "common_name": "red underwing skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Spialia+sertorius",
+      "gbif_usage_key": 1945569,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1945569/vernacularNames?limit=100",
+      "scientific_name": "Spialia sertorius"
+    },
+    {
+      "class_id": "thecla-betulae",
+      "common_name": "Brown Hairstreak",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Thecla+betulae",
+      "gbif_usage_key": 1930110,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1930110/vernacularNames?limit=100",
+      "scientific_name": "Thecla betulae"
+    },
+    {
+      "class_id": "tymelicus-lineola",
+      "common_name": null,
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Tymelicus+lineola",
+      "scientific_name": "Tymelicus lineola"
+    },
+    {
+      "class_id": "thymelicus-sylvestris",
+      "common_name": "Small Skipper",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Thymelicus+sylvestris",
+      "gbif_usage_key": 8273661,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/8273661/vernacularNames?limit=100",
+      "scientific_name": "Thymelicus sylvestris"
+    },
+    {
+      "class_id": "triodia-sylvina",
+      "common_name": "Orange Swift",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Triodia+sylvina",
+      "gbif_usage_key": 6097236,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/6097236/vernacularNames?limit=100",
+      "scientific_name": "Triodia sylvina"
+    },
+    {
+      "class_id": "vanessa-atalanta",
+      "common_name": "Red Admiral",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Vanessa+atalanta",
+      "gbif_usage_key": 1898286,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/1898286/vernacularNames?limit=100",
+      "scientific_name": "Vanessa atalanta"
+    },
+    {
+      "class_id": "vanessa-cardui",
+      "common_name": "Painted Lady",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Vanessa+cardui",
+      "gbif_usage_key": 4299368,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/4299368/vernacularNames?limit=100",
+      "scientific_name": "Vanessa cardui"
+    },
+    {
+      "class_id": "zerynthia-polyxena",
+      "common_name": "Southern Festoon",
+      "gbif_match_url": "https://api.gbif.org/v1/species/match?name=Zerynthia+polyxena",
+      "gbif_usage_key": 5141262,
+      "gbif_vernacular_names_url": "https://api.gbif.org/v1/species/5141262/vernacularNames?limit=100",
+      "scientific_name": "Zerynthia polyxena"
+    }
+  ],
+  "common_name_count": 162,
+  "schema_version": "1.0.0",
+  "selection": "most frequent case-insensitive English record; alphabetical tie-break",
+  "source": "GBIF Species API",
+  "source_documentation": "https://techdocs.gbif.org/en/openapi/v1/species",
+  "status": "generated_vernacular_name_suggestions"
+}

@@ -70,12 +70,15 @@ def main() -> int:
     parser.add_argument("--class-map", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--sample-archive", type=Path)
+    parser.add_argument("--common-names", type=Path, default=Path("ml/catalog/lepidoptera-common-names.json"))
     args = parser.parse_args()
 
     checkpoint_hash = sha256(args.checkpoint)
     if checkpoint_hash != EXPECTED_CHECKPOINT_SHA256:
         raise SystemExit("checkpoint SHA-256 does not match the pinned artifact")
     class_map = json.loads(args.class_map.read_text(encoding="utf-8"))
+    common_names = json.loads(args.common_names.read_text(encoding="utf-8"))
+    common_by_id = {item["class_id"]: item["common_name"] for item in common_names["classes"]}
     classes = class_map.get("classes", [])
     if class_map.get("checkpoint_sha256") != checkpoint_hash:
         raise SystemExit("class map belongs to a different checkpoint")
@@ -164,7 +167,7 @@ def main() -> int:
                 "model": words[1] if len(words) > 1 else words[0],
                 "generation_label": "",
                 "approximate_year_range": "",
-                "display_name": item["display_name"],
+                "display_name": common_by_id.get(item["class_id"]) or item["display_name"],
                 "scientific_name": item["scientific_name"],
             }
         )
@@ -188,7 +191,7 @@ def main() -> int:
         "model_version": "lepidoptera-maxvit-t-163-pilot",
         "artifact_status": "experimental_held_out_pending",
         "model": {"filename": model_path.name, "format": "ONNX", "sha256": sha256(model_path), "size_bytes": model_path.stat().st_size},
-        "class_map": {"filename": runtime_class_path.name, "schema_version": "1.0.0", "catalog_id": class_map["catalog_id"], "class_count": CLASS_COUNT, "sha256": sha256(runtime_class_path)},
+        "class_map": {"filename": runtime_class_path.name, "schema_version": "1.0.0", "catalog_id": class_map["catalog_id"], "class_count": CLASS_COUNT, "sha256": sha256(runtime_class_path), "common_names_sha256": sha256(args.common_names)},
         "input": {"tensor_name": "images", "element_type": "float32", "layout": "NCHW", "shape": [1, 3, INPUT_SIZE, INPUT_SIZE], "color_order": "RGB"},
         "preprocessing": {
             "resize": {"mode": "shorter_side", "shorter_side": INPUT_SIZE, "interpolation": "bilinear"},
