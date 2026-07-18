@@ -13,6 +13,8 @@ Install the optional local pilot dependency into the ignored project environment
 
 Open `review.html` locally and export explicit decisions. Teacher proposals remain pending until a human reviews them; they must not be consumed as training truth merely because a box was generated. Model caches, rendered images, proposals, decisions, archives, and weights remain outside Git under ignored paths.
 
+The proposal helper uses CUDA automatically when available; pass `--device cpu` to override it.
+
 Apply a complete export with strict asset/index validation:
 
 ```bash
