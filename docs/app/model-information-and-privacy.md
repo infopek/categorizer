@@ -5,8 +5,9 @@ The album links to an offline About recognition screen. `AndroidModelInfoLoader`
 catalog IDs, class IDs, and declared counts must match before rendering. Missing or invalid metadata
 produces a safe unavailable state.
 
-The current build reports the experimental 163-class MaxViT-T model version from bundled metadata
-rather than UI constants. The screen describes ranked suggestions,
+The screen reports the experimental 163-class MaxViT-T model as installed only when its manifest
+and model file are present and its model version and catalog ID match the display metadata. Builds
+without those runtime assets report that the model is not installed. The screen describes ranked suggestions,
 unsupported and uncertain inputs, user confirmation, and entirely local data handling.
 
 ## Notice matrix review

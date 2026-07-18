@@ -4,10 +4,25 @@ import android.content.Context
 import org.json.JSONObject
 
 class AndroidModelInfoLoader(private val context: Context) {
-    fun load(infoAsset: String = "model-info.json"): ModelInfoUiState = try {
+    fun load(infoAsset: String = "model-info.json", bundleAssetDir: String = "recognition"): ModelInfoUiState = try {
         val info = context.assets.open(infoAsset).bufferedReader().use { it.readText() }
-        parse(info) { name -> context.assets.open(name).bufferedReader().use { it.readText() } }
+        when (val parsed = parse(info) { name -> context.assets.open(name).bufferedReader().use { it.readText() } }) {
+            is ModelInfoUiState.Ready -> withInstalledBundle(parsed, bundleAssetDir)
+            else -> parsed
+        }
     } catch (error: Exception) { ModelInfoUiState.Invalid(error.message ?: "Bundled model information is invalid") }
+
+    private fun withInstalledBundle(state: ModelInfoUiState.Ready, assetDir: String): ModelInfoUiState = try {
+        val manifest = context.assets.open("$assetDir/model-manifest.json").bufferedReader().use { JSONObject(it.readText()) }
+        require(manifest.getString("model_version") == state.info.modelVersion) { "Model version does not match bundled information" }
+        require(manifest.getJSONObject("class_map").getString("catalog_id") == state.info.catalogId) { "Model catalog does not match bundled information" }
+        context.assets.open("$assetDir/${manifest.getJSONObject("model").getString("filename")}").close()
+        state
+    } catch (_: java.io.FileNotFoundException) {
+        ModelInfoUiState.Ready(state.info.copy(modelVersion = null))
+    } catch (error: Exception) {
+        ModelInfoUiState.Invalid(error.message ?: "Bundled recognition model information is invalid")
+    }
 
     internal fun parse(infoJson: String, catalogReader: (String) -> String): ModelInfoUiState = try {
         val root = JSONObject(infoJson)
