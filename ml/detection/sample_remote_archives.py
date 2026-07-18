@@ -103,14 +103,38 @@ def main() -> int:
     parser.add_argument("--class-count", type=int, default=12)
     parser.add_argument("--images-per-class", type=int, default=5)
     parser.add_argument("--seed", default="detection-pilot-v1")
+    parser.add_argument("--exclude-manifest", type=Path, action="append", default=[])
+    parser.add_argument("--exclude-class", action="append", default=[])
     args = parser.parse_args()
     if args.class_count < 1 or args.images_per_class < 1:
         raise SystemExit("sample counts must be positive")
 
     class_map = json.loads(args.class_map.read_text(encoding="utf-8"))
     classes = class_map["classes"]
+    excluded_ids = set(args.exclude_class)
+    exclusion_sources = []
+    for path in args.exclude_manifest:
+        excluded = json.loads(path.read_text(encoding="utf-8"))
+        manifest_ids = {item["class_id"] for item in excluded.get("assets", [])}
+        if not manifest_ids:
+            raise SystemExit(f"exclusion manifest contains no class IDs: {path}")
+        excluded_ids.update(manifest_ids)
+        exclusion_sources.append(
+            {
+                "filename": path.name,
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "class_count": len(manifest_ids),
+            }
+        )
+    known_ids = {item["class_id"] for item in classes}
+    unknown_exclusions = sorted(excluded_ids - known_ids)
+    if unknown_exclusions:
+        raise SystemExit(f"unknown excluded class IDs: {unknown_exclusions}")
+    candidates = [item["class_id"] for item in classes if item["class_id"] not in excluded_ids]
+    if len(candidates) < args.class_count:
+        raise SystemExit("too few classes remain after exclusions")
     selected_ids = set(
-        ranked([item["class_id"] for item in classes], args.seed)[: args.class_count]
+        ranked(candidates, args.seed)[: args.class_count]
     )
     selected_classes = [item for item in classes if item["class_id"] in selected_ids]
     article = load_json_url(ARTICLE_API)
@@ -191,6 +215,8 @@ def main() -> int:
             "class_count": len(selected_classes),
             "images_per_class": args.images_per_class,
             "method": "ascending SHA-256 rank of class IDs and ZIP member names",
+            "excluded_class_ids": sorted(excluded_ids),
+            "exclusion_manifests": exclusion_sources,
         },
         "archives": archive_records,
         "assets": assets,
