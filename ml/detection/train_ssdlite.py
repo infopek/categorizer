@@ -34,7 +34,7 @@ class DetectionDataset(Dataset):
         record = self.records[index]
         with Image.open(self.root / record["image_path"]) as source:
             image = pil_to_tensor(source.convert("RGB")).float().div(255)
-        boxes = torch.tensor([box["xyxy"] for box in record["boxes"]], dtype=torch.float32)
+        boxes = torch.tensor([box["xyxy"] for box in record["boxes"]], dtype=torch.float32).reshape(-1, 4)
         height, width = image.shape[-2:]
         if max(height, width) > 640:
             scale = 640 / max(height, width)
