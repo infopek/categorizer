@@ -17,7 +17,16 @@ class AndroidModelInfoLoader(private val context: Context) {
         require(catalog.getString("catalog_id") == root.getString("catalog_id")) { "Manifest and catalog identifiers do not match" }
         val classesJson = catalog.getJSONArray("classes")
         require(catalog.getInt("class_count") == classesJson.length()) { "Catalog class count does not match its entries" }
-        val classes = (0 until classesJson.length()).map { classesJson.getJSONObject(it).getString("display_name") }
+        val catalogClasses = (0 until classesJson.length()).map { classesJson.getJSONObject(it) }
+        val commonNames = root.optString("common_names_file").takeIf(String::isNotBlank)?.let { filename ->
+            val common = JSONObject(catalogReader(filename))
+            require(common.getInt("class_count") == classesJson.length()) { "Common-name count does not match catalog" }
+            val values = common.getJSONArray("classes")
+            require(values.length() == classesJson.length()) { "Common-name entries do not match catalog" }
+            (0 until values.length()).associate { index -> values.getJSONObject(index).let { it.getString("class_id") to it.getString("common_name") } }
+        }.orEmpty()
+        require(commonNames.isEmpty() || catalogClasses.map { it.getString("class_id") }.toSet() == commonNames.keys) { "Common-name class IDs do not match catalog" }
+        val classes = catalogClasses.map { value -> commonNames[value.getString("class_id")].orEmpty().ifBlank { value.getString("display_name") } }
         val noticesJson = root.getJSONArray("notices")
         require(noticesJson.length() > 0) { "Required license notices are missing" }
         val notices = (0 until noticesJson.length()).map { index -> noticesJson.getJSONObject(index).let { ModelNotice(it.getString("name"), it.getString("license"), it.getString("acknowledgement")) } }

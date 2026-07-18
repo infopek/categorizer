@@ -3,17 +3,23 @@
   "model_status": "experimental",
   "model_version": "lepidoptera-maxvit-t-163-pilot",
   "catalog_file": "mvp-lepidoptera-catalog.json",
+  "common_names_file": "lepidoptera-common-names.json",
   "catalog_id": "lepidoptera-at-163-v1",
   "notices": [
     {
-      "name": "Categorizer Lepidoptera catalog",
-      "license": "Project-authored catalog; individual training assets are not bundled",
-      "acknowledgement": "The 163-species catalog and dataset provenance are maintained by the Categorizer project."
+      "name": "Austrian Lepidoptera dataset and MaxViT-T checkpoint",
+      "license": "CC BY 4.0",
+      "acknowledgement": "Barkmann et al. (2025), Machine learning training data: over 500,000 images of butterflies and moths (Lepidoptera) with species labels, Figshare, DOI 10.25452/figshare.plus.29135618."
+    },
+    {
+      "name": "MaxVit_ButterflyIdentification training scripts",
+      "license": "MIT",
+      "acknowledgement": "Training scripts by Friederike Barkmann and contributors are used under the MIT License."
     },
     {
       "name": "TorchVision architecture code",
       "license": "BSD-3-Clause",
-      "acknowledgement": "Architecture code is used under BSD-3-Clause; model and dataset provenance are recorded in the repository."
+      "acknowledgement": "TorchVision architecture code is used under BSD-3-Clause."
     }
   ]
 }
