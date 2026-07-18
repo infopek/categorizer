@@ -120,7 +120,7 @@ private fun CandidateReview(
     onConfirmCandidate: (String) -> Unit,
     onConfirmManual: (ManualIdentityInput) -> Unit
 ) {
-    var selectedClassId by remember(candidates) { mutableStateOf(candidates.firstOrNull()?.carIdentity?.classId) }
+    var selectedClassId by remember(candidates) { mutableStateOf(candidates.firstOrNull()?.identity?.classId) }
     var manual by remember(candidates) { mutableStateOf(false) }
     if (manual || candidates.isEmpty()) {
         ManualReview(heading, explanation, saveState, onConfirmManual) { manual = false }
@@ -131,11 +131,11 @@ private fun CandidateReview(
         Text(explanation)
         Spacer(Modifier.height(12.dp))
         LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(candidates, key = { it.carIdentity.classId }) { candidate ->
+            items(candidates, key = { "${it.identity.categoryId}:${it.identity.classId}" }) { candidate ->
                 CandidateCard(
                     candidate = candidate,
-                    selected = candidate.carIdentity.classId == selectedClassId,
-                    onClick = { selectedClassId = candidate.carIdentity.classId }
+                    selected = candidate.identity.classId == selectedClassId,
+                    onClick = { selectedClassId = candidate.identity.classId }
                 )
             }
         }
@@ -159,16 +159,17 @@ private fun CandidateCard(candidate: RecognitionCandidate, selected: Boolean, on
             Text("#${candidate.rank}", style = MaterialTheme.typography.titleMedium)
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(
-                    candidate.carIdentity.displayName,
+                    candidate.identity.displayName,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                val scientificName = "${candidate.carIdentity.make} ${candidate.carIdentity.model}"
-                if (scientificName != candidate.carIdentity.displayName) {
-                    Text("Scientific name: $scientificName", style = MaterialTheme.typography.bodySmall)
+                candidate.identity.scientificName?.takeIf { it != candidate.identity.displayName }?.let {
+                    Text("Scientific name: $it", style = MaterialTheme.typography.bodySmall)
                 }
-                candidate.carIdentity.approximateYearRange?.let { Text(it) }
+                candidate.identity.alternateNames.takeIf { it.isNotEmpty() }?.let {
+                    Text("Also known as: ${it.joinToString()}", style = MaterialTheme.typography.bodySmall)
+                }
             }
             Text(if (selected) "Selected" else "Select")
         }

@@ -98,26 +98,27 @@ private fun EntryDetail(
                 Modifier.fillMaxWidth().height(240.dp).clip(RoundedCornerShape(16.dp))
             )
             if (editing) {
+                val isLepidoptera = state.entry.confirmedIdentity.categoryId == "lepidoptera"
                 Text("Changes are not saved until you tap Save changes.")
                 OutlinedTextField(
-                    input.make, { input = input.copy(make = it) }, label = { Text("Make") },
+                    input.make, { input = input.copy(make = it) }, label = { Text(if (isLepidoptera) "Genus" else "Make") },
                     isError = attempted && invalid?.makeError != null,
                     supportingText = { if (attempted) invalid?.makeError?.let { Text(it) } },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
-                    input.model, { input = input.copy(model = it) }, label = { Text("Model") },
+                    input.model, { input = input.copy(model = it) }, label = { Text(if (isLepidoptera) "Species" else "Model") },
                     isError = attempted && invalid?.modelError != null,
                     supportingText = { if (attempted) invalid?.modelError?.let { Text(it) } },
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     input.generation, { input = input.copy(generation = it) },
-                    label = { Text("Generation (optional)") }, modifier = Modifier.fillMaxWidth()
+                    label = { Text(if (isLepidoptera) "Subspecies or form (optional)" else "Generation (optional)") }, modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     input.approximateYearRange, { input = input.copy(approximateYearRange = it) },
-                    label = { Text("Approximate years (optional)") }, modifier = Modifier.fillMaxWidth()
+                    label = { Text(if (isLepidoptera) "Identity notes (optional)" else "Approximate years (optional)") }, modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
                     input.notes, { input = input.copy(notes = it) }, label = { Text("Personal notes") },
@@ -143,7 +144,12 @@ private fun EntryDetail(
                 ) { Text("Cancel editing") }
             } else {
                 Text(state.entry.confirmedIdentity.displayName, style = MaterialTheme.typography.headlineMedium)
-                state.entry.confirmedIdentity.approximateYearRange?.let { Text(it) }
+                if (state.entry.confirmedIdentity.categoryId == "lepidoptera") {
+                    state.entry.confirmedIdentity.scientificName?.takeIf { it != state.entry.confirmedIdentity.displayName }?.let { Text(it) }
+                    state.entry.confirmedIdentity.alternateNames.takeIf { it.isNotEmpty() }?.let { Text("Also known as: ${it.joinToString()}") }
+                } else {
+                    state.entry.confirmedIdentity.attributes["approximate_year_range"]?.let { Text(it) }
+                }
                 Text("Added ${state.entry.albumDate}")
                 Text(if (state.entry.notes.isBlank()) "No personal notes" else state.entry.notes)
                 state.error?.let { Text(it.message, color = MaterialTheme.colorScheme.error) }
