@@ -5,7 +5,7 @@ import categorizer.domain.AlbumError
 import categorizer.domain.AlbumMutation
 import categorizer.domain.AlbumRepository
 import categorizer.domain.AlbumResult
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 
 data class AlbumEntryEditInput(
@@ -14,7 +14,8 @@ data class AlbumEntryEditInput(
     val generation: String = "",
     val approximateYearRange: String = "",
     val notes: String = "",
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val categoryId: String = "lepidoptera"
 ) {
     companion object {
         fun from(entry: AlbumEntry) = AlbumEntryEditInput(
@@ -23,7 +24,8 @@ data class AlbumEntryEditInput(
             generation = entry.confirmedIdentity.generationLabel.orEmpty(),
             approximateYearRange = entry.confirmedIdentity.approximateYearRange.orEmpty(),
             notes = entry.notes,
-            isFavorite = entry.isFavorite
+            isFavorite = entry.isFavorite,
+            categoryId = entry.confirmedIdentity.categoryId
         )
     }
 }
@@ -45,13 +47,15 @@ fun AlbumEntryEditInput.validate(original: AlbumEntry, nowEpochMs: Long): AlbumE
     val cleanGeneration = generation.trim().ifEmpty { null }
     val cleanYears = approximateYearRange.trim().ifEmpty { null }
     val displayName = listOfNotNull(cleanMake, cleanModel, cleanGeneration?.let { "($it)" }).joinToString(" ")
-    val identity = CarIdentity(
+    val identity = CategoryIdentity(
+        categoryId = categoryId,
         classId = userClassId(cleanMake, cleanModel, cleanGeneration),
-        make = cleanMake,
-        model = cleanModel,
-        generationLabel = cleanGeneration,
-        approximateYearRange = cleanYears,
+        scientificName = "$cleanMake $cleanModel",
         displayName = displayName,
+        attributes = listOfNotNull(
+            cleanGeneration?.let { "subspecies_or_form" to it },
+            cleanYears?.let { "notes" to it }
+        ).toMap(),
         source = IdentitySource.USER_CONFIRMED
     )
     return AlbumEntryEditValidation.Valid(

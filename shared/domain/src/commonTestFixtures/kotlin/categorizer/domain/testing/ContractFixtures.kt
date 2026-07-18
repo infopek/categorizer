@@ -1,7 +1,7 @@
 package categorizer.domain.testing
 
 import categorizer.domain.AlbumEntry
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 import categorizer.domain.ManagedImageRef
 import categorizer.domain.RecognitionCandidate
@@ -12,21 +12,19 @@ import categorizer.domain.RecognitionResult
 import categorizer.domain.RecognitionStatus
 
 object ContractFixtures {
-    const val MODEL_VERSION = "cars-fixture-1"
+    const val MODEL_VERSION = "lepidoptera-fixture-1"
 
-    val porscheIdentity = CarIdentity(
-        classId = "porsche-911-992", make = "Porsche", model = "911",
-        generationLabel = "992", approximateYearRange = "2019-present",
-        displayName = "Porsche 911 (992)"
+    val porscheIdentity = CategoryIdentity(
+        categoryId = "lepidoptera", classId = "vanessa-cardui",
+        scientificName = "Vanessa cardui", displayName = "Painted Lady"
     )
-    val bmwIdentity = CarIdentity(
-        classId = "bmw-3-series-g20", make = "BMW", model = "3 Series",
-        generationLabel = "G20", approximateYearRange = "2018-present",
-        displayName = "BMW 3 Series (G20)"
+    val bmwIdentity = CategoryIdentity(
+        categoryId = "lepidoptera", classId = "acherontia-atropos",
+        scientificName = "Acherontia atropos", displayName = "Death's Head Hawkmoth"
     )
-    val manualIdentity = CarIdentity(
-        classId = "user:unknown-classic-coupe", make = "Unknown", model = "Classic coupe",
-        displayName = "Unknown classic coupe", source = IdentitySource.USER_CONFIRMED
+    val manualIdentity = CategoryIdentity(
+        categoryId = "lepidoptera", classId = "user:unknown-moth", scientificName = null,
+        displayName = "Unknown moth", source = IdentitySource.USER_CONFIRMED
     )
 
     val candidateImage = ManagedImageRef("image-candidates", "images/image-candidates.jpg")

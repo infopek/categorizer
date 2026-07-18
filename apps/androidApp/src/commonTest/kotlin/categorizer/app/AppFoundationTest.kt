@@ -8,7 +8,7 @@ class AppFoundationTest {
     @Test
     fun baselineTestSourceSetRuns() {
         assertEquals(29, MINIMUM_ANDROID_API)
-        assertEquals("cars-fixture-1", ContractFixtures.MODEL_VERSION)
+        assertEquals("lepidoptera-fixture-1", ContractFixtures.MODEL_VERSION)
     }
 
     private companion object {

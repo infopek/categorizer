@@ -3,7 +3,7 @@ package categorizer.application
 import categorizer.domain.AlbumEntry
 import categorizer.domain.AlbumRepository
 import categorizer.domain.AlbumResult
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -12,11 +12,12 @@ data class ManualIdentityInput(
     val make: String = "",
     val model: String = "",
     val generation: String = "",
-    val approximateYearRange: String = ""
+    val approximateYearRange: String = "",
+    val categoryId: String = "lepidoptera"
 )
 
 sealed class ManualIdentityValidation {
-    data class Valid(val identity: CarIdentity) : ManualIdentityValidation()
+    data class Valid(val identity: CategoryIdentity) : ManualIdentityValidation()
     data class Invalid(val makeError: String? = null, val modelError: String? = null) :
         ManualIdentityValidation()
 }
@@ -44,13 +45,15 @@ fun ManualIdentityInput.validate(): ManualIdentityValidation {
         .trim('-')
         .ifEmpty { "manual-car" }
     return ManualIdentityValidation.Valid(
-        CarIdentity(
+        CategoryIdentity(
+            categoryId = categoryId,
             classId = "user:$slug",
-            make = cleanMake,
-            model = cleanModel,
-            generationLabel = cleanGeneration,
-            approximateYearRange = cleanYears,
+            scientificName = "$cleanMake $cleanModel",
             displayName = displayName,
+            attributes = listOfNotNull(
+                cleanGeneration?.let { "subspecies_or_form" to it },
+                cleanYears?.let { "notes" to it }
+            ).toMap(),
             source = IdentitySource.USER_CONFIRMED
         )
     )

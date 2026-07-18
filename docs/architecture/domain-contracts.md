@@ -6,6 +6,11 @@ Status: draft implementation for `CONTRACT-001`, pending review.
 
 `shared/domain` contains platform-neutral Kotlin contracts consumed by the application, persistence, and ML runtime lanes. It must not import Android, database, UI, filesystem, or ONNX Runtime types.
 
+Recognition candidates and album entries use the category-neutral `CategoryIdentity`
+contract documented in `category-identity-contract.md`. The `(categoryId, classId)`
+pair is the stable identity boundary; scientific and display names have distinct
+roles.
+
 ## Identity and recognition
 
 `CarIdentity.classId` is the stable key; display names are presentation data. Catalog identities use `MODEL_CATALOG`. Manual corrections use `USER_CONFIRMED` and remain album metadata, not training input. Generation and approximate-year labels are optional; trim is outside the MVP.

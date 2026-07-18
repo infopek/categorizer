@@ -1,6 +1,6 @@
 package categorizer.application
 
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.IdentitySource
 import categorizer.domain.ManagedImageRef
 import categorizer.domain.RecognitionEngine
@@ -59,12 +59,12 @@ class RecognitionCoordinator(
     fun confirmCandidate(classId: String): RecognitionSaveDraft? {
         val completed = mutableState.value.completedDetails() ?: return null
         val identity = completed.result.candidates
-            .firstOrNull { it.carIdentity.classId == classId }
-            ?.carIdentity ?: return null
+            .firstOrNull { it.identity.classId == classId }
+            ?.identity ?: return null
         return completed.result.toSaveDraft(identity)
     }
 
-    fun manualCorrection(identity: CarIdentity): RecognitionSaveDraft? {
+    fun manualCorrection(identity: CategoryIdentity): RecognitionSaveDraft? {
         require(identity.source == IdentitySource.USER_CONFIRMED) {
             "Manual corrections must use USER_CONFIRMED identity source"
         }
@@ -125,7 +125,7 @@ class RecognitionCoordinator(
         is RecognitionUiState.Running -> null
     }
 
-    private fun RecognitionResult.toSaveDraft(identity: CarIdentity) = RecognitionSaveDraft(
+    private fun RecognitionResult.toSaveDraft(identity: CategoryIdentity) = RecognitionSaveDraft(
         sourceImage, identity, resultId, modelVersion, inferenceDurationMs
     )
 

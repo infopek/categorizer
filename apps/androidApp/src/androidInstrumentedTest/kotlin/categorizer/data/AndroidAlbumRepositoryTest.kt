@@ -115,9 +115,8 @@ class AndroidAlbumRepositoryTest {
         val edited = original.copy(
             confirmedIdentity = original.confirmedIdentity.copy(
                 classId = "user:porsche-911-992",
-                make = "Porsche",
-                model = "911",
-                generationLabel = "992",
+                scientificName = "Porsche 911",
+                attributes = mapOf("generation_label" to "992"),
                 displayName = "Porsche 911 (992)",
                 source = IdentitySource.USER_CONFIRMED
             ),

@@ -1,6 +1,6 @@
 package categorizer.application
 
-import categorizer.domain.CarIdentity
+import categorizer.domain.CategoryIdentity
 import categorizer.domain.ManagedImageRef
 import categorizer.domain.RecognitionCandidate
 import categorizer.domain.RecognitionError
@@ -41,7 +41,7 @@ sealed interface RecognitionUiState {
 
 data class RecognitionSaveDraft(
     val sourceImage: ManagedImageRef,
-    val confirmedIdentity: CarIdentity,
+    val confirmedIdentity: CategoryIdentity,
     val recognitionResultId: String,
     val modelVersion: String,
     val inferenceDurationMs: Long
