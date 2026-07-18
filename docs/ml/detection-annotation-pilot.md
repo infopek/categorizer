@@ -109,3 +109,18 @@ Collect that independent evaluation set from individually allowlisted Wikimedia 
 ```
 
 The deterministic query groups intentionally mix likely Lepidoptera photos with visually confusable flowers, bees, bark, and leaves. Query-derived expectations are not truth: every candidate still requires explicit human box/no-subject review, and the set must remain frozen afterward.
+
+Evaluate a checkpoint at its already selected operating threshold without tuning on the frozen set:
+
+```bash
+.venv/bin/python ml/detection/evaluate_ssdlite.py \
+  --reviewed ml/artifacts/lepidoptera/detection-commons-evaluation-review/reviewed-annotations.json \
+  --sample-manifest ml/artifacts/lepidoptera/detection-commons-evaluation/sample-manifest.json \
+  --checkpoint ml/artifacts/lepidoptera/detection-training-ssdlite-coco-v2-augmented/ssdlite320-mobilenet-v3-large.pt \
+  --output ml/artifacts/lepidoptera/detection-commons-evaluation/report.json \
+  --score-threshold 0.25
+```
+
+The evaluator verifies source and checkpoint identities, excludes unresolved reviews, and reports localization, hard-negative false positives, subject-count/relative-size slices, and host inference timing.
+
+The first frozen evaluation included 18 positive images (22 boxes) and 52 hard negatives. At the preselected `0.25` threshold it measured 68.2% localization recall, 78.9% precision, 0.5 false positives per hard-negative image, and a 59.6% hard-negative no-detection rate. Single-subject recall was 88.2%, but multiple-subject recall was 0%; large/medium/small relative-area recall was 100%/37.5%/0%. Mean desktop GPU inference was 17.8 ms/image. The detector therefore fails the frozen localization and hard-negative gates; this set must not be added to training or used to tune the threshold.
