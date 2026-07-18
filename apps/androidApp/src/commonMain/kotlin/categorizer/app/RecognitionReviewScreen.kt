@@ -70,12 +70,12 @@ internal fun RecognitionReviewScreen(
                     when (state) {
                         RecognitionUiState.Idle -> ReviewMessage("Recognition canceled", "Choose another photo to try again.")
                         is RecognitionUiState.Running -> ReviewMessage(
-                            "Looking at the car…",
+                            "Identifying the butterfly or moth…",
                             "Recognition runs locally on this device."
                         )
                         is RecognitionUiState.Candidates -> CandidateReview(
-                            heading = "Choose the closest match",
-                            explanation = "These suggestions are ranked, not guaranteed facts.",
+                            heading = "What did you photograph?",
+                            explanation = "Choose the best match. Common names are shown first, with scientific names underneath.",
                             candidates = state.candidates,
                             saveState = saveState,
                             onConfirmCandidate = onConfirmCandidate,
@@ -90,8 +90,8 @@ internal fun RecognitionReviewScreen(
                             onConfirmManual = onConfirmManual
                         )
                         is RecognitionUiState.Unsupported -> ManualReview(
-                            heading = "This car isn’t supported yet",
-                            explanation = "You can still add it by entering the make and model.",
+                            heading = "This species isn’t supported yet",
+                            explanation = "You can still add it by entering its genus and species.",
                             saveState = saveState,
                             onConfirmManual = onConfirmManual
                         )
@@ -164,6 +164,10 @@ private fun CandidateCard(candidate: RecognitionCandidate, selected: Boolean, on
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
+                val scientificName = "${candidate.carIdentity.make} ${candidate.carIdentity.model}"
+                if (scientificName != candidate.carIdentity.displayName) {
+                    Text("Scientific name: $scientificName", style = MaterialTheme.typography.bodySmall)
+                }
                 candidate.carIdentity.approximateYearRange?.let { Text(it) }
             }
             Text(if (selected) "Selected" else "Select")
@@ -189,25 +193,25 @@ private fun ManualReview(
         Spacer(Modifier.height(12.dp))
         OutlinedTextField(
             input.make, { input = input.copy(make = it) },
-            label = { Text("Make") },
+            label = { Text("Genus") },
             isError = attempted && invalid?.makeError != null,
             supportingText = { if (attempted) invalid?.makeError?.let { Text(it) } },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             input.model, { input = input.copy(model = it) },
-            label = { Text("Model") },
+            label = { Text("Species") },
             isError = attempted && invalid?.modelError != null,
             supportingText = { if (attempted) invalid?.modelError?.let { Text(it) } },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             input.generation, { input = input.copy(generation = it) },
-            label = { Text("Generation (optional)") }, modifier = Modifier.fillMaxWidth()
+            label = { Text("Subspecies or form (optional)") }, modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             input.approximateYearRange, { input = input.copy(approximateYearRange = it) },
-            label = { Text("Approximate years (optional)") }, modifier = Modifier.fillMaxWidth()
+            label = { Text("Notes (optional)") }, modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.weight(1f))
         saveError(saveState)

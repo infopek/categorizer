@@ -1,19 +1,19 @@
 {
   "schema_version": "1.0.0",
-  "model_status": "not_installed",
-  "model_version": null,
-  "catalog_file": "mvp-car-catalog.json",
-  "catalog_id": "cars-mvp-150-v1",
+  "model_status": "experimental",
+  "model_version": "lepidoptera-maxvit-t-163-pilot",
+  "catalog_file": "mvp-lepidoptera-catalog.json",
+  "catalog_id": "lepidoptera-at-163-v1",
   "notices": [
     {
-      "name": "Categorizer MVP catalog",
+      "name": "Categorizer Lepidoptera catalog",
       "license": "Project-authored catalog; individual training assets are not bundled",
-      "acknowledgement": "Catalog definitions are maintained by the Categorizer project."
+      "acknowledgement": "The 163-species catalog and dataset provenance are maintained by the Categorizer project."
     },
     {
       "name": "TorchVision architecture code",
       "license": "BSD-3-Clause",
-      "acknowledgement": "Architecture code may be used under BSD-3-Clause. No pretrained weights are approved or bundled."
+      "acknowledgement": "Architecture code is used under BSD-3-Clause; model and dataset provenance are recorded in the repository."
     }
   ]
 }

@@ -21,12 +21,12 @@ sealed interface ModelInfoUiState { data object Loading : ModelInfoUiState; data
             is ModelInfoUiState.Ready -> {
                 val info = state.info
                 Text(if (info.modelVersion == null) "Model not installed in this build" else "Model version ${info.modelVersion}", style = MaterialTheme.typography.titleLarge)
-                Text("Supported catalog: ${info.catalogId} · ${info.classes.size} car classes")
+                Text("Supported catalog: ${info.catalogId} · ${info.classes.size} species")
                 Text("Private and offline", style = MaterialTheme.typography.titleMedium)
                 Text("Photos, recognition processing, corrections, and album data remain on this device. The app has no account, telemetry, subscription, or remote recognition service.")
                 Text("Recognition has limits", style = MaterialTheme.typography.titleMedium)
-                Text("Results are ranked suggestions, not guaranteed exact identifications. Unsupported cars, unusual angles, poor lighting, modifications, or similar generations can produce uncertain or incorrect suggestions. Confirm or correct every result before saving.")
-                Text("Supported cars", style = MaterialTheme.typography.titleMedium)
+                Text("Results are ranked suggestions, not guaranteed exact identifications. Unsupported species, unusual angles, poor lighting, partial views, or similar-looking species can produce uncertain or incorrect suggestions. Confirm or correct every result before saving.")
+                Text("Supported species", style = MaterialTheme.typography.titleMedium)
                 Text(info.classes.joinToString(" • "))
                 Text("Licenses and acknowledgements", style = MaterialTheme.typography.titleMedium)
                 info.notices.forEach { notice -> Text(notice.name, style = MaterialTheme.typography.titleSmall); Text("${notice.license}\n${notice.acknowledgement}") }

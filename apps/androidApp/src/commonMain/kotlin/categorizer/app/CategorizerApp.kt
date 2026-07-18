@@ -106,7 +106,7 @@ internal fun AlbumBrowserScreen(
             ) {
                 Column {
                     Text("My album", style = MaterialTheme.typography.headlineMedium)
-                    Text("Your car sightings, kept on this device", style = MaterialTheme.typography.bodySmall)
+                    Text("Your butterfly and moth sightings, kept on this device", style = MaterialTheme.typography.bodySmall)
                 }
                 Button(onClick = onAddSighting) { Text("Add") }
             }
@@ -153,7 +153,7 @@ private fun SearchAndFilters(
     OutlinedTextField(
         value = query.text,
         onValueChange = onSearchChanged,
-        label = { Text("Search cars or notes") },
+        label = { Text("Search species or notes") },
         singleLine = true,
         modifier = Modifier.fillMaxWidth()
     )
@@ -172,7 +172,7 @@ private fun SearchAndFilters(
             FilterChip(
                 selected = query.classId == null,
                 onClick = { onIdentityChanged(null) },
-                label = { Text("All cars") }
+                label = { Text("All species") }
             )
         }
         items(identities, key = { it.classId }) { identity ->
@@ -243,7 +243,7 @@ private fun AlbumList(entries: List<AlbumEntry>, onOpenEntry: (String) -> Unit) 
 private fun EmptyCollection(onAddSighting: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Your album is ready", style = MaterialTheme.typography.titleLarge)
-        Text("Add a car photo to start your local collection.")
+        Text("Add a butterfly or moth photo to start your local collection.")
         Spacer(Modifier.height(16.dp))
         Button(onClick = onAddSighting) { Text("Add first sighting") }
     }
@@ -252,7 +252,7 @@ private fun EmptyCollection(onAddSighting: () -> Unit) {
 @Composable
 private fun NoMatches(onClearFilters: () -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("No matching cars", style = MaterialTheme.typography.titleLarge)
+        Text("No matching species", style = MaterialTheme.typography.titleLarge)
         Text("Try another search or clear the filters.")
         Spacer(Modifier.height(16.dp))
         FilledTonalButton(onClick = onClearFilters) { Text("Clear filters") }
@@ -280,7 +280,7 @@ private fun AlbumSort.next() = when (this) {
 private fun AlbumSort.label() = when (this) {
     AlbumSort.NEWEST_FIRST -> "Newest first"
     AlbumSort.OLDEST_FIRST -> "Oldest first"
-    AlbumSort.IDENTITY_ASCENDING -> "Car name A–Z"
+    AlbumSort.IDENTITY_ASCENDING -> "Species name A–Z"
 }
 
 @Composable

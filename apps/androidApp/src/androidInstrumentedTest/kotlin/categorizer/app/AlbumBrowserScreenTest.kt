@@ -95,7 +95,7 @@ class AlbumBrowserScreenTest {
             query = AlbumQuery(text = "bee"),
             onClearFilters = { cleared = true }
         )
-        findText("No matching cars")
+        findText("No matching species")
         screenshot("filtered")
         click(findText("Clear filters"))
         waitForUi()
