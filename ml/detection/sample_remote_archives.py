@@ -103,11 +103,16 @@ def main() -> int:
     parser.add_argument("--class-count", type=int, default=12)
     parser.add_argument("--images-per-class", type=int, default=5)
     parser.add_argument("--seed", default="detection-pilot-v1")
+    parser.add_argument("--range-block-bytes", type=int, default=4 * 1024 * 1024)
+    parser.add_argument("--shard-count", type=int, default=1)
+    parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--exclude-manifest", type=Path, action="append", default=[])
     parser.add_argument("--exclude-class", action="append", default=[])
     args = parser.parse_args()
-    if args.class_count < 1 or args.images_per_class < 1:
+    if args.class_count < 1 or args.images_per_class < 1 or args.range_block_bytes < 64 * 1024:
         raise SystemExit("sample counts must be positive")
+    if args.shard_count < 1 or args.shard_index not in range(args.shard_count):
+        raise SystemExit("invalid shard selection")
 
     class_map = json.loads(args.class_map.read_text(encoding="utf-8"))
     classes = class_map["classes"]
@@ -137,17 +142,60 @@ def main() -> int:
         ranked(candidates, args.seed)[: args.class_count]
     )
     selected_classes = [item for item in classes if item["class_id"] in selected_ids]
+    selected_classes = selected_classes[args.shard_index :: args.shard_count]
     article = load_json_url(ARTICLE_API)
     remote_files = {item["name"]: item for item in article["files"]}
     args.output.mkdir(parents=True, exist_ok=True)
-    assets = []
-    archive_records = []
+    manifest_path = args.output / "sample-manifest.json"
+    if manifest_path.exists():
+        previous = json.loads(manifest_path.read_text(encoding="utf-8"))
+        selection = previous.get("selection", {})
+        expected = (args.seed, len(selected_classes), args.images_per_class)
+        actual = (selection.get("seed"), selection.get("class_count"), selection.get("images_per_class"))
+        if actual != expected:
+            raise SystemExit("existing output manifest belongs to a different sample configuration")
+        assets = previous.get("assets", [])
+        archive_records = previous.get("archives", [])
+    else:
+        assets = []
+        archive_records = []
+    completed_classes = {item["class_id"] for item in archive_records}
+
+    def save_manifest() -> None:
+        manifest = {
+            "schema_version": "0.1.0",
+            "status": "unreviewed_detection_pilot_sample",
+            "source": {
+                "figshare_article_id": article["id"],
+                "doi": article["doi"],
+                "license": article["license"]["name"],
+                "api_url": ARTICLE_API,
+            },
+            "selection": {
+                "seed": args.seed,
+                "class_count": len(selected_classes),
+                "images_per_class": args.images_per_class,
+                "range_block_bytes": args.range_block_bytes,
+                "shard_count": args.shard_count,
+                "shard_index": args.shard_index,
+                "method": "ascending SHA-256 rank of class IDs and ZIP member names",
+                "excluded_class_ids": sorted(excluded_ids),
+                "exclusion_manifests": exclusion_sources,
+            },
+            "archives": archive_records,
+            "assets": assets,
+        }
+        manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
     for class_position, item in enumerate(selected_classes, 1):
+        if item["class_id"] in completed_classes:
+            print(f"PROGRESS {class_position}/{len(selected_classes)} class={item['class_id']} resumed", flush=True)
+            continue
         archive_name = f'{item["source_folder"]}.ZIP'
         remote = remote_files.get(archive_name)
         if remote is None:
             raise SystemExit(f"Figshare article is missing {archive_name}")
-        reader = HTTPRangeReader(remote["download_url"], int(remote["size"]))
+        reader = HTTPRangeReader(remote["download_url"], int(remote["size"]), args.range_block_bytes)
         with zipfile.ZipFile(reader) as archive:
             members = sorted(
                 entry.filename
@@ -195,36 +243,14 @@ def main() -> int:
                 "transferred_bytes": reader.transferred_bytes,
             }
         )
+        save_manifest()
         print(
             f"PROGRESS {class_position}/{len(selected_classes)} class={item['class_id']} "
             f"images={args.images_per_class} transferred={reader.transferred_bytes}",
             flush=True,
         )
 
-    manifest = {
-        "schema_version": "0.1.0",
-        "status": "unreviewed_detection_pilot_sample",
-        "source": {
-            "figshare_article_id": article["id"],
-            "doi": article["doi"],
-            "license": article["license"]["name"],
-            "api_url": ARTICLE_API,
-        },
-        "selection": {
-            "seed": args.seed,
-            "class_count": len(selected_classes),
-            "images_per_class": args.images_per_class,
-            "method": "ascending SHA-256 rank of class IDs and ZIP member names",
-            "excluded_class_ids": sorted(excluded_ids),
-            "exclusion_manifests": exclusion_sources,
-        },
-        "archives": archive_records,
-        "assets": assets,
-    }
-    (args.output / "sample-manifest.json").write_text(
-        json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+    save_manifest()
     print(
         f"RESULT OK classes={len(selected_classes)} assets={len(assets)} "
         f"source_bytes={sum(int(x['source_bytes']) for x in archive_records)} "

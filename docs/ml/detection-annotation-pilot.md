@@ -149,3 +149,45 @@ The first remediation export supplied 13 resolved positive images (33 boxes) and
 For small-object experiments, training and evaluation accept a matched `--input-size` and seven-value `--anchor-scales`. These geometry values are part of the run report and must be reproduced exactly when loading the checkpoint.
 
 A 512-pixel experiment with anchor scales `0.05,0.12,0.25,0.45,0.65,0.85,1.0` improved frozen localization recall to 77.3%, confirming that stock 20%-minimum anchors were a material small-object limitation. It also produced 1.85 false positives per hard-negative image and only a 7.7% no-detection rate. The candidate remains rejected; higher resolution/smaller anchors alone do not satisfy the combined localization and negative gates.
+
+The expanded reviewed campaign produced dataset v5 with 3,575 images. Its selected 512-pixel
+candidate reached 93.3% recall and 96.1% precision on the existing test split. On the cluttered
+diagnostic set it retained 94.1% single-subject recall and reduced hard-negative false detections
+to 0.365 per image. This is the best detector candidate, but it inherits TorchVision's COCO detector
+initialization and therefore remains research-only: TorchVision does not provide a weight-specific
+commercial-use grant and explicitly assigns pretrained-model permission review to downstream users.
+
+A 40-epoch random-initialized comparison used only the approved reviewed dataset. It retained 72.7%
+localization recall on the diagnostic positives but collapsed to 5.2% precision and 53.1 false
+detections per hard-negative image. It is rejected. Automatic detection is therefore deferred from
+the distributable MVP; the existing manual subject-crop flow remains the release path.
+
+## Expanded 3,000-image campaign
+
+The next detector iteration uses a verified campaign of 3,155 unique images: 564 existing reviewed
+images plus 2,591 new candidates. The new material combines 2,445 species-balanced Figshare images
+(15 per class across all 163 classes) with a targeted Commons tranche; 33 SHA-256 duplicates were
+excluded. HTTP-range sampling transferred 2.63 GB rather than downloading the 338.25 GB source
+archives represented by the selected classes.
+
+Long collection jobs are resumable per accepted Commons image and per completed Figshare species.
+The Figshare sampler also supports deterministic shards and configurable range blocks. Assemble and
+batch a campaign with:
+
+```bash
+.venv/bin/python ml/detection/assemble_training_campaign.py \
+  --reviewed-dataset ml/artifacts/lepidoptera/detection-dataset-v3 \
+  --sample-manifest /path/to/each/sample-manifest.json \
+  --output ml/artifacts/lepidoptera/detection-training-campaign-3000
+
+python3 ml/detection/batch_sample_manifest.py \
+  --manifest ml/artifacts/lepidoptera/detection-training-campaign-3000/sample-manifest.json \
+  --output ml/artifacts/lepidoptera/detection-training-campaign-3000/batches \
+  --batch-size 200
+```
+
+Grounding DINO generated 3,441 proposed boxes across all 2,591 new images; only four images had no
+proposal. Thirteen independently durable review batches are indexed by
+`review-index.html` in the ignored campaign directory. Reviews persist in browser local storage,
+support large approve/reject controls and keyboard shortcuts, and export one decision file per
+batch. Teacher proposals remain untrusted until those exports are applied.
