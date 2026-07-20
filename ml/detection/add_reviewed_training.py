@@ -17,7 +17,7 @@ def digest(path: Path) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-dataset", type=Path, required=True)
-    parser.add_argument("--reviewed", type=Path, required=True)
+    parser.add_argument("--reviewed", type=Path, action="append", required=True)
     parser.add_argument("--sample-manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--negative-validation-count", type=int, default=10)
@@ -25,10 +25,15 @@ def main() -> int:
 
     base_path = args.base_dataset / "dataset-manifest.json"
     base = json.loads(base_path.read_text(encoding="utf-8"))
-    reviewed = json.loads(args.reviewed.read_text(encoding="utf-8"))
     sample = json.loads(args.sample_manifest.read_text(encoding="utf-8"))
-    if base.get("status") != "reviewed_detection_dataset" or reviewed.get("status") != "human_review_applied":
-        raise SystemExit("input manifest status is invalid")
+    reviewed_manifests = []
+    for reviewed_path in args.reviewed:
+        reviewed = json.loads(reviewed_path.read_text(encoding="utf-8"))
+        if reviewed.get("status") != "human_review_applied":
+            raise SystemExit(f"reviewed manifest status is invalid: {reviewed_path}")
+        reviewed_manifests.append(reviewed)
+    if base.get("status") != "reviewed_detection_dataset":
+        raise SystemExit("base dataset status is invalid")
     samples = {item["asset_id"]: item for item in sample["assets"]}
     images = args.output / "images"
     images.mkdir(parents=True, exist_ok=True)
@@ -44,7 +49,12 @@ def main() -> int:
 
     added = Counter()
     existing_ids = {record["asset_id"] for record in records}
-    resolved = [asset for asset in reviewed["assets"] if asset["review"]["status"] in {"accepted", "not_visible"}]
+    resolved = [
+        asset
+        for reviewed in reviewed_manifests
+        for asset in reviewed["assets"]
+        if asset["review"]["status"] in {"accepted", "not_visible"}
+    ]
     ranked_negatives = sorted(
         (asset for asset in resolved if asset["review"]["status"] == "not_visible"),
         key=lambda asset: hashlib.sha256(asset["asset_id"].encode()).digest(),
@@ -74,8 +84,8 @@ def main() -> int:
                 "height": asset["height"],
                 "boxes": boxes,
                 "review_status": status,
-                "license_id": source_record["license_id"],
-                "description_url": source_record["description_url"],
+                "license_id": source_record.get("license_id"),
+                "description_url": source_record.get("description_url"),
             }
         )
         existing_ids.add(asset["asset_id"])
@@ -85,18 +95,22 @@ def main() -> int:
     box_counts = Counter()
     for record in records:
         box_counts[record["split"]] += len(record["boxes"])
+    reviewed_hashes = [digest(path) for path in args.reviewed]
+    remediation = {
+        "base_manifest_sha256": digest(base_path),
+        "reviewed_manifest_sha256s": reviewed_hashes,
+        "sample_manifest_sha256": digest(args.sample_manifest),
+        "added_resolved": dict(sorted(added.items())),
+        "negative_validation_count": len(validation_negative_ids),
+    }
+    if len(reviewed_hashes) == 1:
+        remediation["reviewed_manifest_sha256"] = reviewed_hashes[0]
     output = {
         **base,
         "schema_version": "0.2.0",
         "status": "reviewed_detection_dataset",
         "split": {**base["split"], "image_counts": dict(sorted(image_counts.items())), "box_counts": dict(sorted(box_counts.items()))},
-        "remediation": {
-            "base_manifest_sha256": digest(base_path),
-            "reviewed_manifest_sha256": digest(args.reviewed),
-            "sample_manifest_sha256": digest(args.sample_manifest),
-            "added_resolved": dict(sorted(added.items())),
-            "negative_validation_count": len(validation_negative_ids),
-        },
+        "remediation": remediation,
         "records": sorted(records, key=lambda item: item["asset_id"]),
     }
     (args.output / "dataset-manifest.json").write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")

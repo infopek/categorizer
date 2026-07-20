@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("--decisions", type=Path, required=True)
     parser.add_argument("--reviewer", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--allow-unknown-decisions", action="store_true")
     args = parser.parse_args()
 
     manifest = json.loads(args.proposals.read_text(encoding="utf-8"))
@@ -36,7 +37,7 @@ def main() -> int:
         raise SystemExit("proposal manifest contains duplicate asset IDs")
     unknown = sorted(set(decisions) - set(known))
     missing = sorted(set(known) - set(decisions))
-    if unknown or missing:
+    if missing or (unknown and not args.allow_unknown_decisions):
         raise SystemExit(f"decision identity mismatch: unknown={unknown} missing={missing}")
 
     status_counts: dict[str, int] = {}
@@ -83,6 +84,7 @@ def main() -> int:
             "decisions_sha256": digest(args.decisions),
             "status_counts": dict(sorted(status_counts.items())),
             "selected_box_count": selected_count,
+            "ignored_unknown_decision_count": len(unknown),
         },
         "assets": reviewed_assets,
     }

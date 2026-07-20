@@ -39,6 +39,8 @@ def source_items(
     sample_manifest_path: Path | None,
     sample_root: Path | None,
     limit: int | None,
+    class_id: str | None = None,
+    excluded_sample_ids: set[str] | None = None,
 ) -> tuple[dict[str, object], list[tuple[str, bytes, dict[str, object]]]]:
     if archive_path is not None:
         with zipfile.ZipFile(archive_path) as archive:
@@ -61,6 +63,10 @@ def source_items(
         raise SystemExit("sample manifest has an unexpected status")
     root = sample_root or sample_manifest_path.parent
     assets = sorted(sample.get("assets", []), key=lambda item: (item["class_id"], item["local_path"]))
+    if class_id is not None:
+        assets = [asset for asset in assets if asset["class_id"] == class_id]
+    if excluded_sample_ids:
+        assets = [asset for asset in assets if asset["asset_id"] not in excluded_sample_ids]
     if limit is not None:
         assets = assets[:limit]
     items = []
@@ -106,25 +112,35 @@ def review_page(annotations: list[dict[str, object]]) -> str:
             for box in proposals
         ) or "no proposal"
         proposal_buttons = "".join(
-            f'<button data-status="accepted" data-indices="{index}">Use #{index + 1}</button>'
+            f'<button data-status="accepted" data-indices="{index}">Use only #{index + 1}</button>'
+            for index in range(len(proposals))
+        )
+        proposal_checks = "".join(
+            f'<label><input type="checkbox" data-proposal-index="{index}"> #{index + 1}</label>'
             for index in range(len(proposals))
         )
         cards.append(
             f'''<article data-id="{asset_id}"><img src="rendered/{asset_id}.jpg" loading="lazy">
             <h3>{html.escape(str(item["source_name"]))}</h3><p>{summary}</p>
-            {proposal_buttons}<button data-status="accepted" data-indices="all">Use all</button>
-            <button data-status="needs_adjustment">Adjust</button><button data-status="multiple_subjects">Multiple subjects</button>
-            <button data-status="rejected">Reject proposals</button><button data-status="not_visible">No visible subject</button>
+            <button class="approve" data-status="accepted" data-indices="all">✓ Approve AI boxes (A)</button>{proposal_buttons}
+            <div class="combine"><strong>Combine individual boxes:</strong> {proposal_checks}
+            <button class="approve-selected" data-status="accepted" data-indices="selected">Approve selected (Enter)</button></div>
+            <button data-status="needs_adjustment">Adjust (X)</button><button data-status="multiple_subjects">Missing subjects (M)</button>
+            <button data-status="rejected">Wrong boxes (R)</button><button data-status="not_visible">No butterfly/moth (N)</button>
             <output>pending</output></article>'''
         )
     return '''<!doctype html><meta charset="utf-8"><title>Lepidoptera box review</title>
-    <style>body{font:18px system-ui;margin:16px}header{position:sticky;top:0;background:white;padding:12px;z-index:2}
-    main{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}article{border:2px solid #aaa;border-radius:12px;padding:10px}
-    img{width:100%;height:300px;object-fit:contain;background:#222}button{font-size:17px;padding:12px;margin:4px}output{display:block;font-weight:bold;padding:6px}</style>
-    <header><button id="export">Export decisions.json</button> <span id="progress"></span></header><main>''' + "".join(cards) + '''</main>
-    <script>const decisions={};const cards=[...document.querySelectorAll('article')];function update(){document.querySelector('#progress').textContent=`${Object.keys(decisions).length}/${cards.length} reviewed`}
-    document.querySelectorAll('article button').forEach(b=>b.onclick=()=>{const c=b.closest('article');let indices=[];if(b.dataset.indices==='all'){indices=[...c.querySelectorAll('button[data-indices]')].filter(x=>x.dataset.indices!=='all').map(x=>Number(x.dataset.indices))}else if(b.dataset.indices!==undefined){indices=[Number(b.dataset.indices)]}decisions[c.dataset.id]={status:b.dataset.status,proposal_indices:indices};c.querySelector('output').textContent=b.textContent;c.style.borderColor='#16803a';update()});
-    document.querySelector('#export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(decisions,null,2)],{type:'application/json'}));a.download='detection-decisions.json';a.click()};update()</script>'''
+    <style>body{font:20px system-ui;margin:16px}header{position:sticky;top:0;background:white;padding:12px;z-index:2;border-bottom:2px solid #ddd}
+    main{display:block}article{max-width:850px;margin:24px auto;border:4px solid #aaa;border-radius:16px;padding:12px;scroll-margin-top:100px}
+    img{width:100%;height:620px;object-fit:contain;background:#222}button{font-size:19px;font-weight:650;padding:15px;margin:5px;border-radius:10px;cursor:pointer}.approve{display:block;width:100%;font-size:23px;background:#20a34a;color:white;border:0}.combine{padding:12px;margin:8px 0;background:#eef5ff;border-radius:12px}.combine label{display:inline-block;font-size:22px;padding:10px}.combine input{width:24px;height:24px}.approve-selected{background:#1769aa;color:white;border:0}output{display:block;font-weight:bold;padding:8px}</style>
+    <header><button id="export">Export this batch</button> <strong id="progress"></strong> <span>Shortcuts: A all · 1–9 only · Shift+1–9 toggle combination · Enter approve selected · R wrong · N none · M missing · X adjust</span></header><main>''' + "".join(cards) + '''</main>
+    <script>const storageKey=`categorizer-detection-review:${location.pathname}`;const decisions=JSON.parse(localStorage.getItem(storageKey)||'{}');const cards=[...document.querySelectorAll('article')];
+    function update(){document.querySelector('#progress').textContent=`${Object.keys(decisions).length}/${cards.length} reviewed`;localStorage.setItem(storageKey,JSON.stringify(decisions))}
+    function next(c){const i=cards.indexOf(c);const remaining=cards.slice(i+1).find(x=>!decisions[x.dataset.id])||cards.find(x=>!decisions[x.dataset.id]);if(remaining)remaining.scrollIntoView({behavior:'auto',block:'center'})}
+    function decide(b){const c=b.closest('article');let indices=[];if(b.dataset.indices==='all'){indices=[...c.querySelectorAll('button[data-indices]')].filter(x=>/^[0-9]+$/.test(x.dataset.indices)).map(x=>Number(x.dataset.indices))}else if(b.dataset.indices==='selected'){indices=[...c.querySelectorAll('input[data-proposal-index]:checked')].map(x=>Number(x.dataset.proposalIndex));if(!indices.length){c.querySelector('output').textContent='Select at least one box';return}}else if(b.dataset.indices!==undefined){indices=[Number(b.dataset.indices)]}decisions[c.dataset.id]={status:b.dataset.status,proposal_indices:indices};c.querySelector('output').textContent=`${b.textContent} ${indices.length?`(#${indices.map(x=>x+1).join(', #')})`:''}`;c.style.borderColor='#16803a';update();next(c)}
+    document.querySelectorAll('article button').forEach(b=>b.onclick=()=>decide(b));cards.forEach(c=>{if(decisions[c.dataset.id]){c.style.borderColor='#16803a';c.querySelector('output').textContent='reviewed (saved)'}});
+    document.onkeydown=e=>{if(['INPUT','TEXTAREA'].includes(e.target.tagName))return;const c=cards.find(x=>{const r=x.getBoundingClientRect();return r.top<innerHeight*.65&&r.bottom>innerHeight*.35})||cards.find(x=>!decisions[x.dataset.id]);if(!c)return;const key=e.key.toLowerCase();if(e.shiftKey&&/^[1-9]$/.test(key)){const box=c.querySelector(`input[data-proposal-index="${Number(key)-1}"]`);if(box){e.preventDefault();box.checked=!box.checked}return}const map={a:'button.approve',r:'button[data-status="rejected"]',n:'button[data-status="not_visible"]',m:'button[data-status="multiple_subjects"]',x:'button[data-status="needs_adjustment"]',enter:'button.approve-selected'};const selector=/^[1-9]$/.test(key)?`button[data-indices="${Number(key)-1}"]`:map[key];const b=selector&&c.querySelector(selector);if(b){e.preventDefault();decide(b)}};
+    document.querySelector('#export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(decisions,null,2)],{type:'application/json'}));a.download=`${location.pathname.split('/').slice(-2,-1)[0]}-decisions.json`;a.click()};update()</script>'''
 
 
 def main() -> int:
@@ -139,6 +155,8 @@ def main() -> int:
     parser.add_argument("--nms-iou", type=float, default=0.50)
     parser.add_argument("--maximum-proposals", type=int, default=10)
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--class-id")
+    parser.add_argument("--exclude-proposals", type=Path)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
     if not 0 < args.threshold < 1 or not 0 < args.text_threshold < 1 or not 0 < args.nms_iou < 1:
@@ -146,10 +164,25 @@ def main() -> int:
     if args.maximum_proposals < 1:
         raise SystemExit("maximum proposals must be positive")
 
+    excluded_sample_ids: set[str] = set()
+    if args.exclude_proposals:
+        excluded = json.loads(args.exclude_proposals.read_text(encoding="utf-8"))
+        excluded_sample_ids = {
+            str(asset["sample_asset_id"])
+            for asset in excluded.get("assets", [])
+            if asset.get("sample_asset_id") is not None
+        }
     args.output.mkdir(parents=True, exist_ok=True)
     rendered = args.output / "rendered"
     rendered.mkdir(exist_ok=True)
-    source, items = source_items(args.archive, args.sample_manifest, args.sample_root, args.limit)
+    source, items = source_items(
+        args.archive,
+        args.sample_manifest,
+        args.sample_root,
+        args.limit,
+        args.class_id,
+        excluded_sample_ids,
+    )
     processor = AutoProcessor.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
     device = torch.device(args.device)
     model = AutoModelForZeroShotObjectDetection.from_pretrained(

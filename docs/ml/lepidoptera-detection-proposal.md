@@ -16,6 +16,13 @@ The qualified MaxViT-T model is a species classifier. Its upstream evaluation tr
 
 Detection changes localization only. It does not change the accepted 163-class catalog, scientific labels, classifier outputs, or local-only privacy boundary.
 
+The MVP recognition journey targets one user-chosen subject. Failing to localize the only visible
+butterfly or moth is therefore the critical product failure. In a multi-subject photo, detecting at
+least one usable individual crop can still serve the journey; incomplete instance coverage remains
+reported and useful for general detector quality, but has lower MVP severity than a single-subject
+miss. The application should present multiple reliable individual boxes for selection when
+available and must not treat one group-enclosing box as several subjects.
+
 ## Candidate implementation
 
 The production pilot should fine-tune TorchVision `ssdlite320_mobilenet_v3_large` as a one-foreground-class detector. The official architecture has 3,440,060 parameters and its reference checkpoint is approximately 13.4 MiB. TorchVision is already part of the pinned ML stack, so this choice avoids a new production training framework. Stock COCO weights cannot be used as the finished detector because COCO has no butterfly or moth category.
@@ -54,3 +61,14 @@ Initial evaluation targets are at least 90% localization recall at IoU 0.5 and m
 ## Rejection and fallback
 
 Reject or revise the detector if it harms end-to-end identification, cannot pass ONNX/Android compatibility, or pushes the combined application over an accepted hard resource gate. Manual crop selection remains the no-detector fallback and should be implemented independently of pilot success.
+
+## MVP disposition
+
+The v5 512-pixel SSDLite candidate is the strongest experimental detector, including 94.1% recall
+for the intended single-subject slice and substantially improved hard-negative behavior. Its ONNX
+candidate is 8.6 MiB and matches PyTorch within 0.000183 absolute error on five fixtures. It is not
+distribution-approved because its TorchVision COCO initialization lacks an artifact-specific
+commercial-use provenance grant. A random-initialized replacement trained only on approved data
+failed precision catastrophically. The distributable MVP therefore retains manual crop selection
+and does not bundle automatic detection; detector work is postponed pending an approved pretrained
+weight source or a substantially larger clean pretraining effort.

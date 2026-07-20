@@ -134,6 +134,9 @@ def metrics(predictions: list[tuple[dict, dict]], threshold: float) -> dict[str,
 
 
 def build_model(initialization: str):
+    if initialization == "random":
+        model = ssdlite320_mobilenet_v3_large(weights=None, weights_backbone=None, num_classes=2)
+        return model, {"source": "random initialization; no pretrained weights"}
     if initialization == "imagenet-backbone":
         model = ssdlite320_mobilenet_v3_large(
             weights=None,
@@ -182,7 +185,11 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=20260718)
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
-    parser.add_argument("--initialization", choices=("imagenet-backbone", "coco-detector"), default="coco-detector")
+    parser.add_argument(
+        "--initialization",
+        choices=("random", "imagenet-backbone", "coco-detector"),
+        default="coco-detector",
+    )
     parser.add_argument("--validation-recall-target", type=float, default=0.97)
     parser.add_argument("--remediation-repeat", type=int, default=3)
     parser.add_argument("--input-size", type=int, default=320)
@@ -274,7 +281,11 @@ def main() -> int:
         "classes": {"background": 0, "Lepidoptera": 1},
         "initialization": {
             **initialization,
-            "distribution_approval": "not granted; pretrained-weight provenance requires separate review",
+            "distribution_approval": (
+                "not applicable; random initialization uses no pretrained weights"
+                if args.initialization == "random"
+                else "not granted; pretrained-weight provenance requires separate review"
+            ),
         },
         "dataset_manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
         "dataset_split": manifest["split"],
