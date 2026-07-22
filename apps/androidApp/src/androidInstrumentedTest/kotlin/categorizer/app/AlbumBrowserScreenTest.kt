@@ -53,6 +53,16 @@ class AlbumBrowserScreenTest {
     }
 
     @Test
+    fun albumHeaderShowsAndRunsAddSightingAction() {
+        var addCount = 0
+        show(contentState(), onAddSighting = { addCount++ })
+
+        click(findText("Add sighting"))
+        waitForUi()
+        assertEquals(1, addCount)
+    }
+
+    @Test
     fun populatedAlbumUsesStableCardsAndNavigatesByEntryId() {
         var openedEntryId: String? = null
         show(contentState(), onOpenEntry = { openedEntryId = it })
