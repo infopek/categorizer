@@ -44,6 +44,13 @@ kotlin {
     }
 }
 
+val uploadKeystorePath = providers.environmentVariable("CATEGORIZER_UPLOAD_KEYSTORE").orNull
+val uploadKeyAlias = providers.environmentVariable("CATEGORIZER_UPLOAD_KEY_ALIAS").orNull
+val uploadStorePassword = providers.environmentVariable("CATEGORIZER_UPLOAD_STORE_PASSWORD").orNull
+val uploadKeyPassword = providers.environmentVariable("CATEGORIZER_UPLOAD_KEY_PASSWORD").orNull
+val uploadSigningValues = listOf(uploadKeystorePath, uploadKeyAlias, uploadStorePassword, uploadKeyPassword)
+val uploadSigningConfigured = uploadSigningValues.all { !it.isNullOrBlank() }
+
 android {
     namespace = "categorizer.app"
     compileSdk = 35
@@ -55,6 +62,19 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    val uploadSigning = if (uploadSigningConfigured) {
+        signingConfigs.create("closedTestingUpload") {
+            storeFile = rootProject.file(requireNotNull(uploadKeystorePath))
+            storePassword = uploadStorePassword
+            keyAlias = uploadKeyAlias
+            keyPassword = uploadKeyPassword
+        }
+    } else null
+
+    buildTypes.getByName("release") {
+        uploadSigning?.let { signingConfig = it }
     }
 
     compileOptions {
@@ -146,6 +166,20 @@ android {
 
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+    }
+}
+
+tasks.register("verifyClosedTestingSigning") {
+    group = "verification"
+    description = "Fails unless all human-managed Google Play upload-signing inputs are available."
+    doLast {
+        require(uploadSigningConfigured) {
+            "Set CATEGORIZER_UPLOAD_KEYSTORE, CATEGORIZER_UPLOAD_KEY_ALIAS, " +
+                "CATEGORIZER_UPLOAD_STORE_PASSWORD, and CATEGORIZER_UPLOAD_KEY_PASSWORD."
+        }
+        require(rootProject.file(requireNotNull(uploadKeystorePath)).isFile) {
+            "CATEGORIZER_UPLOAD_KEYSTORE does not identify a file."
+        }
     }
 }
 
