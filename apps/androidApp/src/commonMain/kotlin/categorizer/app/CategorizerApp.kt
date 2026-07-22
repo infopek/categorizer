@@ -104,11 +104,11 @@ internal fun AlbumBrowserScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
+                Column(Modifier.weight(1f).padding(end = 12.dp)) {
                     Text("My album", style = MaterialTheme.typography.headlineMedium)
                     Text("Your butterfly and moth sightings, kept on this device", style = MaterialTheme.typography.bodySmall)
                 }
-                Button(onClick = onAddSighting) { Text("Add") }
+                Button(onClick = onAddSighting) { Text("Add sighting") }
             }
             FilledTonalButton(onClick = onTransfer, modifier = Modifier.fillMaxWidth()) { Text("Backup or restore album") }
             TextButton(onClick = onModelInfo, modifier = Modifier.fillMaxWidth()) { Text("About recognition and privacy") }
