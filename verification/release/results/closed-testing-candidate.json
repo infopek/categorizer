@@ -1,0 +1,31 @@
+{
+  "aab": {
+    "path": "apps/androidApp/build/outputs/bundle/release/androidApp-release.aab",
+    "sha256": "84ded4bcfd1f923c566fc7c0eed680bbc83c25aa30cc3d45c5e6d4dba242a6c8",
+    "signature_block_count": 1,
+    "size_bytes": 165690450,
+    "upload_signature_verified": true
+  },
+  "application": {
+    "application_id": "com.infopek.categorizer",
+    "version_code": 1,
+    "version_name": "0.1.0"
+  },
+  "git_commit": "5b684dcef0224df3a81d049dcd7be10774f017c2",
+  "known_blockers": [
+    "Google Play developer identity verification and upload are pending.",
+    "Independent held-out accuracy cannot be reproduced because publisher split indices are unavailable.",
+    "The bundled manifest remains qualification-pending and must not be represented as a passed independent accuracy gate."
+  ],
+  "recognition_bundle": {
+    "class_count": 163,
+    "class_map_sha256": "65501985bddec161ce2aa6d5e46c392bffc5e3b718830873ac36394edf91f083",
+    "license_expression": "LicenseRef-Experimental-Qualification-Pending",
+    "model_sha256": "7e7159df11227389b5e406247d94896f2fa75d77ad2defd07057f50aaf43397b",
+    "model_size_bytes": 126581359,
+    "model_version": "lepidoptera-maxvit-t-163-pilot"
+  },
+  "recorded_at": "2026-07-22T15:37:07.198974+00:00",
+  "schema_version": "0.1.0",
+  "status": "signed_candidate_pending_play_upload"
+}
